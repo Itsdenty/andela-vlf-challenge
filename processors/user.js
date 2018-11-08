@@ -19,7 +19,6 @@ class userProcessor {
    * @return{json} the registered user's detail
    */
   static async createUser(req) {
-
     // Hash password to save in the database
     const createUser = `INSERT INTO aUsers (firstName, lastName, phoneNo, username, email, password)
                             VALUES ($1, $2, $3, $4, $5, $6)
@@ -99,10 +98,9 @@ class userProcessor {
         };
       }
     } catch (error) {
-      return { message: 'An error occured'};
+      return { message: 'An error occured' };
     }
   }
 }
 
 export default userProcessor;
-
