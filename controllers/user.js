@@ -18,15 +18,16 @@ class userController {
    * @returns {json} createUser response
    */
   static async userCreate(req, res) {
+    console.log(req.body.user);
     const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
     const email = req.body.user.email.trim().toLowerCase();
     req.body.user.email = email;
     req.body.user.password = hashPassword;
     try {
-      const createUser = await processor.createUser(req);
-      res.send(transformer.transformResponse(1, 'ok', createUser));
+      const createUser = await processor.createUser(req.body.user);
+      res.send(transformer.transformResponse(1, createUser));
     } catch (error) {
-      res.send(transformer.transformResponse(1, 'ok', error));
+      res.send(transformer.transformResponse(0, error));
     }
   }
 

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
 import createToken from '../utils/createToken';
-import connectionString from '../config/postgres-config';
+import { connectionString } from '../config/postgres-config';
 
 const clientPool = new Pool(connectionString);
 

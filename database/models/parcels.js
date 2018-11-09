@@ -4,14 +4,14 @@ const parcelModel = `
       id serial PRIMARY KEY,
       placedBy INT NOT NULL,
       weight DECIMAL NOT NULL,
-      weightmetric VARCHAR(55) NOT NULL,
-      sentOn DATE NOT NULL,
-      DeliveredOn DATE NOT NULL
+      weightmetric VARCHAR(255) NOT NULL,
       status VARCHAR(255) NOT NULL,
-      from VARCHAR(255) NOT NULL,
-      to VARCHAR(255) NOT NULL,
+      sentOn DATE NOT NULL,
+      fromLocation VARCHAR(255) NOT NULL,
+      toLocation VARCHAR(255) NOT NULL,
+      deliveredOn DATE NOT NULL,
       createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      foreign key(userId) REFERENCES aUsers(id)
+      foreign key(placedBy) REFERENCES aUsers(id)
   );
 `;
 

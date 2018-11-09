@@ -42,18 +42,19 @@ var userController = function () {
      * @param {*} req
      * @param {*} res
      * @memberof userController
-     * @returns {*} createUser
+     * @returns {json} createUser response
      */
     value: async function userCreate(req, res) {
-      var hashPassword = _bcrypt2.default.hashSync(req.body.password, 10);
-      var email = req.body.email.trim().toLowerCase();
-      req.body.email = email;
-      req.body.password = hashPassword;
+      console.log(req.body.user);
+      var hashPassword = _bcrypt2.default.hashSync(req.body.user.password, 10);
+      var email = req.body.user.email.trim().toLowerCase();
+      req.body.user.email = email;
+      req.body.user.password = hashPassword;
       try {
-        var createUser = await _user2.default.createUser(req);
-        res.send(_transformer2.default.transformResponse(1, 'ok', createUser));
+        var createUser = await _user2.default.createUser(req.body.user);
+        res.send(_transformer2.default.transformResponse(1, createUser));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(1, 'ok', error));
+        res.send(_transformer2.default.transformResponse(0, error));
       }
     }
 

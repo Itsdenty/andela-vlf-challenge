@@ -14,20 +14,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _dotenv2.default.config();
 var config = exports.config = {
   development: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.LOCAL_DB_DATABASE,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DATABASE,
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    dialect: 'postgres'
   },
   test: {
-    username: process.env.DB_USERNAME,
+    user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE_LOCAL_TEST,
+    database: process.env.POSTGRES_TEST_DATABASE,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT
+    dialect: 'postgres'
   },
   production: {
     use_env_variable: process.env.DATABASE_URL

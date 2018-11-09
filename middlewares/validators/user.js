@@ -8,7 +8,7 @@ Validator.create = (req, res, next) => {
   req.checkBody('user.lastName', 'Please supply a valid lastName').notEmpty().isHumanName();
   req.checkBody('user.otherNames', 'Please supply valid otherNames').notEmpty().isHumanName();
   req.checkBody('user.username', 'Please supply a valid username').notEmpty().isHumanName();
-  req.checkBody('user.lastName', 'Please supply a valid lastName').notEmpty().isHumanName();
+  req.checkBody('user.isAdmin', 'Please supply a valid lastName').notEmpty().isBoolean();
   req.checkBody('user.email', 'please supply a valid email').notEmpty().isEmailV2();
   req.checkBody('user.password', 'Please supply a valid password').isMinLen(6).isMaxLen(50);
   req.asyncValidationErrors()
