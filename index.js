@@ -10,8 +10,8 @@ import routes from './routes';
 
 
 const app = express(),
-    pool = new pg.Pool(dbConfig),
-    port = process.env.PORT;
+  pool = new pg.Pool(dbConfig),
+  port = process.env.PORT;
 
 // logger
 app.use(morgan('dev'));
@@ -23,32 +23,29 @@ app.use(bodyParser.json());
 
 app.use('/api-docs', express.static(path.join(__dirname, '../public/api-docs')));
 
-//use the defined routes
+// use the defined routes
 app.use('/', routes);
-
-
 
 // connect to db
 // initializeDb( db => {
 
-  // // internal middleware
-  // app.use(middleware({ config, db }));
+// internal middleware
+// app.use(middleware({ config, db }));
 
-  // // api router
-  // app.use('/api', api({ config, db }));
+// api router
+// app.use('/api', api({ config, db }));
 
 // app.get('/api/v1', (req, res) => {
 //   res.send({msg: 'welcome'});
 // });
 
 app.get('/pool', (req, res) => {
-  pool.connect( (err,client,done) => {
-    if(err){
-      console.log("not able to get connection "+ err);
+  pool.connect((err) => {
+    if (err) {
+      console.log(`not able to get connection ${err}`);
       res.status(400).send(err);
       console.log(err);
-    }
-    else {
+    } else {
       console.log('successfully connected');
     }
   });
