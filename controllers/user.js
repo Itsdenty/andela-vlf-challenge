@@ -15,13 +15,13 @@ class userController {
    * @param {*} req
    * @param {*} res
    * @memberof userController
-   * @returns {*} createUser
+   * @returns {json} createUser response
    */
   static async userCreate(req, res) {
-    const hashPassword = bcrypt.hashSync(req.body.password, 10);
-    const email = req.body.email.trim().toLowerCase();
-    req.body.email = email;
-    req.body.password = hashPassword;
+    const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
+    const email = req.body.user.email.trim().toLowerCase();
+    req.body.user.email = email;
+    req.body.user.password = hashPassword;
     try {
       const createUser = await processor.createUser(req);
       res.send(transformer.transformResponse(1, 'ok', createUser));
