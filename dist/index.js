@@ -30,6 +30,10 @@ var _pg = require('pg');
 
 var _pg2 = _interopRequireDefault(_pg);
 
+var _expressValidator = require('express-validator');
+
+var _expressValidator2 = _interopRequireDefault(_expressValidator);
+
 var _postgresConfig = require('./config/postgres-config');
 
 var _postgresConfig2 = _interopRequireDefault(_postgresConfig);
@@ -37,6 +41,14 @@ var _postgresConfig2 = _interopRequireDefault(_postgresConfig);
 var _routes = require('./routes');
 
 var _routes2 = _interopRequireDefault(_routes);
+
+var _customValidator = require('./middlewares/validators/custom-validator');
+
+var _customValidator2 = _interopRequireDefault(_customValidator);
+
+var _customSanitizer = require('./middlewares/validators/custom-sanitizer');
+
+var _customSanitizer2 = _interopRequireDefault(_customSanitizer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47,6 +59,9 @@ var app = (0, _express2.default)(),
 // logger
 app.use((0, _morgan2.default)('dev'));
 
+// configure validator
+app.use((0, _expressValidator2.default)({ customValidators: _customValidator2.default, customSanitizers: _customSanitizer2.default }));
+
 // 3rd party middleware
 app.use((0, _cors2.default)());
 
@@ -54,16 +69,16 @@ app.use(_bodyParser2.default.json());
 
 app.use('/api-docs', _express2.default.static(_path2.default.join(__dirname, '../public/api-docs')));
 
-//use the defined routes
+// use the defined routes
 app.use('/', _routes2.default);
 
 // connect to db
 // initializeDb( db => {
 
-// // internal middleware
+// internal middleware
 // app.use(middleware({ config, db }));
 
-// // api router
+// api router
 // app.use('/api', api({ config, db }));
 
 // app.get('/api/v1', (req, res) => {
@@ -71,9 +86,9 @@ app.use('/', _routes2.default);
 // });
 
 app.get('/pool', function (req, res) {
-  pool.connect(function (err, client, done) {
+  pool.connect(function (err) {
     if (err) {
-      console.log("not able to get connection " + err);
+      console.log('not able to get connection ' + err);
       res.status(400).send(err);
       console.log(err);
     } else {

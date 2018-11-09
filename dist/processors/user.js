@@ -22,13 +22,11 @@ var _createToken2 = _interopRequireDefault(_createToken);
 
 var _postgresConfig = require('../config/postgres-config');
 
-var _postgresConfig2 = _interopRequireDefault(_postgresConfig);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var clientPool = new _pg.Pool(_postgresConfig2.default);
+var clientPool = new _pg.Pool(_postgresConfig.connectionString);
 
 var secretKey = process.env.JWT_SECRET;
 
@@ -46,30 +44,30 @@ var userProcessor = function () {
 
     /**
      * @description - Creates a new user in the app and assigns a token to them
-     * @param{Object} req - api request
+     * @param{Object} user - api request
      * @param{Object} res - route response
      * @return{json} the registered user's detail
      */
-    value: async function createUser(req) {
+    value: async function createUser(user) {
       // Hash password to save in the database
-      var createUser = 'INSERT INTO aUsers (firstName, lastName, phoneNo, username, email, password)\n                            VALUES ($1, $2, $3, $4, $5, $6)\n                            RETURNING *';
+      var createUser = 'INSERT INTO aUsers (firstName, lastName, otherNames, username, email, password, isAdmin)\n                            VALUES ($1, $2, $3, $4, $5, $6, $7)\n                            RETURNING *';
       try {
         var client = await clientPool.connect();
 
-        var values = [req.body.firstName, req.body.lastName, req.body.phoneNo, req.body.username, req.body.email, req.body.password];
+        var values = [user.firstName, user.lastName, user.otherNames, user.username, user.email, user.password, user.isAdmin];
 
         var createdUser = await client.query({ text: createUser, values: values });
 
         var signedupUser = createdUser.rows[0];
-
+        delete signedupUser.password;
         var _createdUser$rows$ = createdUser.rows[0],
-            userId = _createdUser$rows$.userId,
+            id = _createdUser$rows$.id,
             firstName = _createdUser$rows$.firstName,
             lastName = _createdUser$rows$.lastName;
 
         // create the token after all the inputs are certified ok
 
-        var authToken = _createToken2.default.token({ userId: userId, firstName: firstName, lastName: lastName }, secretKey);
+        var authToken = _createToken2.default.token({ id: id, firstName: firstName, lastName: lastName }, secretKey);
         client.release();
         return {
           message: 'User created successfully',

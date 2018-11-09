@@ -27,7 +27,7 @@ var swaggerDefinition = {
     version: '1.0.0',
     description: 'Api documentation for the TSS inventory app.'
   },
-  host: 'localhost:3100/',
+  host: 'localhost:3100',
   basePath: '/api/v1'
 };
 

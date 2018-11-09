@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
 import createToken from '../utils/createToken';
-import connectionString from '../config/postgres-config';
+import { connectionString } from '../config/postgres-config';
 
 const clientPool = new Pool(connectionString);
 
@@ -14,31 +14,31 @@ const secretKey = process.env.JWT_SECRET;
 class userProcessor {
   /**
    * @description - Creates a new user in the app and assigns a token to them
-   * @param{Object} req - api request
+   * @param{Object} user - api request
    * @param{Object} res - route response
    * @return{json} the registered user's detail
    */
-  static async createUser(req) {
+  static async createUser(user) {
     // Hash password to save in the database
-    const createUser = `INSERT INTO aUsers (firstName, lastName, phoneNo, username, email, password)
-                            VALUES ($1, $2, $3, $4, $5, $6)
+    const createUser = `INSERT INTO aUsers (firstName, lastName, otherNames, username, email, password, isAdmin)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7)
                             RETURNING *`;
     try {
       const client = await clientPool.connect();
 
-      const values = [req.body.firstName, req.body.lastName, req.body.phoneNo,
-        req.body.username, req.body.email, req.body.password];
+      const values = [user.firstName, user.lastName, user.otherNames,
+        user.username, user.email, user.password, user.isAdmin];
 
       const createdUser = await client.query({ text: createUser, values });
 
       const signedupUser = createdUser.rows[0];
-
+      delete signedupUser.password;
       const {
-        userId, firstName, lastName
+        id, firstName, lastName
       } = createdUser.rows[0];
 
       // create the token after all the inputs are certified ok
-      const authToken = createToken.token({ userId, firstName, lastName }, secretKey);
+      const authToken = createToken.token({ id, firstName, lastName }, secretKey);
       client.release();
       return {
         message: 'User created successfully',

@@ -1,9 +1,10 @@
 import { Client } from 'pg';
-import config from '../../config/postgres-config';
+import { connectionString } from '../../config/postgres-config';
 import userDb from './users';
 import parcelDb from './parcels';
 
-console.log(config);
+const config = connectionString;
+console.log(config, 'no config');
 const makeQuery = (query) => {
   const client = new Client(config);
   client.connect();

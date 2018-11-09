@@ -14,15 +14,15 @@
  *         type: string
  *       username:
  *         type: string
- *       phoneNo:
+ *       otherNames:
  *         type: string
- *         minLength: 11
- *         maxLength: 11
  *       email:
  *         type: string
  *         format: email
  *       password:
  *         type: string
+ *       isAdmin:
+ *         type: boolean
  *   Login:
  *     properties:
  *       email:
@@ -47,10 +47,12 @@
  *         type: string
  *       username:
  *         type: string
- *       phoneNo:
+ *       otherNames:
  *         type: string
  *       email:
  *         type: string
+ *       isAdmin:
+ *         type: boolean
  *   UserResponse:
  *     properties:
  *       message:
@@ -61,30 +63,24 @@
  *         $ref: '#/definitions/UserObject'
  *   ResponseObjectSingle:
  *     properties:
- *       responseCode:
+ *       status:
  *         type: number
- *       responseText:
- *         type: string
- *       payload:
+ *       data:
  *         $ref: '#/definitions/UserResponse'
  *   ResponseObjectLogout:
  *     properties:
- *       responseCode:
+ *       status:
  *         type: number
- *       responseText:
- *         type: string
- *       payload:
+ *       data:
  *         type: object
  *         properties:
  *         message:
  *           type: string
  *   ErrorObject:
  *     properties:
- *       responseCode:
+ *       status:
  *         type: number
- *       responseText:
- *         type: string
- *       payload:
+ *       error:
  *         type: object
  *         properties:
  *         message:
@@ -145,28 +141,6 @@
  *           $ref: '#definitions/ResponseObjectSingle'
  *       400:
  *         description: An error occured
- *         schema:
- *           $ref: '#/definitions/ErrorObject'
- */
-
-/**
- * @swagger
- * /user/logout:
- *   get:
- *     tags:
- *       - User
- *     description: Returns all users data
- *     security:
- *       - Bearer: []
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: Authenticated user data
- *         schema:
- *           $ref: '#/definitions/ResponseObjectLogout'
- *       400:
- *         description: There is an error while trying to retrieve the user
  *         schema:
  *           $ref: '#/definitions/ErrorObject'
  */

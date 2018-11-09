@@ -3,16 +3,37 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.connectionString = exports.config = undefined;
 
-require('dotenv/config');
+var _dotenv = require('dotenv');
 
-var config = {
-  user: process.env.POSTGRES_USER,
-  database: process.env.POSTGRES_DATABASE,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT,
-  max: process.env.POSTGRES_MAX, // max number of connection can be open to database
-  idleTimeoutMillis: process.env.POSTGRES_IDLE_TIMEOUT_MILLIS // how long a client is allowed to remain idle before being closed
+var _dotenv2 = _interopRequireDefault(_dotenv);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_dotenv2.default.config();
+var config = exports.config = {
+  development: {
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DATABASE,
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    dialect: 'postgres'
+  },
+  test: {
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.POSTGRES_TEST_DATABASE,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: 'postgres'
+  },
+  production: {
+    use_env_variable: process.env.DATABASE_URL
+  }
 };
-
-exports.default = config;
+var setConnectionString = void 0;
+var env = process.env.NODE_ENV || 'development';
+if (env === 'production') setConnectionString = { connectionString: process.env.DATABASE_URL, ssl: true };else setConnectionString = config[env];
+var connectionString = exports.connectionString = setConnectionString;
