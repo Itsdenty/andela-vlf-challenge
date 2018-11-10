@@ -8,7 +8,7 @@
     "start": "npm run build && node dist/index.js",
     "test:dev": "NODE_ENV=test nyc mocha tests/*.test.js --exit --compilers js:babel-register",
     "test": "nyc mocha tests/*.test.js --exit --compilers js:babel-register",
-    "coverage": "nyestc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "db-migrate": "babel-node ./database/models/index.js",
