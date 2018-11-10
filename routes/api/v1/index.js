@@ -40,6 +40,6 @@ router.get('/swagger.json', (req, res) => {
 router.get('/', (req, res) => {
   res.send('You\'ve reached api/v1 routes');
 });
-router.use('/user', user);
+router.use('/auth', user);
 
 export default router;

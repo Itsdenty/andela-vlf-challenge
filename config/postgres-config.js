@@ -11,11 +11,11 @@ export const config = {
     dialect: 'postgres',
   },
   test: {
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_TEST_DATABASE,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
     dialect: 'postgres',
   },
   production: {

@@ -76,7 +76,7 @@ var userProcessor = function () {
         };
       } catch (error) {
         return {
-          message: 'Check your input and try again pls, you might be entering a wrong input'
+          error: 'Check your input and try again pls, you might be entering a wrong input'
         };
       }
     }
@@ -91,7 +91,7 @@ var userProcessor = function () {
   }, {
     key: 'loginUser',
     value: async function loginUser(req) {
-      var email = req.body.email.trim().toLowerCase();
+      var email = req.body.login.email.trim().toLowerCase();
       var findOneUser = 'SELECT * FROM aUsers\n                          WHERE email = $1';
       // checks if a token was passed into the request header
       if (req.headers.authorization) {
@@ -103,7 +103,7 @@ var userProcessor = function () {
             return { message: 'You are already logged in' };
           }
         } catch (error) {
-          return { message: 'Token is invalid or has expired, Please re-login' };
+          return { error: 'Token is invalid or has expired, Please re-login' };
         }
       }
       try {
@@ -113,7 +113,7 @@ var userProcessor = function () {
         if (user.rows[0]) {
           var signedInUser = user.rows[0];
           // check it the password matches
-          var correctPassword = await _bcrypt2.default.compare(req.body.password, user.rows[0].password);
+          var correctPassword = await _bcrypt2.default.compare(req.body.login.password, user.rows[0].password);
           if (!correctPassword) {
             return { message: 'wrong password!' };
           }
@@ -131,7 +131,7 @@ var userProcessor = function () {
           };
         }
       } catch (error) {
-        return { message: 'An error occured' };
+        return { error: 'An error occured' };
       }
     }
   }]);

@@ -45,14 +45,28 @@ describe('User API endpoints intgeration Tests', () => {
 
   describe('#POST / user', () => {
     it('should create a single user', (done) => {
-      request(app).post('/api/v1/user').send(user)
+      request(app).post('/api/v1/auth/signup').send(user)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(200);
           expect(res.body).to.be.an('object');
           expect(res.body.data).to.be.an('object');
-          expect(res.body.status).to.equal(1);
+          expect(res.body.status).to.equal(200);
           user.user = res.body.data.user;
+          done();
+        });
+    });
+  });
+  describe('#POST / user login', () => {
+    it('should login a user', (done) => {
+      request(app).post('/api/v1/auth/login').send(login)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.data).to.be.an('object');
+          expect(res.body.status).to.equal(200);
+          user.user = res.body.payload;
           done();
         });
     });
