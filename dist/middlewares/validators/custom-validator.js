@@ -70,15 +70,6 @@ CustomValidators.isNigerianMobile = function (input) {
   );
 };
 
-CustomValidators.isOccupation = function (input) {
-  if (input.length < 2 || input.length > 50) {
-    return false;
-  }
-
-  return (/[a-zA-Z\d\s]/.test(input)
-  );
-};
-
 CustomValidators.isHumanName = function (input) {
   if (typeof input !== 'string') {
     return false;
@@ -88,51 +79,6 @@ CustomValidators.isHumanName = function (input) {
     return false;
   }
   return (/^([a-zA-Z,.\d\s\-])*$/.test(input)
-  );
-};
-
-CustomValidators.isHumanTitle = function (input) {
-  try {
-    input = input.toString().toUpperCase();
-  } catch (e) {
-    return false;
-  }
-
-  return ['MR', 'MRS', 'MISS'].includes(input);
-};
-
-CustomValidators.isMemberPosition = function (input) {
-  try {
-    input = input.toString().toUpperCase();
-  } catch (e) {
-    return false;
-  }
-
-  return ['PRESIDENT', 'VICE-PRESIDENT', 'SECRETARY', 'TREASURER', 'MEMBER'].includes(input);
-};
-
-CustomValidators.isEmployeeRole = function (input) {
-  try {
-    input = input.toString().toUpperCase();
-  } catch (e) {
-    return false;
-  }
-
-  return ['COMPANY-ADMIN', 'STAFF-ADMIN', 'FINANCE-ADMIN', 'STAFF'].includes(input);
-};
-
-CustomValidators.isBankAccountType = function (input) {
-  try {
-    input = input.toString().toUpperCase();
-  } catch (e) {
-    return false;
-  }
-
-  return ['SAVINGS', 'CURRENT', 'FIXED-DEPOSIT'].includes(input);
-};
-
-CustomValidators.isBankAccountNumber = function (input) {
-  return (/\d{10}/.test(input)
   );
 };
 

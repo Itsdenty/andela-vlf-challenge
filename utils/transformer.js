@@ -4,7 +4,7 @@ transformer.transformResponse = (status, data) => {
   if (!data) {
     data = {};
   }
-  if (status === 0) {
+  if (status === 400) {
     return {
       status,
       error: data

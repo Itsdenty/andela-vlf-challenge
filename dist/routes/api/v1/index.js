@@ -53,6 +53,6 @@ router.get('/swagger.json', function (req, res) {
 router.get('/', function (req, res) {
   res.send('You\'ve reached api/v1 routes');
 });
-router.use('/user', _user2.default);
+router.use('/auth', _user2.default);
 
 exports.default = router;

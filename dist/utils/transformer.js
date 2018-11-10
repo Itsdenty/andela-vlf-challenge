@@ -9,7 +9,7 @@ transformer.transformResponse = function (status, data) {
   if (!data) {
     data = {};
   }
-  if (status === 0) {
+  if (status === 400) {
     return {
       status: status,
       error: data

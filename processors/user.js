@@ -47,7 +47,7 @@ class userProcessor {
       };
     } catch (error) {
       return {
-        message: 'Check your input and try again pls, you might be entering a wrong input',
+        error: 'Check your input and try again pls, you might be entering a wrong input',
       };
     }
   }
@@ -59,7 +59,7 @@ class userProcessor {
    * @return{json} the user's login status
    */
   static async loginUser(req) {
-    const email = req.body.email.trim().toLowerCase();
+    const email = req.body.login.email.trim().toLowerCase();
     const findOneUser = `SELECT * FROM aUsers
                           WHERE email = $1`;
     // checks if a token was passed into the request header
@@ -72,7 +72,7 @@ class userProcessor {
           return { message: 'You are already logged in' };
         }
       } catch (error) {
-        return { message: 'Token is invalid or has expired, Please re-login' };
+        return { error: 'Token is invalid or has expired, Please re-login' };
       }
     }
     try {
@@ -82,7 +82,7 @@ class userProcessor {
       if (user.rows[0]) {
         const signedInUser = user.rows[0];
         // check it the password matches
-        const correctPassword = await bcrypt.compare(req.body.password, user.rows[0].password);
+        const correctPassword = await bcrypt.compare(req.body.login.password, user.rows[0].password);
         if (!correctPassword) {
           return { message: 'wrong password!' };
         }
@@ -90,6 +90,7 @@ class userProcessor {
         const {
           userid, firstname, lastname
         } = user.rows[0];
+        delete signedInUser.password;
         const authToken = createToken.token({ userid, firstname, lastname }, secretKey);
         return {
           message: 'You are logged in!',
@@ -98,7 +99,7 @@ class userProcessor {
         };
       }
     } catch (error) {
-      return { message: 'An error occured' };
+      return { error: 'An error occured' };
     }
   }
 }

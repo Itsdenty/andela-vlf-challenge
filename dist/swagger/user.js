@@ -93,7 +93,7 @@
 
 /**
  * @swagger
- * /user:
+ * /auth:
  *   post:
  *     tags:
  *       - User
@@ -120,7 +120,7 @@
 
 /**
  * @swagger
- * /user/login:
+ * /auth/login:
  *   post:
  *     tags:
  *       - User
