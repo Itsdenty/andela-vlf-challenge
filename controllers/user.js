@@ -17,7 +17,7 @@ class userController {
    * @memberof userController
    * @returns {json} createUser response
    */
-  static async userCreate(req, res) {
+  static async createUser(req, res) {
     const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
     const email = req.body.user.email.trim().toLowerCase();
     req.body.user.email = email;
