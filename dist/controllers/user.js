@@ -33,7 +33,7 @@ var userController = function () {
   }
 
   _createClass(userController, null, [{
-    key: 'userCreate',
+    key: 'createUser',
 
     /**
      *
@@ -44,7 +44,7 @@ var userController = function () {
      * @memberof userController
      * @returns {json} createUser response
      */
-    value: async function userCreate(req, res) {
+    value: async function createUser(req, res) {
       var hashPassword = _bcrypt2.default.hashSync(req.body.user.password, 10);
       var email = req.body.user.email.trim().toLowerCase();
       req.body.user.email = email;
@@ -53,7 +53,7 @@ var userController = function () {
         var createUser = await _user2.default.createUser(req.body.user);
         res.send(_transformer2.default.transformResponse(200, createUser));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(400, error.error));
+        res.send(_transformer2.default.transformResponse(500, error.error));
       }
     }
 
@@ -74,8 +74,7 @@ var userController = function () {
         var loginUser = await _user2.default.loginUser(req);
         res.send(_transformer2.default.transformResponse(200, loginUser));
       } catch (error) {
-        console.log(error);
-        res.send(_transformer2.default.transformResponse(400, error.error));
+        res.send(_transformer2.default.transformResponse(500, error.error));
       }
     }
   }]);

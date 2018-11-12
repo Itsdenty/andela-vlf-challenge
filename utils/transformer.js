@@ -1,10 +1,11 @@
-const transformer = {};
+const transformer = {},
+  errCodes = [401, 403, 500, 400];
 
 transformer.transformResponse = (status, data) => {
   if (!data) {
     data = {};
   }
-  if (status === 400) {
+  if (errCodes.includes(status)) {
     return {
       status,
       error: data

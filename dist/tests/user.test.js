@@ -52,13 +52,26 @@ describe('User API endpoints intgeration Tests', function () {
 
   describe('#POST / user', function () {
     it('should create a single user', function (done) {
-      (0, _supertest2.default)(_index2.default).post('/api/v1/user').send(user).end(function (err, res) {
+      (0, _supertest2.default)(_index2.default).post('/api/v1/auth/signup').send(user).end(function (err, res) {
         if (err) return done(err);
         (0, _chai.expect)(res.statusCode).to.equal(200);
         (0, _chai.expect)(res.body).to.be.an('object');
         (0, _chai.expect)(res.body.data).to.be.an('object');
-        (0, _chai.expect)(res.body.status).to.equal(1);
+        (0, _chai.expect)(res.body.status).to.equal(200);
         user.user = res.body.data.user;
+        done();
+      });
+    });
+  });
+  describe('#POST / user login', function () {
+    it('should login a user', function (done) {
+      (0, _supertest2.default)(_index2.default).post('/api/v1/auth/login').send(login).end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(200);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.data).to.be.an('object');
+        (0, _chai.expect)(res.body.status).to.equal(200);
+        user.user = res.body.payload;
         done();
       });
     });

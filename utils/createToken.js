@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken';
-
+/**
+ *
+ *
+ * @class createToken
+ */
 class createToken {
   /**
    * @description Method to generate authentication token

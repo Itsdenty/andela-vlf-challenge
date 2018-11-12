@@ -10,6 +10,7 @@ import dbConfig from './config/postgres-config';
 import routes from './routes';
 import customValidator from './middlewares/validators/custom-validator';
 import customSanitizer from './middlewares/validators/custom-sanitizer';
+import transformer from './utils/transformer';
 
 
 const app = express(),
@@ -32,18 +33,16 @@ app.use('/api-docs', express.static(path.join(__dirname, '../public/api-docs')))
 // use the defined routes
 app.use('/', routes);
 
-// connect to db
-// initializeDb( db => {
+// error handler
+app.use((err, req, res) => {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-// internal middleware
-// app.use(middleware({ config, db }));
-
-// api router
-// app.use('/api', api({ config, db }));
-
-// app.get('/api/v1', (req, res) => {
-//   res.send({msg: 'welcome'});
-// });
+  // render the error page
+  res.status(err.status || 500);
+  res.send(transformer.transformResponse(500, err));
+});
 
 app.get('/pool', (req, res) => {
   pool.connect((err) => {

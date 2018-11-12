@@ -1,7 +1,4 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
-import createToken from '../utils/createToken';
 import { connectionString } from '../config/postgres-config';
 
 const clientPool = new Pool(connectionString);
@@ -18,7 +15,7 @@ class parcelProcessor {
    */
   static async createParcel(parcel) {
     // Hash password to save in the database
-    const createParcel = `INSERT INTO aParcels (firstName, lastName, otherNames, username, email, password, isAdmin)
+    const createParcel = `INSERT INTO bParcels (placedBy, weight, weightmetric, sentOn, status, fromLocation, toLocation)
                             VALUES ($1, $2, $3, $4, $5, $6, $7)
                             RETURNING *`;
     try {
@@ -37,9 +34,9 @@ class parcelProcessor {
         id: newParcel.id
       };
     } catch (error) {
-      return {
-        error: 'Check your input and try again pls, you might be entering a wrong input',
-      };
+      console.log(error);
+      const err = { error: 'An error occured' };
+      throw err;
     }
   }
 }

@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt';
+import moment from 'moment';
 import transformer from '../utils/transformer';
-import processor from '../processors/user';
+import processor from '../processors/parcel';
 
 /**
  *
@@ -19,10 +19,12 @@ class parcelController {
    */
   static async createParcel(req, res) {
     try {
-      const createParcel = await processor.createUser(req.body.parcel);
+      req.body.parcel.sentOn = moment().format('YYYY-MM-DD');
+      req.body.parcel.status = 'placed';
+      const createParcel = await processor.createParcel(req.body.parcel);
       res.send(transformer.transformResponse(200, createParcel));
     } catch (error) {
-      res.send(transformer.transformResponse(400, error.error));
+      res.send(transformer.transformResponse(500, error.error));
     }
   }
 }

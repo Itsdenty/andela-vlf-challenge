@@ -46,9 +46,8 @@ class userProcessor {
         token: authToken,
       };
     } catch (error) {
-      return {
-        error: 'Check your input and try again pls, you might be entering a wrong input',
-      };
+      const err = { error: 'you might be entering a wrong input' };
+      throw err;
     }
   }
 
@@ -84,7 +83,8 @@ class userProcessor {
         // check it the password matches
         const correctPassword = await bcrypt.compare(req.body.login.password, user.rows[0].password);
         if (!correctPassword) {
-          return { message: 'wrong password!' };
+          // return { message: 'wrong password!' };
+          throw new Error('wrong password!');
         }
         // creates a token that lasts for 24 hours
         const {
@@ -99,7 +99,8 @@ class userProcessor {
         };
       }
     } catch (error) {
-      return { error: 'An error occured' };
+      const err = { error: 'wrong username or password' };
+      throw err;
     }
   }
 }

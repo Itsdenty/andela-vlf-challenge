@@ -3,13 +3,14 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var transformer = {};
+var transformer = {},
+    errCodes = [401, 403, 500, 400];
 
 transformer.transformResponse = function (status, data) {
   if (!data) {
     data = {};
   }
-  if (status === 400) {
+  if (errCodes.includes(status)) {
     return {
       status: status,
       error: data

@@ -75,9 +75,8 @@ var userProcessor = function () {
           token: authToken
         };
       } catch (error) {
-        return {
-          error: 'Check your input and try again pls, you might be entering a wrong input'
-        };
+        var err = { error: 'you might be entering a wrong input' };
+        throw err;
       }
     }
 
@@ -115,7 +114,8 @@ var userProcessor = function () {
           // check it the password matches
           var correctPassword = await _bcrypt2.default.compare(req.body.login.password, user.rows[0].password);
           if (!correctPassword) {
-            return { message: 'wrong password!' };
+            // return { message: 'wrong password!' };
+            throw new Error('wrong password!');
           }
           // creates a token that lasts for 24 hours
           var _user$rows$ = user.rows[0],
@@ -123,6 +123,7 @@ var userProcessor = function () {
               firstname = _user$rows$.firstname,
               lastname = _user$rows$.lastname;
 
+          delete signedInUser.password;
           var authToken = _createToken2.default.token({ userid: userid, firstname: firstname, lastname: lastname }, secretKey);
           return {
             message: 'You are logged in!',
@@ -131,7 +132,8 @@ var userProcessor = function () {
           };
         }
       } catch (error) {
-        return { error: 'An error occured' };
+        var err = { error: 'wrong username or password' };
+        throw err;
       }
     }
   }]);
