@@ -27,6 +27,7 @@
  *     properties:
  *       email:
  *         type: string
+ *         format: email
  *       password:
  *         type: string
  *   UserModel:
@@ -140,6 +141,10 @@
  *         schema:
  *           $ref: '#definitions/ResponseObjectSingle'
  *       400:
+ *         description: An error occured
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       500:
  *         description: An error occured
  *         schema:
  *           $ref: '#/definitions/ErrorObject'

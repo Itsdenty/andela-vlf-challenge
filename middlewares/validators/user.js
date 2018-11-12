@@ -13,7 +13,7 @@ Validator.create = (req, res, next) => {
   req.checkBody('user.password', 'Please supply a valid password').isMinLen(6).isMaxLen(50);
   req.asyncValidationErrors()
     .then(next)
-    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+    .catch(errors => res.status(400).json(Transformer.transformResponse(400,
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
 
@@ -22,7 +22,7 @@ Validator.login = (req, res, next) => {
   req.checkBody('login.password', 'Please supply a valid password').isMinLen(6).isMaxLen(50);
   req.asyncValidationErrors()
     .then(next)
-    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+    .catch(errors => res.status(400).json(Transformer.transformResponse(400,
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
 export default Validator;

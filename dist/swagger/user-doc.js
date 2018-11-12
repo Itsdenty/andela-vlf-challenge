@@ -27,6 +27,7 @@
  *     properties:
  *       email:
  *         type: string
+ *         format: email
  *       password:
  *         type: string
  *   UserModel:
@@ -93,7 +94,7 @@
 
 /**
  * @swagger
- * /auth:
+ * /auth/signup:
  *   post:
  *     tags:
  *       - User
@@ -140,6 +141,10 @@
  *         schema:
  *           $ref: '#definitions/ResponseObjectSingle'
  *       400:
+ *         description: An error occured
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       500:
  *         description: An error occured
  *         schema:
  *           $ref: '#/definitions/ErrorObject'

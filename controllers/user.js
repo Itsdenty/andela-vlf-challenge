@@ -17,7 +17,7 @@ class userController {
    * @memberof userController
    * @returns {json} createUser response
    */
-  static async userCreate(req, res) {
+  static async createUser(req, res) {
     const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
     const email = req.body.user.email.trim().toLowerCase();
     req.body.user.email = email;
@@ -26,7 +26,7 @@ class userController {
       const createUser = await processor.createUser(req.body.user);
       res.send(transformer.transformResponse(200, createUser));
     } catch (error) {
-      res.send(transformer.transformResponse(400, error.error));
+      res.send(transformer.transformResponse(500, error.error));
     }
   }
 
@@ -45,8 +45,7 @@ class userController {
       const loginUser = await processor.loginUser(req);
       res.send(transformer.transformResponse(200, loginUser));
     } catch (error) {
-      console.log(error);
-      res.send(transformer.transformResponse(400, error.error));
+      res.send(transformer.transformResponse(500, error.error));
     }
   }
 }

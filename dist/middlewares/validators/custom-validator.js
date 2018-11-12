@@ -3,7 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var CustomValidators = {};
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CustomValidators = {},
+    statuses = ['placed', 'transiting', 'delivered', 'cancelled'];
 
 CustomValidators.isEqual = function (input, val) {
   if (!input) {
@@ -19,6 +27,10 @@ CustomValidators.isLengthEqual = function (input, val) {
   }
 
   return input.length === val;
+};
+
+CustomValidators.isDateV2 = function (input) {
+  return (0, _moment2.default)(input, 'YYYY-MM-DD', true).isValid();
 };
 
 CustomValidators.isMinLen = function (input, val) {
@@ -93,6 +105,9 @@ CustomValidators.isCustomInt = function (input) {
 
 CustomValidators.isArray = function (input) {
   return Array.isArray(input);
+};
+CustomValidators.isStatusType = function (input) {
+  return statuses.includes(input);
 };
 
 exports.default = CustomValidators;

@@ -62,6 +62,3 @@ typings/
 
 # idea workspace folder
 .idea
-
-#dist folder
-.dist

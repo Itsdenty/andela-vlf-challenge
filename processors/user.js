@@ -46,9 +46,8 @@ class userProcessor {
         token: authToken,
       };
     } catch (error) {
-      return {
-        error: 'Check your input and try again pls, you might be entering a wrong input',
-      };
+      const err = { error: 'you might be entering a wrong input' };
+      throw err;
     }
   }
 
@@ -79,12 +78,13 @@ class userProcessor {
       const client = await clientPool.connect();
       // find a user with the given email
       const user = await client.query({ text: findOneUser, values: [email] });
-      if (user.rows[0]) {
+      if (user.rows[0].id) {
         const signedInUser = user.rows[0];
         // check it the password matches
-        const correctPassword = await bcrypt.compare(req.body.login.password, user.rows[0].password);
-        if (!correctPassword) {
-          return { message: 'wrong password!' };
+        const password = await bcrypt.compare(req.body.login.password, user.rows[0].password);
+        if (!password) {
+          // return { message: 'wrong password!' };
+          throw new Error('wrong password!');
         }
         // creates a token that lasts for 24 hours
         const {
@@ -98,8 +98,10 @@ class userProcessor {
           user: signedInUser
         };
       }
+      throw new Error('user not found');
     } catch (error) {
-      return { error: 'An error occured' };
+      // const err = { error: 'wrong username or password' };
+      throw error;
     }
   }
 }

@@ -16,11 +16,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var hashedPassword = _bcrypt2.default.hashSync('ispassword', 10);
 
-var sql = 'INSERT INTO aUsers (firstname, lastname, otherNames, username, email, isAdmin, password) VALUES($1,$2,$3,$4,$5,$6)';
+var sql = 'INSERT INTO aUsers (firstname, lastname, otherNames, username, email, isAdmin, password) VALUES($1,$2,$3,$4,$5,$6,$7)';
 
-var data1 = ['abd-afeez', 'abd-hamid', 'damola', 'coding-muse', 'morayodeji@gmail.com', true, hashedPassword];
+var data1 = ['abd-afeez', 'abd-hamid', 'damola', 'coding-muse', 'coding-muse@gmail.com', true, hashedPassword];
 
-var data2 = ['gwen', 'gbenga', 'deji', 'bigdeji', 'davewritchie@gmail.com', false, hashedPassword];
+var data2 = ['gwen', 'gbenga', 'deji', 'bigdeji', 'dabigi@gmail.com', false, hashedPassword];
 
 var client = new _pg.Client(_postgresConfig.connectionString);
 var client2 = new _pg.Client(_postgresConfig.connectionString);

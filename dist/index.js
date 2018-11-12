@@ -50,6 +50,10 @@ var _customSanitizer = require('./middlewares/validators/custom-sanitizer');
 
 var _customSanitizer2 = _interopRequireDefault(_customSanitizer);
 
+var _transformer = require('./utils/transformer');
+
+var _transformer2 = _interopRequireDefault(_transformer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)(),
@@ -72,18 +76,16 @@ app.use('/api-docs', _express2.default.static(_path2.default.join(__dirname, '..
 // use the defined routes
 app.use('/', _routes2.default);
 
-// connect to db
-// initializeDb( db => {
+// error handler
+app.use(function (err, req, res) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-// internal middleware
-// app.use(middleware({ config, db }));
-
-// api router
-// app.use('/api', api({ config, db }));
-
-// app.get('/api/v1', (req, res) => {
-//   res.send({msg: 'welcome'});
-// });
+  // render the error page
+  res.status(err.status || 500);
+  res.send(_transformer2.default.transformResponse(500, err));
+});
 
 app.get('/pool', function (req, res) {
   pool.connect(function (err) {
