@@ -33,16 +33,16 @@ app.use('/api-docs', express.static(path.join(__dirname, '../public/api-docs')))
 // use the defined routes
 app.use('/', routes);
 
-// // error handler
-// app.use((err, req, res) => {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+// error handler
+app.use((err, req, res) => {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.send(transformer.transformResponse(500, err));
-// });
+  // render the error page
+  res.status(err.status || 500);
+  res.send(transformer.transformResponse(500, err));
+});
 
 app.get('/pool', (req, res) => {
   pool.connect((err) => {
