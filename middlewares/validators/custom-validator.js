@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 const CustomValidators = {},
-  statuses = ['placed', 'transiting', 'delivered'];
+  statuses = ['placed', 'transiting', 'delivered', 'cancelled'];
 
 
 CustomValidators.isEqual = (input, val) => {
