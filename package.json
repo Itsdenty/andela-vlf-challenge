@@ -2,7 +2,7 @@
   "name": "andela-vlf",
   "version": "1.0.0",
   "description": "for the andela vlf challenge",
-  "main": "dist",
+  "main": "index.js",
   "scripts": {
     "build": "NODE_ENV=development rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./public,./.babelrc,./package.json,./npm-debug.log --copy-files",
     "start": "npm run build && node dist/index.js",
