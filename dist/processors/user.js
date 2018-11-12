@@ -109,11 +109,11 @@ var userProcessor = function () {
         var client = await clientPool.connect();
         // find a user with the given email
         var user = await client.query({ text: findOneUser, values: [email] });
-        if (user.rows[0]) {
+        if (user.rows[0].id) {
           var signedInUser = user.rows[0];
           // check it the password matches
-          var correctPassword = await _bcrypt2.default.compare(req.body.login.password, user.rows[0].password);
-          if (!correctPassword) {
+          var password = await _bcrypt2.default.compare(req.body.login.password, user.rows[0].password);
+          if (!password) {
             // return { message: 'wrong password!' };
             throw new Error('wrong password!');
           }
@@ -131,6 +131,7 @@ var userProcessor = function () {
             user: signedInUser
           };
         }
+        throw new Error('user not found');
       } catch (error) {
         var err = { error: 'wrong username or password' };
         throw err;

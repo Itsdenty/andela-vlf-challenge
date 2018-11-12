@@ -78,11 +78,11 @@ class userProcessor {
       const client = await clientPool.connect();
       // find a user with the given email
       const user = await client.query({ text: findOneUser, values: [email] });
-      if (user.rows[0]) {
+      if (user.rows[0].id) {
         const signedInUser = user.rows[0];
         // check it the password matches
-        const correctPassword = await bcrypt.compare(req.body.login.password, user.rows[0].password);
-        if (!correctPassword) {
+        const password = await bcrypt.compare(req.body.login.password, user.rows[0].password);
+        if (!password) {
           // return { message: 'wrong password!' };
           throw new Error('wrong password!');
         }
@@ -98,9 +98,10 @@ class userProcessor {
           user: signedInUser
         };
       }
+      throw new Error('user not found');
     } catch (error) {
-      const err = { error: 'wrong username or password' };
-      throw err;
+      // const err = { error: 'wrong username or password' };
+      throw error;
     }
   }
 }

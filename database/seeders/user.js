@@ -4,11 +4,11 @@ import { connectionString } from '../../config/postgres-config';
 
 const hashedPassword = bcrypt.hashSync('ispassword', 10);
 
-const sql = 'INSERT INTO aUsers (firstname, lastname, otherNames, username, email, isAdmin, password) VALUES($1,$2,$3,$4,$5,$6)';
+const sql = 'INSERT INTO aUsers (firstname, lastname, otherNames, username, email, isAdmin, password) VALUES($1,$2,$3,$4,$5,$6,$7)';
 
-const data1 = ['abd-afeez', 'abd-hamid', 'damola', 'coding-muse', 'morayodeji@gmail.com', true, hashedPassword];
+const data1 = ['abd-afeez', 'abd-hamid', 'damola', 'coding-muse', 'coding-muse@gmail.com', true, hashedPassword];
 
-const data2 = ['gwen', 'gbenga', 'deji', 'bigdeji', 'davewritchie@gmail.com', false, hashedPassword];
+const data2 = ['gwen', 'gbenga', 'deji', 'bigdeji', 'dabigi@gmail.com', false, hashedPassword];
 
 const client = new Client(connectionString);
 const client2 = new Client(connectionString);

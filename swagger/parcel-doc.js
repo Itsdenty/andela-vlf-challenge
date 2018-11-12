@@ -71,7 +71,7 @@
  *       200:
  *         description: Successfully created
  *         schema:
- *           $ref: '#/definitions/ResponseObjectSingle'
+ *           $ref: '#/definitions/ParcelResponse'
  *       500:
  *         description: Server error exists
  *         schema:

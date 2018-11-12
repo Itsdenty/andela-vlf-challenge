@@ -51,7 +51,7 @@ var parcelProcessor = function () {
         };
       } catch (error) {
         console.log(error);
-        var err = { error: 'wrong username or password' };
+        var err = { error: 'An error occured' };
         throw err;
       }
     }

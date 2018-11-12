@@ -12,7 +12,9 @@
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "db-migrate": "babel-node ./database/models/index.js",
-    "db-migrate:test": "NODE_ENV=test babel-node ./database/models/index.js"
+    "db-migrate:test": "NODE_ENV=test babel-node ./database/models/index.js",
+    "db-seed": "babel-node ./database/seeders/index.js",
+    "db-seed:test": "NODE_ENV=test babel-node ./database/seeders/index.js"
   },
   "repository": {
     "type": "git",
