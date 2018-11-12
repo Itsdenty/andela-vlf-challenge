@@ -1,4 +1,8 @@
-const CustomValidators = {};
+import moment from 'moment';
+
+const CustomValidators = {},
+  statuses = ['placed', 'transiting', 'delivered'];
+
 
 CustomValidators.isEqual = (input, val) => {
   if (!input) {
@@ -15,6 +19,8 @@ CustomValidators.isLengthEqual = (input, val) => {
 
   return input.length === val;
 };
+
+CustomValidators.isDateV2 = input => moment(input, 'YYYY-MM-DD', true).isValid();
 
 CustomValidators.isMinLen = (input, val) => {
   if (!input) {
@@ -79,5 +85,6 @@ CustomValidators.isEmailV2 = (email) => {
 CustomValidators.isCustomInt = input => Number.isInteger(input);
 
 CustomValidators.isArray = input => Array.isArray(input);
+CustomValidators.isStatusType = input => statuses.includes(input);
 
 export default CustomValidators;
