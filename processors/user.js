@@ -46,7 +46,7 @@ class userProcessor {
         token: authToken,
       };
     } catch (error) {
-      const err = { error: 'you might be entering a wrong input' };
+      const err = { error: 'and error occured or user already exists' };
       throw err;
     }
   }
@@ -100,8 +100,8 @@ class userProcessor {
       }
       throw new Error('user not found');
     } catch (error) {
-      // const err = { error: 'wrong username or password' };
-      throw error;
+      const err = { error: 'wrong username or password' };
+      throw err;
     }
   }
 }
