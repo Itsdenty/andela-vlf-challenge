@@ -9,7 +9,7 @@ const parcelModel = `
       sentOn DATE NOT NULL,
       fromLocation VARCHAR(255) NOT NULL,
       toLocation VARCHAR(255) NOT NULL,
-      currentLocation VARCHAR(255) NOT NULL,
+      currentLocation VARCHAR(255),
       deliveredOn DATE,
       createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       foreign key(placedBy) REFERENCES aUsers(id)
