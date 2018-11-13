@@ -15,7 +15,7 @@ import transformer from './utils/transformer';
 
 const app = express(),
   pool = new pg.Pool(dbConfig),
-  port = process.env.PORT;
+  port = process.env.PORT || '3000';
 
 // logger
 app.use(morgan('dev'));
