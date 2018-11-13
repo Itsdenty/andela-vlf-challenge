@@ -6,6 +6,28 @@
  *     name: Authorization
  *     in: header
  * definition:
+ *   ParcelObject:
+ *     properties:
+ *       id:
+ *         type: integer
+ *       placedby:
+ *         type: number
+ *       weight:
+ *         type: number
+ *       weightmetric:
+ *         type: string
+ *       fromlocation:
+ *         type: string
+ *       tolocation:
+ *         type: string
+ *       status:
+ *         type: string
+ *       deliveredOn:
+ *         type: string
+ *       currentLocation:
+ *         type: string
+ *       createat:
+ *         type: string
  *   Parcel:
  *     properties:
  *       placedBy:
@@ -34,6 +56,14 @@
  *         type: number
  *       data:
  *         $ref: '#/definitions/ParcelResponse'
+  *   ResponseObjectParcel:
+ *     properties:
+ *       status:
+ *         type: number
+ *       data:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/ParcelObject'
  *   ErrorObject:
  *     properties:
  *       status:
@@ -51,7 +81,7 @@
  * /parcels:
  *   post:
  *     tags:
- *       - User
+ *       - Parcel
  *     description: Creates a new parcel order
  *     security:
  *       - Bearer: []
@@ -75,6 +105,35 @@
  *           $ref: '#/definitions/ErrorObject'
  *       400:
  *         description: Validation error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       401:
+ *         description: Authentication error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       403:
+ *         description: Authourization error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ */
+/**
+ * @swagger
+ * /parcels:
+ *   get:
+ *     tags:
+ *       - Parcel
+ *     description: Returns all ordered parcels
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: ordered parcels data
+ *         schema:
+ *           $ref: '#/definitions/ResponseObjectParcel'
+ *       500:
+ *         description: Server error exists
  *         schema:
  *           $ref: '#/definitions/ErrorObject'
  *       401:

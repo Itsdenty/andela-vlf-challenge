@@ -54,6 +54,27 @@ var parcelController = function () {
         res.send(_transformer2.default.transformResponse(500, error.error));
       }
     }
+
+    /**
+     *
+     *
+     * @static
+     * @param {*} req
+     * @param {*} res
+     * @memberof parcelController
+     * @returns {json} createParcel response
+     */
+
+  }, {
+    key: 'getAllParcels',
+    value: async function getAllParcels(req, res) {
+      try {
+        var getParcels = await _parcel2.default.getAllParcels();
+        res.send(_transformer2.default.transformResponse(200, getParcels));
+      } catch (error) {
+        res.send(_transformer2.default.transformResponse(500, error.error));
+      }
+    }
   }]);
 
   return parcelController;

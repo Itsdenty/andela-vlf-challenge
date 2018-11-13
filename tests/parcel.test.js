@@ -47,7 +47,7 @@ describe('User API endpoints intgeration Tests', () => {
     }
   };
   const token401 = 'awesome-token-for-us';
-  
+
   describe('#POST / user login', () => {
     it('should login a user', (done) => {
       request(app).post('/api/v1/auth/login').send(login)
@@ -62,6 +62,8 @@ describe('User API endpoints intgeration Tests', () => {
         });
     });
   });
+
+  // create parcel tests
   describe('#POST / parcels', () => {
     it('should create a parcel order', (done) => {
       request(app).post('/api/v1/parcels').send(parcel)
@@ -137,10 +139,56 @@ describe('User API endpoints intgeration Tests', () => {
         });
     });
   });
-  
+
   describe('#POST / parcels', () => {
     it('should throw a 403 error for a parcel order', (done) => {
       request(app).post('/api/v1/parcels').send(parcel)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('provided');
+          done();
+        });
+    });
+  });
+
+  // get all parcels tests
+  describe('#GET / parcels', () => {
+    it('should get al parcels order', (done) => {
+      request(app).get('/api/v1/parcels')
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.data[0]).to.be.an('object');
+          expect(res.body.data[0].fromlocation).to.have.string('test');
+          done();
+        });
+    });
+  });
+
+  describe('#GET / parcels', () => {
+    it('should throw a 401 error for a parcel order', (done) => {
+      request(app).get('/api/v1/parcels')
+        .set('Authorization', token401)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(401);
+          expect(res.body.status).to.equal(401);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('malformed');
+          done();
+        });
+    });
+  });
+
+  describe('#GET / parcels', () => {
+    it('should throw a 403 error for a parcel order', (done) => {
+      request(app).post('/api/v1/parcels')
         .end((err, res) => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(403);

@@ -39,7 +39,7 @@ class parcelController {
    */
   static async getAllParcels(req, res) {
     try {
-      const getParcels = await processor.createParcel();
+      const getParcels = await processor.getAllParcels();
       res.send(transformer.transformResponse(200, getParcels));
     } catch (error) {
       res.send(transformer.transformResponse(500, error.error));
