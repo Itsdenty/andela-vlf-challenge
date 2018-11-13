@@ -47,6 +47,7 @@ describe('User API endpoints intgeration Tests', () => {
     }
   };
   const token401 = 'awesome-token-for-us';
+  
   describe('#POST / user login', () => {
     it('should login a user', (done) => {
       request(app).post('/api/v1/auth/login').send(login)
