@@ -11,7 +11,7 @@ Validator.create = (req, res, next) => {
   req.checkBody('parcel.toLocation', 'Please supply a valid address').isMinLen(6).isMaxLen(100);
   req.asyncValidationErrors()
     .then(next)
-    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+    .catch(errors => res.status(400).json(Transformer.transformResponse(400,
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
 

@@ -34,7 +34,6 @@ class parcelProcessor {
         id: newParcel.id
       };
     } catch (error) {
-      console.log(error);
       const err = { error: 'An error occured' };
       throw err;
     }
