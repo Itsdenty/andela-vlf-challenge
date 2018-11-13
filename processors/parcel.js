@@ -51,10 +51,7 @@ class parcelProcessor {
       const parcels = getParcels.rows;
 
       client.release();
-      return {
-        message: 'Order created',
-        data: parcels
-      };
+      return parcels;
     } catch (error) {
       return {
         error: 'an error occured',
