@@ -75,7 +75,7 @@ var userProcessor = function () {
           token: authToken
         };
       } catch (error) {
-        var err = { error: 'you might be entering a wrong input' };
+        var err = { error: 'and error occured or user already exists' };
         throw err;
       }
     }
@@ -133,8 +133,8 @@ var userProcessor = function () {
         }
         throw new Error('user not found');
       } catch (error) {
-        var err = { error: 'wrong username or password' };
-        throw err;
+        // const err = { error: 'wrong username or password' };
+        throw error;
       }
     }
   }]);
