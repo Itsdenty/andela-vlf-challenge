@@ -6,5 +6,6 @@ import jwtVerify from '../../../middlewares/auth';
 
 const router = express.Router();
 router.post('/', jwtVerify.verifyToken, validator.create, controller.createParcel);
+router.get('/', jwtVerify.verifyToken, controller.getAllParcels);
 
 export default router;

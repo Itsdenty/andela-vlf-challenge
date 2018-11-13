@@ -38,6 +38,26 @@ class parcelProcessor {
       throw err;
     }
   }
+
+  /**
+   * @description - Get all ride offers
+   * @return{json} registered ride offer details
+   */
+  static async getAllParcels() {
+    const getAll = 'SELECT * from bParcels';
+    try {
+      const client = await clientPool.connect();
+      const getParcels = await client.query({ text: getAll });
+      const parcels = getParcels.rows;
+
+      client.release();
+      return parcels;
+    } catch (error) {
+      return {
+        error: 'an error occured',
+      };
+    }
+  }
 }
 
 export default parcelProcessor;

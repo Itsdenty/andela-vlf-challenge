@@ -50,9 +50,34 @@ var parcelProcessor = function () {
           id: newParcel.id
         };
       } catch (error) {
-        console.log(error);
         var err = { error: 'An error occured' };
         throw err;
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'getAllParcels',
+    value: async function getAllParcels() {
+      var getAll = 'SELECT * from bParcels';
+      try {
+        var client = await clientPool.connect();
+        var getParcels = await client.query({ text: getAll });
+        var parcels = getParcels.rows;
+
+        client.release();
+        return {
+          message: 'Order created',
+          data: parcels
+        };
+      } catch (error) {
+        return {
+          error: 'an error occured'
+        };
       }
     }
   }]);

@@ -29,7 +29,7 @@ var swaggerDefinition = {
   info: {
     title: 'Node Swagger API',
     version: '1.0.0',
-    description: 'Api documentation for the TSS inventory app.'
+    description: 'Api documentation for Andela vlf challenge.'
   },
   host: 'localhost:3100',
   basePath: '/api/v1'

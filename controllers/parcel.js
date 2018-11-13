@@ -27,6 +27,24 @@ class parcelController {
       res.send(transformer.transformResponse(500, error.error));
     }
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof parcelController
+   * @returns {json} createParcel response
+   */
+  static async getAllParcels(req, res) {
+    try {
+      const getParcels = await processor.getAllParcels();
+      res.send(transformer.transformResponse(200, getParcels));
+    } catch (error) {
+      res.send(transformer.transformResponse(500, error.error));
+    }
+  }
 }
 
 export default parcelController;

@@ -133,8 +133,8 @@ var userProcessor = function () {
         }
         throw new Error('user not found');
       } catch (error) {
-        // const err = { error: 'wrong username or password' };
-        throw error;
+        var err = { error: 'wrong username or password' };
+        throw err;
       }
     }
   }]);
