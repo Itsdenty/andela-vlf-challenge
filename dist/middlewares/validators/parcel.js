@@ -19,7 +19,7 @@ Validator.create = function (req, res, next) {
   req.checkBody('parcel.fromLocation', 'please supply a valid address').notEmpty().isMinLen(6).isMaxLen(100);
   req.checkBody('parcel.toLocation', 'Please supply a valid address').isMinLen(6).isMaxLen(100);
   req.asyncValidationErrors().then(next).catch(function (errors) {
-    return res.status(400).json(_transformer2.default.transformResponse(0, _transformer2.default.transformExpressValidationErrors(errors), errors));
+    return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
   });
 };
 

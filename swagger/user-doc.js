@@ -82,10 +82,7 @@
  *       status:
  *         type: number
  *       error:
- *         type: object
- *         properties:
- *         message:
- *           type: string
+ *         type: string
  *   Token:
  *     properties:
  *       token:

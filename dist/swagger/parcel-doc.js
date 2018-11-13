@@ -27,7 +27,7 @@
  *       message:
  *         type: string
  *       id:
- *         type: string
+ *         type: number
  *   ResponseObjectSingleParcel:
  *     properties:
  *       status:
@@ -39,10 +39,7 @@
  *       status:
  *         type: number
  *       error:
- *         type: object
- *         properties:
- *         message:
- *           type: string
+ *         type: string
  *   Token:
  *     properties:
  *       token:

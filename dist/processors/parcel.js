@@ -50,7 +50,6 @@ var parcelProcessor = function () {
           id: newParcel.id
         };
       } catch (error) {
-        console.log(error);
         var err = { error: 'An error occured' };
         throw err;
       }
