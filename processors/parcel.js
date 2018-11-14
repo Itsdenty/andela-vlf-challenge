@@ -19,14 +19,11 @@ class parcelProcessor {
                             VALUES ($1, $2, $3, $4, $5, $6, $7)
                             RETURNING *`;
     try {
-      const client = await clientPool.connect();
-
-      const values = [parcel.placedBy, parcel.weight, parcel.weightmetric,
-        parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation];
-
-      const createdParcel = await client.query({ text: createParcel, values });
-
-      const newParcel = createdParcel.rows[0];
+      const client = await clientPool.connect(),
+        values = [parcel.placedBy, parcel.weight, parcel.weightmetric,
+          parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation],
+        createdParcel = await client.query({ text: createParcel, values }),
+        newParcel = createdParcel.rows[0];
 
       client.release();
       return {
@@ -46,9 +43,9 @@ class parcelProcessor {
   static async getAllParcels() {
     const getAll = 'SELECT * from bParcels';
     try {
-      const client = await clientPool.connect();
-      const getParcels = await client.query({ text: getAll });
-      const parcels = getParcels.rows;
+      const client = await clientPool.connect(),
+        getParcels = await client.query({ text: getAll }),
+        parcels = getParcels.rows;
 
       client.release();
       return parcels;
@@ -69,15 +66,58 @@ class parcelProcessor {
                     where id=$1`,
       values = [id];
     try {
-      const client = await clientPool.connect();
-      const getParcels = await client.query({ text: getAll, values });
-      const parcel = getParcels.rows[0];
+      const client = await clientPool.connect(),
+        getParcels = await client.query({ text: getAll, values }),
+        parcel = getParcels.rows[0];
 
       client.release();
       return parcel;
     } catch (error) {
       return {
         error: 'an error occured',
+      };
+    }
+  }
+
+  /**
+   * @description - Get all ride offers
+   * @param {*} pid
+   * @param {*} uid
+   * @return{json} registered ride offer details
+   */
+  static async cancelParcelOrder(pid, uid) {
+    const query = `SELECT * from bParcels 
+                    where id=$1 AND userId=$2`,
+      cancelParcel = `UPDATE bParcels 
+                    SET status=$1
+                    WHERE id=$2`,
+      values = [pid, uid];
+
+    try {
+      const client = await clientPool.connect(),
+        getParcel = await client.query({ text: query, values }),
+        parcel = getParcel.rows[0];
+      client.release();
+
+      if (!parcel) {
+        const error = 'you are not authorized to cancel this order';
+        throw error;
+      } else if (parcel.status === 'delivered') {
+        const error = 'you cannot cancel an already delivered parcel';
+        throw error;
+      }
+
+      const updateParcel = await client.query({ text: cancelParcel, values: ['cancel', pid] });
+      client.release();
+      if (updateParcel) {
+        return {
+          id: pid,
+          message: 'Order cancelled'
+        };
+      }
+    } catch (error) {
+      return {
+        error: error || 'an error occured',
       };
     }
   }

@@ -75,7 +75,7 @@ class parcelController {
    */
   static async cancelParcelOrder(req, res) {
     try {
-      const oneParcel = await processor.getOneParcel(req.params.id);
+      const oneParcel = await processor.cancelParcelOrder(req.params.id, req.decodedToken.id);
       res.send(transformer.transformResponse(200, oneParcel));
     } catch (error) {
       res.send(transformer.transformResponse(500, error.error));
