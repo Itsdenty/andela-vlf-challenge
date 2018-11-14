@@ -62,10 +62,18 @@ describe('User API endpoints intgeration Tests', () => {
 
   const login500 = {
     login: {
+      email: 'dent4real@gmail.com',
+      password: 'password1234',
+    }
+  };
+
+  const login502 = {
+    login: {
       email,
       password: 'cool-password',
     }
   };
+
   describe('#POST / user', () => {
     it('should create a single user', (done) => {
       request(app).post('/api/v1/auth/signup').send(user)
@@ -141,6 +149,21 @@ describe('User API endpoints intgeration Tests', () => {
   describe('#POST / user login', () => {
     it('should throw login 500 error a user', (done) => {
       request(app).post('/api/v1/auth/login').send(login500)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('wrong');
+          expect(res.body.status).to.equal(500);
+          user.user = res.body.payload;
+          done();
+        });
+    });
+  });
+
+  describe('#POST / user login', () => {
+    it('should throw login 500 error a user', (done) => {
+      request(app).post('/api/v1/auth/login').send(login502)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(200);

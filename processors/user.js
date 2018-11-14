@@ -4,9 +4,8 @@ import { Pool } from 'pg';
 import createToken from '../utils/createToken';
 import { connectionString } from '../config/postgres-config';
 
-const clientPool = new Pool(connectionString);
-
-const secretKey = process.env.JWT_SECRET;
+const clientPool = new Pool(connectionString),
+  secretKey = process.env.JWT_SECRET;
 
 /**
  * @description - Describes the Users of the app, their creation, their editing e.t.c.
@@ -61,19 +60,6 @@ class userProcessor {
     const email = req.body.login.email.trim().toLowerCase();
     const findOneUser = `SELECT * FROM aUsers
                           WHERE email = $1`;
-    // checks if a token was passed into the request header
-    if (req.headers.authorization) {
-      try {
-        const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, secretKey);
-        req.userData = decoded.userid;
-        if (req.userData !== null) {
-          return { message: 'You are already logged in' };
-        }
-      } catch (error) {
-        return { error: 'Token is invalid or has expired, Please re-login' };
-      }
-    }
     try {
       const client = await clientPool.connect();
       // find a user with the given email

@@ -1,21 +1,9 @@
 const CustomValidators = {},
   statuses = ['placed', 'transiting', 'delivered', 'cancelled'];
 
-CustomValidators.isMinLen = (input, val) => {
-  if (!input) {
-    return false;
-  }
+CustomValidators.isMinLen = (input, val) => input.length >= val;
 
-  return input.length >= val;
-};
-
-CustomValidators.isMaxLen = (input, val) => {
-  if (!input) {
-    return false;
-  }
-
-  return input.length <= val;
-};
+CustomValidators.isMaxLen = (input, val) => input.length <= val;
 
 CustomValidators.isHumanName = (input) => {
   if (typeof input !== 'string') {

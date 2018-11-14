@@ -161,7 +161,7 @@
  *         description: Parcel's id
  *         in: path
  *         required: true
- *         type: string
+ *         type: number
  *     responses:
  *       200:
  *         description: a single parcel data
