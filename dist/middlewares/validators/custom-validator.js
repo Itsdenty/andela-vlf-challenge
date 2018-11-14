@@ -45,5 +45,7 @@ CustomValidators.isArray = function (input) {
 CustomValidators.isStatusType = function (input) {
   return statuses.includes(input);
 };
-
+CustomValidators.isIdType = function (input) {
+  return input + 1 > 0;
+};
 exports.default = CustomValidators;

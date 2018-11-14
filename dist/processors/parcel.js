@@ -70,10 +70,32 @@ var parcelProcessor = function () {
         var parcels = getParcels.rows;
 
         client.release();
+        return parcels;
+      } catch (error) {
         return {
-          message: 'Order created',
-          data: parcels
+          error: 'an error occured'
         };
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @param {*} id
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'getOneParcel',
+    value: async function getOneParcel(id) {
+      var getAll = 'SELECT * from bParcels \n                    where id=$1',
+          values = [id];
+      try {
+        var client = await clientPool.connect();
+        var getParcels = await client.query({ text: getAll, values: values });
+        var parcel = getParcels.rows[0];
+
+        client.release();
+        return parcel;
       } catch (error) {
         return {
           error: 'an error occured'

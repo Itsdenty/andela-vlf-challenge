@@ -1,21 +1,9 @@
 const CustomValidators = {},
   statuses = ['placed', 'transiting', 'delivered', 'cancelled'];
 
-CustomValidators.isMinLen = (input, val) => {
-  if (!input) {
-    return false;
-  }
+CustomValidators.isMinLen = (input, val) => input.length >= val;
 
-  return input.length >= val;
-};
-
-CustomValidators.isMaxLen = (input, val) => {
-  if (!input) {
-    return false;
-  }
-
-  return input.length <= val;
-};
+CustomValidators.isMaxLen = (input, val) => input.length <= val;
 
 CustomValidators.isHumanName = (input) => {
   if (typeof input !== 'string') {
@@ -35,5 +23,5 @@ CustomValidators.isEmailV2 = (email) => {
 
 CustomValidators.isArray = input => Array.isArray(input);
 CustomValidators.isStatusType = input => statuses.includes(input);
-
+CustomValidators.isIdType = input => (input + 1) > 0;
 export default CustomValidators;

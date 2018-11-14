@@ -58,6 +58,29 @@ class parcelProcessor {
       };
     }
   }
+
+  /**
+   * @description - Get all ride offers
+   * @param {*} id
+   * @return{json} registered ride offer details
+   */
+  static async getOneParcel(id) {
+    const getAll = `SELECT * from bParcels 
+                    where id=$1`,
+      values = [id];
+    try {
+      const client = await clientPool.connect();
+      const getParcels = await client.query({ text: getAll, values });
+      const parcel = getParcels.rows[0];
+
+      client.release();
+      return parcel;
+    } catch (error) {
+      return {
+        error: 'an error occured',
+      };
+    }
+  }
 }
 
 export default parcelProcessor;
