@@ -75,6 +75,28 @@ var parcelController = function () {
         res.send(_transformer2.default.transformResponse(500, error.error));
       }
     }
+
+    /**
+     *
+     *
+     * @static
+     * @param {*} req
+     * @param {*} res
+     * @memberof parcelController
+     * @returns {json} oneParcel response
+     */
+
+  }, {
+    key: 'getOneParcel',
+    value: async function getOneParcel(req, res) {
+      console.log(req.params.id);
+      try {
+        var oneParcel = await _parcel2.default.getOneParcel(req.params.id);
+        res.send(_transformer2.default.transformResponse(200, oneParcel));
+      } catch (error) {
+        res.send(_transformer2.default.transformResponse(500, error.error));
+      }
+    }
   }]);
 
   return parcelController;

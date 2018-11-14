@@ -147,7 +147,7 @@
  */
 /**
  * @swagger
- * /parcels/:id:
+ * /parcels/{id}:
  *   get:
  *     tags:
  *       - Parcel
@@ -156,6 +156,12 @@
  *       - Bearer: []
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Parcel's id
+ *         in: path
+ *         required: true
+ *         type: number
  *     responses:
  *       200:
  *         description: a single parcel data

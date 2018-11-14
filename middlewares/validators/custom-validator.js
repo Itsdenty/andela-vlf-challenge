@@ -35,5 +35,5 @@ CustomValidators.isEmailV2 = (email) => {
 
 CustomValidators.isArray = input => Array.isArray(input);
 CustomValidators.isStatusType = input => statuses.includes(input);
-
+CustomValidators.isIdType = input => (input + 1) > 0;
 export default CustomValidators;

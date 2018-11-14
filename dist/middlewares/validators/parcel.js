@@ -22,5 +22,10 @@ Validator.create = function (req, res, next) {
     return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
   });
 };
-
+Validator.getOne = function (req, res, next) {
+  req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
+  req.asyncValidationErrors().then(next).catch(function (errors) {
+    return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
+  });
+};
 exports.default = Validator;

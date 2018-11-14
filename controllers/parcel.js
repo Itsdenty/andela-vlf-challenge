@@ -56,6 +56,7 @@ class parcelController {
    * @returns {json} oneParcel response
    */
   static async getOneParcel(req, res) {
+    console.log(req.params.id);
     try {
       const oneParcel = await processor.getOneParcel(req.params.id);
       res.send(transformer.transformResponse(200, oneParcel));
