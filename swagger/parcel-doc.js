@@ -55,7 +55,7 @@
  *       status:
  *         type: number
  *       data:
- *         $ref: '#/definitions/ParcelResponse'
+ *         $ref: '#/definitions/ParcelObject'
   *   ResponseObjectParcel:
  *     properties:
  *       status:
@@ -134,6 +134,39 @@
  *           $ref: '#/definitions/ResponseObjectParcel'
  *       500:
  *         description: Server error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       401:
+ *         description: Authentication error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       403:
+ *         description: Authourization error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ */
+/**
+ * @swagger
+ * /parcels/:id:
+ *   get:
+ *     tags:
+ *       - Parcel
+ *     description: Returns a single parcels
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: a single parcel data
+ *         schema:
+ *           $ref: '#/definitions/ResponseObjectSingleParcel'
+ *       500:
+ *         description: Server error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       404:
+ *         description: Supplied parcel id incorrect
  *         schema:
  *           $ref: '#/definitions/ErrorObject'
  *       401:
