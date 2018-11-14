@@ -8,5 +8,6 @@ const router = express.Router();
 router.post('/', jwtVerify.verifyToken, validator.create, controller.createParcel);
 router.get('/', jwtVerify.verifyToken, controller.getAllParcels);
 router.get('/:id', jwtVerify.verifyToken, validator.getOne, controller.getOneParcel);
+router.patch('/:id/cancel', jwtVerify.verifyToken, validator.getOne, controller.getOneParcel);
 
 export default router;
