@@ -36,13 +36,10 @@ var parcelProcessor = function () {
       // Hash password to save in the database
       var createParcel = 'INSERT INTO bParcels (placedBy, weight, weightmetric, sentOn, status, fromLocation, toLocation)\n                            VALUES ($1, $2, $3, $4, $5, $6, $7)\n                            RETURNING *';
       try {
-        var client = await clientPool.connect();
-
-        var values = [parcel.placedBy, parcel.weight, parcel.weightmetric, parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation];
-
-        var createdParcel = await client.query({ text: createParcel, values: values });
-
-        var newParcel = createdParcel.rows[0];
+        var client = await clientPool.connect(),
+            values = [parcel.placedBy, parcel.weight, parcel.weightmetric, parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation],
+            createdParcel = await client.query({ text: createParcel, values: values }),
+            newParcel = createdParcel.rows[0];
 
         client.release();
         return {
@@ -65,9 +62,9 @@ var parcelProcessor = function () {
     value: async function getAllParcels() {
       var getAll = 'SELECT * from bParcels';
       try {
-        var client = await clientPool.connect();
-        var getParcels = await client.query({ text: getAll });
-        var parcels = getParcels.rows;
+        var client = await clientPool.connect(),
+            getParcels = await client.query({ text: getAll }),
+            parcels = getParcels.rows;
 
         client.release();
         return parcels;
@@ -90,15 +87,62 @@ var parcelProcessor = function () {
       var getAll = 'SELECT * from bParcels \n                    where id=$1',
           values = [id];
       try {
-        var client = await clientPool.connect();
-        var getParcels = await client.query({ text: getAll, values: values });
-        var parcel = getParcels.rows[0];
+        var client = await clientPool.connect(),
+            getParcels = await client.query({ text: getAll, values: values }),
+            parcel = getParcels.rows[0];
 
         client.release();
         return parcel;
       } catch (error) {
         return {
           error: 'an error occured'
+        };
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @param {*} pid
+     * @param {*} uid
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'cancelParcelOrder',
+    value: async function cancelParcelOrder(pid, uid) {
+      console.log(pid, uid);
+      var query = 'SELECT * from bParcels \n                    where id=$1 AND id=$2',
+          cancelParcel = 'UPDATE bParcels \n                    SET status=$1\n                    WHERE id=$2',
+          values = [pid, uid];
+
+      try {
+        var client = await clientPool.connect(),
+            getParcel = await client.query({ text: query, values: values }),
+            parcel = getParcel.rows[0];
+
+        if (!parcel) {
+          client.release();
+          var error = 'you are not authorized to cancel this order';
+          throw error;
+        } else if (parcel.status === 'delivered') {
+          client.release();
+          var _error = 'you cannot cancel an already delivered parcel';
+          throw _error;
+        }
+
+        var updateParcel = await client.query({ text: cancelParcel, values: ['cancelled', pid] });
+        client.release();
+        console.log(updateParcel);
+        if (updateParcel) {
+          return {
+            id: pid,
+            message: 'Order cancelled'
+          };
+        }
+      } catch (error) {
+        console.log(error);
+        return {
+          error: error || 'an error occured'
         };
       }
     }

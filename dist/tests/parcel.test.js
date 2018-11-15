@@ -161,7 +161,7 @@ describe('User API endpoints intgeration Tests', function () {
         (0, _chai.expect)(res.body.status).to.equal(200);
         (0, _chai.expect)(res.body).to.be.an('object');
         (0, _chai.expect)(res.body.data).to.be.an('object');
-        (0, _chai.expect)(res.body.data.fromlocation).to.have.string('test');
+        (0, _chai.expect)(res.body.data.fromlocation).to.have.string('l');
         done();
       });
     });

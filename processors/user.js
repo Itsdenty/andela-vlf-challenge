@@ -74,10 +74,10 @@ class userProcessor {
         }
         // creates a token that lasts for 24 hours
         const {
-          userid, firstname, lastname
+          id, firstname, lastname
         } = user.rows[0];
         delete signedInUser.password;
-        const authToken = createToken.token({ userid, firstname, lastname }, secretKey);
+        const authToken = createToken.token({ id, firstname, lastname }, secretKey);
         return {
           message: 'You are logged in!',
           token: authToken,
