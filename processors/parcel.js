@@ -86,19 +86,17 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async cancelParcelOrder(pid, uid) {
-    console.log(pid, uid)
+    console.log(pid, uid);
     const query = `SELECT * from bParcels 
-                    where id=$1 AND id=$2`,
+                    where id=$1 AND placedBy=$2`,
       cancelParcel = `UPDATE bParcels 
                     SET status=$1
                     WHERE id=$2`,
       values = [pid, uid];
-
     try {
       const client = await clientPool.connect(),
         getParcel = await client.query({ text: query, values }),
         parcel = getParcel.rows[0];
-
       if (!parcel) {
         client.release();
         const error = 'you are not authorized to cancel this order';
@@ -111,7 +109,6 @@ class parcelProcessor {
 
       const updateParcel = await client.query({ text: cancelParcel, values: ['cancelled', pid] });
       client.release();
-      console.log(updateParcel);
       if (updateParcel) {
         return {
           id: pid,
@@ -119,7 +116,6 @@ class parcelProcessor {
         };
       }
     } catch (error) {
-      console.log(error);
       return {
         error: error || 'an error occured',
       };
