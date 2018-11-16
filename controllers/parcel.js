@@ -93,8 +93,8 @@ class parcelController {
    */
   static async changeParcelDestination(req, res) {
     try {
-      const oneParcel = await processor.cancelParcelOrder(req.params.id, req.decodedToken.id);
-      res.send(transformer.transformResponse(200, oneParcel));
+      const changedParcel = await processor.changeParcelDestination(req.params.id, req.decodedToken.id, req.body.toLocation);      
+      res.send(transformer.transformResponse(200, changedParcel));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));
     }

@@ -121,6 +121,49 @@ class parcelProcessor {
       };
     }
   }
+
+  /**
+   * @description - Get all ride offers
+   * @param {*} pid
+   * @param {*} uid
+   * @param {*} toLocation
+   * @return{json} registered ride offer details
+   */
+  static async changeParcelDestination(pid, uid, toLocation) {
+    const query = `SELECT * from bParcels 
+                    where id=$1 AND placedBy=$2`,
+      cancelParcel = `UPDATE bParcels 
+                    SET toLocation=$1
+                    WHERE id=$2`,
+      values = [pid, uid];
+    try {
+      const client = await clientPool.connect(),
+        getParcel = await client.query({ text: query, values }),
+        parcel = getParcel.rows[0];
+      if (!parcel) {
+        client.release();
+        const error = 'you are not authorized to cancel this order';
+        throw error;
+      } else if (parcel.status === 'delivered') {
+        client.release();
+        const error = 'you cannot cancel an already delivered parcel';
+        throw error;
+      }
+
+      const updateParcel = await client.query({ text: cancelParcel, values: [toLocation, pid] });
+      client.release();
+      if (updateParcel) {
+        return {
+          id: pid,
+          message: 'Order destination successfully changed'
+        };
+      }
+    } catch (error) {
+      return {
+        error: error || 'an error occured',
+      };
+    }
+  }
 }
 
 export default parcelProcessor;

@@ -9,5 +9,5 @@ router.post('/', jwtVerify.verifyToken, validator.create, controller.createParce
 router.get('/', jwtVerify.verifyToken, controller.getAllParcels);
 router.get('/:id', jwtVerify.verifyToken, validator.getOne, controller.getOneParcel);
 router.patch('/:id/cancel', jwtVerify.verifyToken, validator.getOne, controller.cancelParcelOrder);
-router.patch('/:id/destination', jwtVerify.verifyToken, validator.getOne, controller.cancelParcelOrder);
+router.patch('/:id/destination', jwtVerify.verifyToken, validator.changeDestination, controller.changeParcelDestination);
 export default router;
