@@ -93,7 +93,7 @@ describe('User API endpoints intgeration Tests', () => {
       request(app).post('/api/v1/auth/signup').send(user)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(500);
           expect(res.body).to.be.an('object');
           expect(res.body.error).to.have.string('occured');
           expect(res.body.status).to.equal(500);
@@ -151,7 +151,7 @@ describe('User API endpoints intgeration Tests', () => {
       request(app).post('/api/v1/auth/login').send(login500)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(500);
           expect(res.body).to.be.an('object');
           expect(res.body.error).to.have.string('wrong');
           expect(res.body.status).to.equal(500);
@@ -166,7 +166,7 @@ describe('User API endpoints intgeration Tests', () => {
       request(app).post('/api/v1/auth/login').send(login502)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(500);
           expect(res.body).to.be.an('object');
           expect(res.body.error).to.have.string('wrong');
           expect(res.body.status).to.equal(500);

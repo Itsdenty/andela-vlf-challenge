@@ -101,7 +101,7 @@ describe('User API endpoints intgeration Tests', () => {
         .set('Authorization', token)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(500);
           expect(res.body.status).to.equal(500);
           expect(res.body).to.be.an('object');
           expect(res.body.error).to.have.string('occured');
@@ -131,7 +131,7 @@ describe('User API endpoints intgeration Tests', () => {
         .set('Authorization', token)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(500);
           expect(res.body.status).to.equal(500);
           expect(res.body).to.be.an('object');
           expect(res.body.error).to.have.string('occured');
