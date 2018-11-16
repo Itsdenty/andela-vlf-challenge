@@ -51,7 +51,7 @@ var parcelController = function () {
         var createParcel = await _parcel2.default.createParcel(req.body.parcel);
         res.send(_transformer2.default.transformResponse(200, createParcel));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
       }
     }
 
@@ -72,7 +72,7 @@ var parcelController = function () {
         var getParcels = await _parcel2.default.getAllParcels();
         res.send(_transformer2.default.transformResponse(200, getParcels));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
       }
     }
 
@@ -93,7 +93,7 @@ var parcelController = function () {
         var oneParcel = await _parcel2.default.getOneParcel(req.params.id);
         res.send(_transformer2.default.transformResponse(200, oneParcel));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
       }
     }
 
@@ -110,12 +110,32 @@ var parcelController = function () {
   }, {
     key: 'cancelParcelOrder',
     value: async function cancelParcelOrder(req, res) {
-      console.log(req.decodedToken);
       try {
         var oneParcel = await _parcel2.default.cancelParcelOrder(req.params.id, req.decodedToken.id);
         res.send(_transformer2.default.transformResponse(200, oneParcel));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
+      }
+    }
+
+    /**
+     *
+     *
+     * @static
+     * @param {*} req
+     * @param {*} res
+     * @memberof parcelController
+     * @returns {json} oneParcel response
+     */
+
+  }, {
+    key: 'changeParcelDestination',
+    value: async function changeParcelDestination(req, res) {
+      try {
+        var changedParcel = await _parcel2.default.changeParcelDestination(req.params.id, req.decodedToken.id, req.body.toLocation);
+        res.send(_transformer2.default.transformResponse(200, changedParcel));
+      } catch (error) {
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
       }
     }
   }]);

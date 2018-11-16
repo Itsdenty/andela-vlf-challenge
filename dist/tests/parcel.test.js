@@ -104,7 +104,7 @@ describe('User API endpoints intgeration Tests', function () {
     it('should throw a 500 error for a parcel order', function (done) {
       (0, _supertest2.default)(_index2.default).post('/api/v1/parcels').send(parcel500).set('Authorization', token).end(function (err, res) {
         if (err) return done(err);
-        (0, _chai.expect)(res.statusCode).to.equal(200);
+        (0, _chai.expect)(res.statusCode).to.equal(500);
         (0, _chai.expect)(res.body.status).to.equal(500);
         (0, _chai.expect)(res.body).to.be.an('object');
         (0, _chai.expect)(res.body.error).to.have.string('occured');
@@ -130,7 +130,7 @@ describe('User API endpoints intgeration Tests', function () {
     it('should throw a 500 error for a parcel order', function (done) {
       (0, _supertest2.default)(_index2.default).post('/api/v1/parcels').send(parcel500).set('Authorization', token).end(function (err, res) {
         if (err) return done(err);
-        (0, _chai.expect)(res.statusCode).to.equal(200);
+        (0, _chai.expect)(res.statusCode).to.equal(500);
         (0, _chai.expect)(res.body.status).to.equal(500);
         (0, _chai.expect)(res.body).to.be.an('object');
         (0, _chai.expect)(res.body.error).to.have.string('occured');
@@ -236,6 +236,59 @@ describe('User API endpoints intgeration Tests', function () {
   describe('#GET / parcels', function () {
     it('should throw a 403 error for a parcel order', function (done) {
       (0, _supertest2.default)(_index2.default).get('/api/v1/parcels').end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(403);
+        (0, _chai.expect)(res.body.status).to.equal(403);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.error).to.have.string('provided');
+        done();
+      });
+    });
+  });
+
+  // cancel a single parcel tests
+  describe('#PATCH / parcel', function () {
+    it('should cancel a single parcel order', function (done) {
+      (0, _supertest2.default)(_index2.default).patch('/api/v1/parcels/1/cancel').set('Authorization', token).end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(200);
+        (0, _chai.expect)(res.body.status).to.equal(200);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.data).to.be.an('object');
+        (0, _chai.expect)(res.body.data.message).to.have.string('Order');
+        done();
+      });
+    });
+  });
+
+  describe('#PATCH / parcel', function () {
+    it('should throw a 400 error for get a single parcel', function (done) {
+      (0, _supertest2.default)(_index2.default).patch('/api/v1/parcels/some/cancel').set('Authorization', token).end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(400);
+        (0, _chai.expect)(res.body.status).to.equal(400);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.error).to.have.string('valid');
+        done();
+      });
+    });
+  });
+  describe('#PATCH / parcels', function () {
+    it('should throw a 401 error for getting a single parcel', function (done) {
+      (0, _supertest2.default)(_index2.default).patch('/api/v1/parcels/1/cancel').set('Authorization', token401).end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(401);
+        (0, _chai.expect)(res.body.status).to.equal(401);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.error).to.have.string('malformed');
+        done();
+      });
+    });
+  });
+
+  describe('#PATCH / parcels', function () {
+    it('should throw a 403 error for getting a single parcel', function (done) {
+      (0, _supertest2.default)(_index2.default).patch('/api/v1/parcels/1/cancel').end(function (err, res) {
         if (err) return done(err);
         (0, _chai.expect)(res.statusCode).to.equal(403);
         (0, _chai.expect)(res.body.status).to.equal(403);
