@@ -17,13 +17,21 @@ Validator.create = function (req, res, next) {
   req.checkBody('parcel.weight', 'Please supply a valid weight').notEmpty().isDecimal();
   req.checkBody('parcel.weightmetric', 'Please supply a valid weightmetric').notEmpty().isMinLen(2).isMaxLen(10);
   req.checkBody('parcel.fromLocation', 'please supply a valid address').notEmpty().isMinLen(6).isMaxLen(100);
-  req.checkBody('parcel.toLocation', 'Please supply a valid address').isMinLen(6).isMaxLen(100);
+  req.checkBody('parcel.toLocation', 'Please supply a valid address').notEmpty().isMinLen(6).isMaxLen(100);
   req.asyncValidationErrors().then(next).catch(function (errors) {
     return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
   });
 };
 Validator.getOne = function (req, res, next) {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
+  req.asyncValidationErrors().then(next).catch(function (errors) {
+    return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
+  });
+};
+
+Validator.changeDestination = function (req, res, next) {
+  req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
+  req.checkBody('toLocation', 'Please supply a valid destination address').notEmpty().isMinLen(6).isMaxLen(100);
   req.asyncValidationErrors().then(next).catch(function (errors) {
     return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
   });
