@@ -259,4 +259,64 @@ describe('User API endpoints intgeration Tests', () => {
         });
     });
   });
+
+  // cancel a single parcel tests
+  describe('#PATCH / parcel', () => {
+    it('should cancel a single parcel order', (done) => {
+      request(app).patch('/api/v1/parcels/1/cancel')
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.data).to.be.an('object');
+          expect(res.body.data.message).to.have.string('Order');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcel', () => {
+    it('should throw a 400 error for get a single parcel', (done) => {
+      request(app).patch('/api/v1/parcels/some/cancel')
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('valid');
+          done();
+        });
+    });
+  });
+  describe('#PATCH / parcels', () => {
+    it('should throw a 401 error for getting a single parcel', (done) => {
+      request(app).patch('/api/v1/parcels/1/cancel')
+        .set('Authorization', token401)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(401);
+          expect(res.body.status).to.equal(401);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('malformed');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcels', () => {
+    it('should throw a 403 error for getting a single parcel', (done) => {
+      request(app).patch('/api/v1/parcels/1/cancel')
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('provided');
+          done();
+        });
+    });
+  });
 });

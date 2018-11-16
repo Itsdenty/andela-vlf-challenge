@@ -56,9 +56,27 @@ class parcelController {
    * @returns {json} oneParcel response
    */
   static async getOneParcel(req, res) {
-    console.log(req.params.id);
     try {
       const oneParcel = await processor.getOneParcel(req.params.id);
+      res.send(transformer.transformResponse(200, oneParcel));
+    } catch (error) {
+      res.send(transformer.transformResponse(500, error.error));
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof parcelController
+   * @returns {json} oneParcel response
+   */
+  static async cancelParcelOrder(req, res) {
+    console.log(req.decodedToken);
+    try {
+      const oneParcel = await processor.cancelParcelOrder(req.params.id, req.decodedToken.id);
       res.send(transformer.transformResponse(200, oneParcel));
     } catch (error) {
       res.send(transformer.transformResponse(500, error.error));

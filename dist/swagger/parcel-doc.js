@@ -56,7 +56,7 @@
  *         type: number
  *       data:
  *         $ref: '#/definitions/ParcelObject'
-  *   ResponseObjectParcel:
+ *   ResponseObjectParcel:
  *     properties:
  *       status:
  *         type: number
@@ -64,6 +64,18 @@
  *         type: array
  *         items:
  *           $ref: '#/definitions/ParcelObject'
+ *   ManipulationObject:
+ *     properties:
+ *       message:
+ *         type: string
+ *       id:
+ *         type: number
+ *   UpdateObjectParcel:
+ *     properties:
+ *       status:
+ *         type: number
+ *       data:
+ *           $ref: '#/definitions/ManipulationObject'
  *   ErrorObject:
  *     properties:
  *       status:
@@ -149,6 +161,45 @@
  * @swagger
  * /parcels/{id}:
  *   get:
+ *     tags:
+ *       - Parcel
+ *     description: Returns a single parcels
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Parcel's id
+ *         in: path
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: a single parcel data
+ *         schema:
+ *           $ref: '#/definitions/ResponseObjectSingleParcel'
+ *       500:
+ *         description: Server error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       404:
+ *         description: Supplied parcel id incorrect
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       401:
+ *         description: Authentication error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       403:
+ *         description: Authourization error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ */
+/**
+ * @swagger
+ * /parcels/{id}/cancel:
+ *   patch:
  *     tags:
  *       - Parcel
  *     description: Returns a single parcels

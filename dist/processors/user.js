@@ -26,9 +26,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var clientPool = new _pg.Pool(_postgresConfig.connectionString);
-
-var secretKey = process.env.JWT_SECRET;
+var clientPool = new _pg.Pool(_postgresConfig.connectionString),
+    secretKey = process.env.JWT_SECRET;
 
 /**
  * @description - Describes the Users of the app, their creation, their editing e.t.c.
@@ -92,19 +91,6 @@ var userProcessor = function () {
     value: async function loginUser(req) {
       var email = req.body.login.email.trim().toLowerCase();
       var findOneUser = 'SELECT * FROM aUsers\n                          WHERE email = $1';
-      // checks if a token was passed into the request header
-      if (req.headers.authorization) {
-        try {
-          var token = req.headers.authorization.split(' ')[1];
-          var decoded = _jsonwebtoken2.default.verify(token, secretKey);
-          req.userData = decoded.userid;
-          if (req.userData !== null) {
-            return { message: 'You are already logged in' };
-          }
-        } catch (error) {
-          return { error: 'Token is invalid or has expired, Please re-login' };
-        }
-      }
       try {
         var client = await clientPool.connect();
         // find a user with the given email
@@ -119,12 +105,12 @@ var userProcessor = function () {
           }
           // creates a token that lasts for 24 hours
           var _user$rows$ = user.rows[0],
-              userid = _user$rows$.userid,
+              id = _user$rows$.id,
               firstname = _user$rows$.firstname,
               lastname = _user$rows$.lastname;
 
           delete signedInUser.password;
-          var authToken = _createToken2.default.token({ userid: userid, firstname: firstname, lastname: lastname }, secretKey);
+          var authToken = _createToken2.default.token({ id: id, firstname: firstname, lastname: lastname }, secretKey);
           return {
             message: 'You are logged in!',
             token: authToken,

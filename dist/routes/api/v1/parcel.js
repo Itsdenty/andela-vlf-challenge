@@ -26,5 +26,6 @@ var router = _express2.default.Router();
 router.post('/', _auth2.default.verifyToken, _parcel4.default.create, _parcel2.default.createParcel);
 router.get('/', _auth2.default.verifyToken, _parcel2.default.getAllParcels);
 router.get('/:id', _auth2.default.verifyToken, _parcel4.default.getOne, _parcel2.default.getOneParcel);
+router.patch('/:id/cancel', _auth2.default.verifyToken, _parcel4.default.getOne, _parcel2.default.cancelParcelOrder);
 
 exports.default = router;

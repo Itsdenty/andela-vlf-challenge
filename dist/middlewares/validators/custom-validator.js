@@ -7,18 +7,10 @@ var CustomValidators = {},
     statuses = ['placed', 'transiting', 'delivered', 'cancelled'];
 
 CustomValidators.isMinLen = function (input, val) {
-  if (!input) {
-    return false;
-  }
-
   return input.length >= val;
 };
 
 CustomValidators.isMaxLen = function (input, val) {
-  if (!input) {
-    return false;
-  }
-
   return input.length <= val;
 };
 
