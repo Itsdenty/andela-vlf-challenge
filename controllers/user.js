@@ -26,7 +26,7 @@ class userController {
       const createUser = await processor.createUser(req.body.user);
       res.send(transformer.transformResponse(200, createUser));
     } catch (error) {
-      res.send(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
 
@@ -45,7 +45,7 @@ class userController {
       const loginUser = await processor.loginUser(req);
       res.send(transformer.transformResponse(200, loginUser));
     } catch (error) {
-      res.send(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
 }

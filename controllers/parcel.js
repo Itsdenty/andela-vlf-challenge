@@ -24,7 +24,7 @@ class parcelController {
       const createParcel = await processor.createParcel(req.body.parcel);
       res.send(transformer.transformResponse(200, createParcel));
     } catch (error) {
-      res.send(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
 
@@ -42,7 +42,7 @@ class parcelController {
       const getParcels = await processor.getAllParcels();
       res.send(transformer.transformResponse(200, getParcels));
     } catch (error) {
-      res.send(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
 
@@ -60,7 +60,7 @@ class parcelController {
       const oneParcel = await processor.getOneParcel(req.params.id);
       res.send(transformer.transformResponse(200, oneParcel));
     } catch (error) {
-      res.send(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
 
@@ -74,12 +74,11 @@ class parcelController {
    * @returns {json} oneParcel response
    */
   static async cancelParcelOrder(req, res) {
-    console.log(req.decodedToken);
     try {
       const oneParcel = await processor.cancelParcelOrder(req.params.id, req.decodedToken.id);
       res.send(transformer.transformResponse(200, oneParcel));
     } catch (error) {
-      res.send(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
 }
