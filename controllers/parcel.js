@@ -100,6 +100,25 @@ class parcelController {
       res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof parcelController
+   * @returns {json} oneParcel response
+   */
+  static async changeParcelStatus(req, res) {
+    try {
+      const changedParcel = await processor.changeParcelDestination(req.params.id,
+        req.decodedToken.id, req.body.status.toLowercase());
+      res.send(transformer.transformResponse(200, changedParcel));
+    } catch (error) {
+      res.status(500).json(transformer.transformResponse(500, error.error));
+    }
+  }
 }
 
 export default parcelController;

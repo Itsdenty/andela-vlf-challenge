@@ -13,5 +13,5 @@ router.patch('/:id/cancel', jwtVerify.verifyToken, validator.validadteId,
 router.patch('/:id/destination', jwtVerify.verifyToken,
   validator.changeDestination, controller.changeParcelDestination);
 router.patch('/:id/status', jwtVerify.verifyToken,
-  validator.validateStatus, controller.changeParcelDestination);
+  validator.validateStatus, controller.changeParcelStatus);
 export default router;

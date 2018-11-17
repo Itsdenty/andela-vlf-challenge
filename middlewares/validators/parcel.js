@@ -33,7 +33,7 @@ Validator.validateAddress = (req, res, next) => {
 
 Validator.validateStatus = (req, res, next) => {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
-  req.checkBody('status', 'Please supply a valid destination address').notEmpty().isMinLen(6).isMaxLen(100);
+  req.checkBody('status', 'Please supply a valid parcel status').notEmpty().isStatusType();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(400,
