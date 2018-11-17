@@ -31,7 +31,7 @@ class parcelProcessor {
         id: newParcel.id
       };
     } catch (error) {
-      const err = { error: 'An error occured' };
+      const err = 'an error occured';
       throw err;
     }
   }
@@ -50,9 +50,8 @@ class parcelProcessor {
       client.release();
       return parcels;
     } catch (error) {
-      return {
-        error: 'an error occured',
-      };
+      const err = error.error ? 'an error occured' : error;
+      throw err;
     }
   }
 
@@ -73,9 +72,8 @@ class parcelProcessor {
       client.release();
       return parcel;
     } catch (error) {
-      return {
-        error: 'an error occured',
-      };
+      const err = error.error ? 'an error occured' : error;
+      throw err;
     }
   }
 
@@ -86,7 +84,6 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async cancelParcelOrder(pid, uid) {
-    console.log(pid, uid);
     const query = `SELECT * from bParcels 
                     where id=$1 AND placedBy=$2`,
       cancelParcel = `UPDATE bParcels 
@@ -116,9 +113,8 @@ class parcelProcessor {
         };
       }
     } catch (error) {
-      return {
-        error: error || 'an error occured',
-      };
+      const err = error.error ? 'an error occured' : error;
+      throw err;
     }
   }
 
@@ -142,11 +138,11 @@ class parcelProcessor {
         parcel = getParcel.rows[0];
       if (!parcel) {
         client.release();
-        const error = 'you are not authorized to cancel this order';
+        const error = 'you are not authorized to change the destination of this order';
         throw error;
       } else if (parcel.status === 'delivered') {
         client.release();
-        const error = 'you cannot cancel an already delivered parcel';
+        const error = 'you cannot change the destination of an already delivered parcel';
         throw error;
       }
 
@@ -159,9 +155,49 @@ class parcelProcessor {
         };
       }
     } catch (error) {
-      return {
-        error: error || 'an error occured',
-      };
+      const err = error.error ? 'an error occured' : error;
+      throw err;
+    }
+  }
+
+  /**
+   * @description - Get all ride offers
+   * @param {*} pid
+   * @param {*} uid
+   * @param {*} status
+   * @param {*} deliveryDate
+   * @return{json} registered ride offer details
+   */
+  static async changeParcelStatus(pid, uid, status, deliveryDate) {
+    const query = `SELECT * from bParcels 
+                    where id=$1 AND placedBy=$2`,
+      cancelParcel = `UPDATE bParcels 
+                    SET status=$1, deliveredOn=$2
+                    WHERE id=$3`,
+      values = [pid, uid];
+    try {
+      const client = await clientPool.connect(),
+        getParcel = await client.query({ text: query, values }),
+        parcel = getParcel.rows[0];
+      if (!parcel) {
+        client.release();
+        const error = 'you are not authorized to change the status of this order';
+        throw error;
+      }
+      const updateParcel = await client.query({
+        text: cancelParcel,
+        values: [status, deliveryDate, pid]
+      });
+      client.release();
+      if (updateParcel) {
+        return {
+          id: pid,
+          message: 'Order status successfully changed'
+        };
+      }
+    } catch (error) {
+      const err = error.error ? 'an error occured' : error;
+      throw err;
     }
   }
 }

@@ -14,7 +14,7 @@ Validator.create = (req, res, next) => {
     .catch(errors => res.status(400).json(Transformer.transformResponse(400,
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
-Validator.getOne = (req, res, next) => {
+Validator.validateId = (req, res, next) => {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
   req.asyncValidationErrors()
     .then(next)
@@ -22,9 +22,18 @@ Validator.getOne = (req, res, next) => {
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
 
-Validator.changeDestination = (req, res, next) => {
+Validator.validateAddress = (req, res, next) => {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
   req.checkBody('toLocation', 'Please supply a valid destination address').notEmpty().isMinLen(6).isMaxLen(100);
+  req.asyncValidationErrors()
+    .then(next)
+    .catch(errors => res.status(400).json(Transformer.transformResponse(400,
+      Transformer.transformExpressValidationErrors(errors), errors)));
+};
+
+Validator.validateStatus = (req, res, next) => {
+  req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
+  req.checkBody('status', 'Please supply a valid parcel status').notEmpty().isStatusType();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(400,

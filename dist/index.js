@@ -86,17 +86,6 @@ app.use('/', _routes2.default);
 //   res.send(transformer.transformResponse(500, err));
 // });
 
-app.get('/pool', function (req, res) {
-  pool.connect(function (err) {
-    if (err) {
-      console.log('not able to get connection ' + err);
-      res.status(400).send(err);
-      console.log(err);
-    } else {
-      console.log('successfully connected');
-    }
-  });
-});
 
 app.listen(port || 3000, function () {
   console.log('Started on port ' + port);

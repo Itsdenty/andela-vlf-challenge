@@ -8,46 +8,45 @@ import app from '../index';
  * @returns {String} fstring
  */
 
-describe('User API endpoints intgeration Tests', () => {
+describe('User API endpoints integration Tests', () => {
   const parcel = {
-    parcel: {
-      placedBy: 1,
-      weight: 3,
-      weightmetric: 'kg',
-      fromLocation: 'test to location',
-      toLocation: 'test from location'
-    }
-  };
-
-  const parcel400 = {
-    parcel: {
-      placedBy: 1,
-      weight: 'awesome',
-      weightmetric: 'kg',
-      fromLocation: 'test to location',
-      toLocation: 'test from location'
-    }
-  };
-
-  const parcel500 = {
-    parcel: {
-      placedBy: 0,
-      weight: 3,
-      weightmetric: 'kg',
-      fromLocation: 'test to location',
-      toLocation: 'test from location'
-    }
-  };
-  let token = '';
-
-  const login = {
-    login: {
-      email: 'coding-muse@gmail.com',
-      password: 'ispassword'
-    }
-  };
-  const token401 = 'awesome-token-for-us';
-  const toLocation = { toLocation: 'Bodija Ibadan' };
+      parcel: {
+        placedBy: 1,
+        weight: 3,
+        weightmetric: 'kg',
+        fromLocation: 'test to location',
+        toLocation: 'test from location'
+      }
+    },
+    parcel400 = {
+      parcel: {
+        placedBy: 1,
+        weight: 'awesome',
+        weightmetric: 'kg',
+        fromLocation: 'test to location',
+        toLocation: 'test from location'
+      }
+    },
+    parcel500 = {
+      parcel: {
+        placedBy: 0,
+        weight: 3,
+        weightmetric: 'kg',
+        fromLocation: 'test to location',
+        toLocation: 'test from location'
+      }
+    },
+    login = {
+      login: {
+        email: 'coding-muse@gmail.com',
+        password: 'ispassword'
+      }
+    },
+    token401 = 'awesome-token-for-us',
+    toLocation = { toLocation: 'Bodija Ibadan' },
+    status = { status: 'delivered' };
+  let parcelId = '',
+    token = '';
 
   describe('#POST / user login', () => {
     it('should login a user', (done) => {
@@ -75,7 +74,7 @@ describe('User API endpoints intgeration Tests', () => {
           expect(res.body.status).to.equal(200);
           expect(res.body).to.be.an('object');
           expect(res.body.data).to.be.an('object');
-          parcel.parcel = res.body.data.parcel;
+          parcelId = res.body.data.id;
           done();
         });
     });
@@ -158,7 +157,7 @@ describe('User API endpoints intgeration Tests', () => {
   // get a single parcel tests
   describe('#GET / parcel', () => {
     it('should get a single parcel order', (done) => {
-      request(app).get('/api/v1/parcels/1')
+      request(app).get(`/api/v1/parcels/${parcelId}`)
         .set('Authorization', token)
         .end((err, res) => {
           if (err) return done(err);
@@ -188,7 +187,7 @@ describe('User API endpoints intgeration Tests', () => {
   });
   describe('#GET / parcels', () => {
     it('should throw a 401 error for getting a single parcel', (done) => {
-      request(app).get('/api/v1/parcels/1')
+      request(app).get(`/api/v1/parcels/${parcelId}`)
         .set('Authorization', token401)
         .end((err, res) => {
           if (err) return done(err);
@@ -203,7 +202,7 @@ describe('User API endpoints intgeration Tests', () => {
 
   describe('#GET / parcels', () => {
     it('should throw a 403 error for getting a single parcel', (done) => {
-      request(app).get('/api/v1/parcels/1')
+      request(app).get(`/api/v1/parcels/${parcelId}`)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(403);
@@ -264,7 +263,7 @@ describe('User API endpoints intgeration Tests', () => {
   // cancel a single parcel tests
   describe('#PATCH / parcel', () => {
     it('should cancel a single parcel order', (done) => {
-      request(app).patch('/api/v1/parcels/1/cancel')
+      request(app).patch(`/api/v1/parcels/${parcelId}/cancel`)
         .set('Authorization', token)
         .end((err, res) => {
           if (err) return done(err);
@@ -294,7 +293,7 @@ describe('User API endpoints intgeration Tests', () => {
   });
   describe('#PATCH / parcels', () => {
     it('should throw a 401 error for getting a single parcel', (done) => {
-      request(app).patch('/api/v1/parcels/1/cancel')
+      request(app).patch(`/api/v1/parcels/${parcelId}/cancel`)
         .set('Authorization', token401)
         .end((err, res) => {
           if (err) return done(err);
@@ -309,7 +308,7 @@ describe('User API endpoints intgeration Tests', () => {
 
   describe('#PATCH / parcels', () => {
     it('should throw a 403 error for getting a single parcel', (done) => {
-      request(app).patch('/api/v1/parcels/1/cancel')
+      request(app).patch(`/api/v1/parcels/${parcelId}/cancel`)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(403);
@@ -324,7 +323,7 @@ describe('User API endpoints intgeration Tests', () => {
   // cancel change parcel destination tests
   describe('#PATCH / parcel', () => {
     it('should change the destination of a parcel', (done) => {
-      request(app).patch('/api/v1/parcels/1/destination')
+      request(app).patch(`/api/v1/parcels/${parcelId}/destination`)
         .send(toLocation)
         .set('Authorization', token)
         .end((err, res) => {
@@ -357,7 +356,7 @@ describe('User API endpoints intgeration Tests', () => {
 
   describe('#PATCH / parcel', () => {
     it('should throw a 400 error for changing a parcel destination parcel', (done) => {
-      request(app).patch('/api/v1/parcels/1/destination')
+      request(app).patch(`/api/v1/parcels/${parcelId}/destination`)
         .send({ toLocation: 'why' })
         .set('Authorization', token)
         .end((err, res) => {
@@ -373,7 +372,7 @@ describe('User API endpoints intgeration Tests', () => {
 
   describe('#PATCH / parcels', () => {
     it('should throw a 401 error for changing a parcel destination', (done) => {
-      request(app).patch('/api/v1/parcels/1/destination')
+      request(app).patch(`/api/v1/parcels/${parcelId}/destination`)
         .send(toLocation)
         .set('Authorization', token401)
         .end((err, res) => {
@@ -389,8 +388,118 @@ describe('User API endpoints intgeration Tests', () => {
 
   describe('#PATCH / parcels', () => {
     it('should throw a 403 error for getting a single parcel', (done) => {
-      request(app).patch('/api/v1/parcels/1/destination')
+      request(app).patch(`/api/v1/parcels/${parcelId}/destination`)
         .send(toLocation)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('provided');
+          done();
+        });
+    });
+  });
+
+  // cancel change parcel status
+  describe('#PATCH / parcel', () => {
+    it('should change the status of a parcel', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/status`)
+        .send(status)
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.data).to.be.an('object');
+          expect(res.body.data.message).to.have.string('Order');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcel', () => {
+    it('should throw a 400 error for changing a parcel status', (done) => {
+      request(app).patch('/api/v1/parcels/some/status')
+        .send(status)
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('valid');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcel', () => {
+    it('should throw a 400 error for changing a parcel status parcel', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/status`)
+        .send({ status: 'why' })
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('valid');
+          done();
+        });
+    });
+  });
+  describe('#PATCH / parcel', () => {
+    it('should throw a 500 error for changing a parcel destination parcel', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/destination`)
+        .send(toLocation)
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(500);
+          expect(res.body.status).to.equal(500);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('cannot change the destination');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcel', () => {
+    it('should throw a 500 error for cancelling a parcel order', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/cancel`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(500);
+          expect(res.body.status).to.equal(500);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('cannot cancel');
+          done();
+        });
+    });
+  });
+  describe('#PATCH / parcels', () => {
+    it('should throw a 401 error for changing a parcel status', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/status`)
+        .send(status)
+        .set('Authorization', token401)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(401);
+          expect(res.body.status).to.equal(401);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('malformed');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcels', () => {
+    it('should throw a 403 error for changing a single partcel status', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/status`)
+        .send(status)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(403);

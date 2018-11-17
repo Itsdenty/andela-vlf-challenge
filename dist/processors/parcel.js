@@ -110,7 +110,6 @@ var parcelProcessor = function () {
   }, {
     key: 'cancelParcelOrder',
     value: async function cancelParcelOrder(pid, uid) {
-      console.log(pid, uid);
       var query = 'SELECT * from bParcels \n                    where id=$1 AND placedBy=$2',
           cancelParcel = 'UPDATE bParcels \n                    SET status=$1\n                    WHERE id=$2',
           values = [pid, uid];
@@ -137,9 +136,8 @@ var parcelProcessor = function () {
           };
         }
       } catch (error) {
-        return {
-          error: error || 'an error occured'
-        };
+        var err = error.error ? 'an error occured' : error;
+        throw err;
       }
     }
 
@@ -163,11 +161,11 @@ var parcelProcessor = function () {
             parcel = getParcel.rows[0];
         if (!parcel) {
           client.release();
-          var error = 'you are not authorized to cancel this order';
+          var error = 'you are not authorized to change the destination of this order';
           throw error;
         } else if (parcel.status === 'delivered') {
           client.release();
-          var _error2 = 'you cannot cancel an already delivered parcel';
+          var _error2 = 'you cannot change the destination of an already delivered parcel';
           throw _error2;
         }
 
@@ -177,6 +175,47 @@ var parcelProcessor = function () {
           return {
             id: pid,
             message: 'Order destination successfully changed'
+          };
+        }
+      } catch (error) {
+        var err = error.error ? 'an error occured' : error;
+        throw err;
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @param {*} pid
+     * @param {*} uid
+     * @param {*} status
+     * @param {*} deliveryDate
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'changeParcelStatus',
+    value: async function changeParcelStatus(pid, uid, status, deliveryDate) {
+      var query = 'SELECT * from bParcels \n                    where id=$1 AND placedBy=$2',
+          cancelParcel = 'UPDATE bParcels \n                    SET status=$1, deliveredOn=$2\n                    WHERE id=$3',
+          values = [pid, uid];
+      try {
+        var client = await clientPool.connect(),
+            getParcel = await client.query({ text: query, values: values }),
+            parcel = getParcel.rows[0];
+        if (!parcel) {
+          client.release();
+          var error = 'you are not authorized to change the status of this order';
+          throw error;
+        }
+        var updateParcel = await client.query({
+          text: cancelParcel,
+          values: [status, deliveryDate, pid]
+        });
+        client.release();
+        if (updateParcel) {
+          return {
+            id: pid,
+            message: 'Order status successfully changed'
           };
         }
       } catch (error) {

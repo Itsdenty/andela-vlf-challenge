@@ -22,16 +22,24 @@ Validator.create = function (req, res, next) {
     return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
   });
 };
-Validator.getOne = function (req, res, next) {
+Validator.validateId = function (req, res, next) {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
   req.asyncValidationErrors().then(next).catch(function (errors) {
     return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
   });
 };
 
-Validator.changeDestination = function (req, res, next) {
+Validator.validateAddress = function (req, res, next) {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
   req.checkBody('toLocation', 'Please supply a valid destination address').notEmpty().isMinLen(6).isMaxLen(100);
+  req.asyncValidationErrors().then(next).catch(function (errors) {
+    return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
+  });
+};
+
+Validator.validateStatus = function (req, res, next) {
+  req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
+  req.checkBody('status', 'Please supply a valid parcel status').notEmpty().isStatusType();
   req.asyncValidationErrors().then(next).catch(function (errors) {
     return res.status(400).json(_transformer2.default.transformResponse(400, _transformer2.default.transformExpressValidationErrors(errors), errors));
   });

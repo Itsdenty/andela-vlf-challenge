@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
 import createToken from '../utils/createToken';
 import { connectionString } from '../config/postgres-config';
@@ -33,11 +32,13 @@ class userProcessor {
       const signedupUser = createdUser.rows[0];
       delete signedupUser.password;
       const {
-        id, firstName, lastName
+        id, firstName, lastName, isadmin
       } = createdUser.rows[0];
 
       // create the token after all the inputs are certified ok
-      const authToken = createToken.token({ id, firstName, lastName }, secretKey);
+      const authToken = createToken.token({
+        id, firstName, lastName, isadmin
+      }, secretKey);
       client.release();
       return {
         message: 'User created successfully',
@@ -74,10 +75,12 @@ class userProcessor {
         }
         // creates a token that lasts for 24 hours
         const {
-          id, firstname, lastname
+          id, firstname, lastname, isadmin
         } = user.rows[0];
         delete signedInUser.password;
-        const authToken = createToken.token({ id, firstname, lastname }, secretKey);
+        const authToken = createToken.token({
+          id, firstname, lastname, isadmin
+        }, secretKey);
         return {
           message: 'You are logged in!',
           token: authToken,

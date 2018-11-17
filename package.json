@@ -11,10 +11,11 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "coveralls": "nyc --reporter=lcov --reporter=text-lcov npm test",
-    "for-test": "npm run db-migrate && npm run db-seed",
+    "for-test": "NODE_ENV=test npm run db-migrate && npm run db-seed",
     "db-migrate": "babel-node ./database/models/index.js",
     "db-migrate:test": "NODE_ENV=test babel-node ./database/models/index.js",
-    "db-seed": "babel-node ./database/seeders/index.js"
+    "db-seed": "babel-node ./database/seeders/index.js",
+    "db-seed:dev": "NODE_ENV=test babel-node ./database/seeders/index.js"
   },
   "repository": {
     "type": "git",
