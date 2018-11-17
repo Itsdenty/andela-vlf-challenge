@@ -43,18 +43,6 @@ app.use('/', routes);
 //   res.send(transformer.transformResponse(500, err));
 // });
 
-app.get('/pool', (req, res) => {
-  pool.connect((err) => {
-    if (err) {
-      console.log(`not able to get connection ${err}`);
-      res.status(400).send(err);
-      console.log(err);
-    } else {
-      console.log('successfully connected');
-    }
-  });
-});
-
 
 app.listen(port || 3000, () => {
   console.log(`Started on port ${port}`);

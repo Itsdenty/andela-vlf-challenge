@@ -53,7 +53,7 @@ var userController = function () {
         var createUser = await _user2.default.createUser(req.body.user);
         res.send(_transformer2.default.transformResponse(200, createUser));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
       }
     }
 
@@ -74,7 +74,7 @@ var userController = function () {
         var loginUser = await _user2.default.loginUser(req);
         res.send(_transformer2.default.transformResponse(200, loginUser));
       } catch (error) {
-        res.send(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
       }
     }
   }]);
