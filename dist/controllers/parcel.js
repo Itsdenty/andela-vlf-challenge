@@ -114,7 +114,7 @@ var parcelController = function () {
         var oneParcel = await _parcel2.default.cancelParcelOrder(req.params.id, req.decodedToken.id);
         res.send(_transformer2.default.transformResponse(200, oneParcel));
       } catch (error) {
-        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error));
       }
     }
 
@@ -133,6 +133,30 @@ var parcelController = function () {
     value: async function changeParcelDestination(req, res) {
       try {
         var changedParcel = await _parcel2.default.changeParcelDestination(req.params.id, req.decodedToken.id, req.body.toLocation);
+        console.log(changedParcel, 'destination response');
+        res.send(_transformer2.default.transformResponse(200, changedParcel));
+      } catch (error) {
+        console.log(error, 'destination error');
+        res.status(500).json(_transformer2.default.transformResponse(500, error));
+      }
+    }
+
+    /**
+     *
+     *
+     * @static
+     * @param {*} req
+     * @param {*} res
+     * @memberof parcelController
+     * @returns {json} oneParcel response
+     */
+
+  }, {
+    key: 'changeParcelStatus',
+    value: async function changeParcelStatus(req, res) {
+      try {
+        var deliveryDate = (0, _moment2.default)().format('YYYY-MM-DD'),
+            changedParcel = await _parcel2.default.changeParcelStatus(req.params.id, req.decodedToken.id, req.body.status.toLowerCase(), deliveryDate);
         res.send(_transformer2.default.transformResponse(200, changedParcel));
       } catch (error) {
         res.status(500).json(_transformer2.default.transformResponse(500, error.error));

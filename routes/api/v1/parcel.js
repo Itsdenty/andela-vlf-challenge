@@ -7,11 +7,11 @@ import jwtVerify from '../../../middlewares/auth';
 const router = express.Router();
 router.post('/', jwtVerify.verifyToken, validator.create, controller.createParcel);
 router.get('/', jwtVerify.verifyToken, controller.getAllParcels);
-router.get('/:id', jwtVerify.verifyToken, validator.validadteId, controller.getOneParcel);
-router.patch('/:id/cancel', jwtVerify.verifyToken, validator.validadteId,
+router.get('/:id', jwtVerify.verifyToken, validator.validateId, controller.getOneParcel);
+router.patch('/:id/cancel', jwtVerify.verifyToken, validator.validateId,
   controller.cancelParcelOrder);
 router.patch('/:id/destination', jwtVerify.verifyToken,
-  validator.changeDestination, controller.changeParcelDestination);
-router.patch('/:id/status', jwtVerify.verifyToken,
+  validator.validateAddress, controller.changeParcelDestination);
+router.patch('/:id/status', jwtVerify.verifyToken, jwtVerify.isAdmin,
   validator.validateStatus, controller.changeParcelStatus);
 export default router;

@@ -2,6 +2,7 @@ const transformer = {},
   errCodes = [401, 403, 500, 400];
 
 transformer.transformResponse = (status, data) => {
+  console.log(status, 'transformer status code');
   if (!data) {
     data = {};
   }

@@ -10,10 +10,6 @@ var _bcrypt = require('bcrypt');
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
-var _jsonwebtoken = require('jsonwebtoken');
-
-var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
-
 var _pg = require('pg');
 
 var _createToken = require('../utils/createToken');
@@ -62,11 +58,14 @@ var userProcessor = function () {
         var _createdUser$rows$ = createdUser.rows[0],
             id = _createdUser$rows$.id,
             firstName = _createdUser$rows$.firstName,
-            lastName = _createdUser$rows$.lastName;
+            lastName = _createdUser$rows$.lastName,
+            isadmin = _createdUser$rows$.isadmin;
 
         // create the token after all the inputs are certified ok
 
-        var authToken = _createToken2.default.token({ id: id, firstName: firstName, lastName: lastName }, secretKey);
+        var authToken = _createToken2.default.token({
+          id: id, firstName: firstName, lastName: lastName, isadmin: isadmin
+        }, secretKey);
         client.release();
         return {
           message: 'User created successfully',
@@ -107,10 +106,13 @@ var userProcessor = function () {
           var _user$rows$ = user.rows[0],
               id = _user$rows$.id,
               firstname = _user$rows$.firstname,
-              lastname = _user$rows$.lastname;
+              lastname = _user$rows$.lastname,
+              isadmin = _user$rows$.isadmin;
 
           delete signedInUser.password;
-          var authToken = _createToken2.default.token({ id: id, firstname: firstname, lastname: lastname }, secretKey);
+          var authToken = _createToken2.default.token({
+            id: id, firstname: firstname, lastname: lastname, isadmin: isadmin
+          }, secretKey);
           return {
             message: 'You are logged in!',
             token: authToken,

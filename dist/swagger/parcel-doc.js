@@ -235,6 +235,7 @@
  *         schema:
  *           $ref: '#/definitions/ErrorObject'
  */
+
 /**
  * @swagger
  * /parcels/{id}/destination:
@@ -260,6 +261,57 @@
  *           type: object
  *           required:
  *             - toLocation
+ *           properties:
+ *             toLocation:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: changed parcel description
+ *         schema:
+ *           $ref: '#/definitions/UpdateObjectParcel'
+ *       500:
+ *         description: Server error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       404:
+ *         description: Supplied parcel id incorrect
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       401:
+ *         description: Authentication error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       403:
+ *         description: Authourization error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ */
+
+/**
+ * @swagger
+ * /parcels/{id}/status:
+ *   patch:
+ *     tags:
+ *       - Parcel
+ *     description: Changes a parcel's status
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Parcel's id
+ *         in: path
+ *         required: true
+ *         type: number
+ *       - name: toLocation
+ *         description: parcel status
+ *         in: body
+ *         required: true
+ *         schema:
+ *           type: object
+ *           required:
+ *             - status
  *           properties:
  *             toLocation:
  *               type: string

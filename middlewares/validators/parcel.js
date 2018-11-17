@@ -14,7 +14,7 @@ Validator.create = (req, res, next) => {
     .catch(errors => res.status(400).json(Transformer.transformResponse(400,
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
-Validator.validadteId = (req, res, next) => {
+Validator.validateId = (req, res, next) => {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
   req.asyncValidationErrors()
     .then(next)
