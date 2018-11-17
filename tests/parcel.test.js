@@ -465,6 +465,7 @@ describe('User API endpoints integration Tests', () => {
         });
     });
   });
+
   describe('#PATCH / parcel', () => {
     it('should throw a 500 error for cancelling a parcel order', (done) => {
       request(app).patch(`/api/v1/parcels/${parcelId}/cancel`)
