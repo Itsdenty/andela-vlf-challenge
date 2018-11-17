@@ -35,7 +35,7 @@ CustomValidators.isArray = function (input) {
   return Array.isArray(input);
 };
 CustomValidators.isStatusType = function (input) {
-  return statuses.includes(input);
+  return statuses.includes(input.toLowerCase());
 };
 CustomValidators.isIdType = function (input) {
   return input + 1 > 0;

@@ -24,7 +24,7 @@ class parcelController {
       const createParcel = await processor.createParcel(req.body.parcel);
       res.send(transformer.transformResponse(200, createParcel));
     } catch (error) {
-      res.status(500).json(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error));
     }
   }
 
@@ -42,7 +42,7 @@ class parcelController {
       const getParcels = await processor.getAllParcels();
       res.send(transformer.transformResponse(200, getParcels));
     } catch (error) {
-      res.status(500).json(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error));
     }
   }
 
@@ -60,7 +60,7 @@ class parcelController {
       const oneParcel = await processor.getOneParcel(req.params.id);
       res.send(transformer.transformResponse(200, oneParcel));
     } catch (error) {
-      res.status(500).json(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error));
     }
   }
 
@@ -78,7 +78,7 @@ class parcelController {
       const oneParcel = await processor.cancelParcelOrder(req.params.id, req.decodedToken.id);
       res.send(transformer.transformResponse(200, oneParcel));
     } catch (error) {
-      res.status(500).json(transformer.transformResponse(500, error.error));
+      res.status(500).json(transformer.transformResponse(500, error));
     }
   }
 
@@ -95,6 +95,28 @@ class parcelController {
     try {
       const changedParcel = await processor.changeParcelDestination(req.params.id,
         req.decodedToken.id, req.body.toLocation);
+      console.log(changedParcel, 'destination response');
+      res.send(transformer.transformResponse(200, changedParcel));
+    } catch (error) {
+      console.log(error, 'destination error');
+      res.status(500).json(transformer.transformResponse(500, error));
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof parcelController
+   * @returns {json} oneParcel response
+   */
+  static async changeParcelStatus(req, res) {
+    try {
+      const deliveryDate = moment().format('YYYY-MM-DD'),
+        changedParcel = await processor.changeParcelStatus(req.params.id,
+          req.decodedToken.id, req.body.status.toLowerCase(), deliveryDate);
       res.send(transformer.transformResponse(200, changedParcel));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));
