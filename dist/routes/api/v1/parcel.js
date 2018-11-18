@@ -27,6 +27,7 @@ router.post('/', _auth2.default.verifyToken, _parcel4.default.create, _parcel2.d
 router.get('/', _auth2.default.verifyToken, _parcel2.default.getAllParcels);
 router.get('/:id', _auth2.default.verifyToken, _parcel4.default.validateId, _parcel2.default.getOneParcel);
 router.patch('/:id/cancel', _auth2.default.verifyToken, _parcel4.default.validateId, _parcel2.default.cancelParcelOrder);
-router.patch('/:id/destination', _auth2.default.verifyToken, _parcel4.default.validateAddress, _parcel2.default.changeParcelDestination);
+router.patch('/:id/destination', _auth2.default.verifyToken, _parcel4.default.validateDestination, _parcel2.default.changeParcelDestination);
 router.patch('/:id/status', _auth2.default.verifyToken, _auth2.default.isAdmin, _parcel4.default.validateStatus, _parcel2.default.changeParcelStatus);
+router.patch('/:id/currentlocation', _auth2.default.verifyToken, _auth2.default.isAdmin, _parcel4.default.validateCurrentLocation, _parcel2.default.changeParcelCurrentLocation);
 exports.default = router;

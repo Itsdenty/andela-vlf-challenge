@@ -44,6 +44,7 @@ describe('User API endpoints integration Tests', () => {
     },
     token401 = 'awesome-token-for-us',
     toLocation = { toLocation: 'Bodija Ibadan' },
+    currentLocation = { currentLocation: 'Mushin, Lagos' },
     status = { status: 'delivered' };
   let parcelId = '',
     token = '';
@@ -401,7 +402,7 @@ describe('User API endpoints integration Tests', () => {
     });
   });
 
-  // cancel change parcel status
+  // change parcel status
   describe('#PATCH / parcel', () => {
     it('should change the status of a parcel', (done) => {
       request(app).patch(`/api/v1/parcels/${parcelId}/status`)
@@ -500,6 +501,87 @@ describe('User API endpoints integration Tests', () => {
     it('should throw a 403 error for changing a single partcel status', (done) => {
       request(app).patch(`/api/v1/parcels/${parcelId}/status`)
         .send(status)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('provided');
+          done();
+        });
+    });
+  });
+
+  // change parcel current location tests
+  describe('#PATCH / parcel', () => {
+    it('should change the current location of a parcel', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/currentlocation`)
+        .send(currentLocation)
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.data).to.be.an('object');
+          expect(res.body.data.message).to.have.string('Order');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcel', () => {
+    it('should throw a 400 error for changing a parcel current location', (done) => {
+      request(app).patch('/api/v1/parcels/some/currentlocation')
+        .send(currentLocation)
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('valid');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcel', () => {
+    it('should throw a 400 error for changing a parcel current location', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/currentlocation`)
+        .send({ currentLocation: 'why' })
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('valid');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcels', () => {
+    it('should throw a 401 error for changing a parcel current location', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/currentlocation`)
+        .send(currentLocation)
+        .set('Authorization', token401)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(401);
+          expect(res.body.status).to.equal(401);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('malformed');
+          done();
+        });
+    });
+  });
+
+  describe('#PATCH / parcels', () => {
+    it('should throw a 403 error for getting a single parcel', (done) => {
+      request(app).patch(`/api/v1/parcels/${parcelId}/destination`)
+        .send(toLocation)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(403);
