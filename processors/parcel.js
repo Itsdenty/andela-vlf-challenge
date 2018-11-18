@@ -171,9 +171,12 @@ class parcelProcessor {
   static async changeParcelStatus(pid, uid, status, deliveryDate) {
     const query = `SELECT * from bParcels 
                     where id=$1 AND placedBy=$2`,
-      cancelParcel = `UPDATE bParcels 
-                    SET status=$1, deliveredOn=$2
-                    WHERE id=$3`,
+      deliverParcel = `UPDATE bParcels 
+                        SET status=$1, deliveredOn=$2
+                        WHERE id=$3`,
+      statusParcel = `UPDATE bParcels 
+                        SET status=$1 
+                        WHERE id=$3`,
       values = [pid, uid];
     try {
       const client = await clientPool.connect(),
@@ -185,14 +188,43 @@ class parcelProcessor {
         throw error;
       }
       const updateParcel = await client.query({
-        text: cancelParcel,
-        values: [status, deliveryDate, pid]
+        text: status === 'delivered' ? deliverParcel : statusParcel,
+        values: status === 'delivered' ? [status, deliveryDate, pid] : [status, pid]
       });
       client.release();
       if (updateParcel) {
         return {
           id: pid,
           message: 'Order status successfully changed'
+        };
+      }
+    } catch (error) {
+      const err = error.error ? 'an error occured' : error;
+      throw err;
+    }
+  }
+
+  /**
+   * @description - Get all ride offers
+   * @param {*} pid
+   * @param {*} currentLocation
+   * @return{json} registered ride offer details
+   */
+  static async changeParcelCurrentLocation(pid, currentLocation) {
+    const query = `UPDATE bParcels 
+                    SET currentLocation=$1
+                    WHERE id=$2`;
+    try {
+      const client = await clientPool.connect();
+      const updateParcel = await client.query({
+        text: query,
+        values: [currentLocation, pid]
+      });
+      client.release();
+      if (updateParcel) {
+        return {
+          id: pid,
+          message: 'Order destination successfully changed'
         };
       }
     } catch (error) {

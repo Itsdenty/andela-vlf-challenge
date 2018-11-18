@@ -135,7 +135,7 @@ class parcelController {
   static async changeParcelCurrentLocation(req, res) {
     try {
       const changedParcel = await processor.changeParcelStatus(req.params.id,
-        req.decodedToken.id, req.body.status.toLowerCase());
+        req.body.currentLocation);
       res.send(transformer.transformResponse(200, changedParcel));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));
