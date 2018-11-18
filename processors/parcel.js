@@ -230,7 +230,7 @@ class parcelProcessor {
         };
       }
     } catch (error) {
-      const err = error.error ? 'an error occured' : error;
+      const err = 'an error occured';
       throw err;
     }
   }
