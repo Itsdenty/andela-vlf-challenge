@@ -51,7 +51,7 @@ var parcelController = function () {
         var createParcel = await _parcel2.default.createParcel(req.body.parcel);
         res.send(_transformer2.default.transformResponse(200, createParcel));
       } catch (error) {
-        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error));
       }
     }
 
@@ -72,7 +72,7 @@ var parcelController = function () {
         var getParcels = await _parcel2.default.getAllParcels();
         res.send(_transformer2.default.transformResponse(200, getParcels));
       } catch (error) {
-        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error));
       }
     }
 
@@ -93,7 +93,7 @@ var parcelController = function () {
         var oneParcel = await _parcel2.default.getOneParcel(req.params.id);
         res.send(_transformer2.default.transformResponse(200, oneParcel));
       } catch (error) {
-        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
+        res.status(500).json(_transformer2.default.transformResponse(500, error));
       }
     }
 
@@ -157,6 +157,27 @@ var parcelController = function () {
       try {
         var deliveryDate = (0, _moment2.default)().format('YYYY-MM-DD'),
             changedParcel = await _parcel2.default.changeParcelStatus(req.params.id, req.decodedToken.id, req.body.status.toLowerCase(), deliveryDate);
+        res.send(_transformer2.default.transformResponse(200, changedParcel));
+      } catch (error) {
+        res.status(500).json(_transformer2.default.transformResponse(500, error.error));
+      }
+    }
+
+    /**
+     *
+     *
+     * @static
+     * @param {*} req
+     * @param {*} res
+     * @memberof parcelController
+     * @returns {json} oneParcel response
+     */
+
+  }, {
+    key: 'changeParcelCurrentLocation',
+    value: async function changeParcelCurrentLocation(req, res) {
+      try {
+        var changedParcel = await _parcel2.default.changeParcelCurrentLocation(req.params.id, req.body.currentLocation);
         res.send(_transformer2.default.transformResponse(200, changedParcel));
       } catch (error) {
         res.status(500).json(_transformer2.default.transformResponse(500, error.error));

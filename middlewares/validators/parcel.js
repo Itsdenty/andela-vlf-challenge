@@ -22,7 +22,7 @@ Validator.validateId = (req, res, next) => {
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
 
-Validator.validateAddress = (req, res, next) => {
+Validator.validateDestination = (req, res, next) => {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
   req.checkBody('toLocation', 'Please supply a valid destination address').notEmpty().isMinLen(6).isMaxLen(100);
   req.asyncValidationErrors()
@@ -34,6 +34,15 @@ Validator.validateAddress = (req, res, next) => {
 Validator.validateStatus = (req, res, next) => {
   req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
   req.checkBody('status', 'Please supply a valid parcel status').notEmpty().isStatusType();
+  req.asyncValidationErrors()
+    .then(next)
+    .catch(errors => res.status(400).json(Transformer.transformResponse(400,
+      Transformer.transformExpressValidationErrors(errors), errors)));
+};
+
+Validator.validateCurrentLocation = (req, res, next) => {
+  req.checkParams('id', 'Please enter a valid parcel id').notEmpty().isDecimal();
+  req.checkBody('currentLocation', 'Please supply a valid destination address').notEmpty().isMinLen(6).isMaxLen(100);
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(400,

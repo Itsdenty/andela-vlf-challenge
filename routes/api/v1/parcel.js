@@ -11,9 +11,9 @@ router.get('/:id', jwtVerify.verifyToken, validator.validateId, controller.getOn
 router.patch('/:id/cancel', jwtVerify.verifyToken, validator.validateId,
   controller.cancelParcelOrder);
 router.patch('/:id/destination', jwtVerify.verifyToken,
-  validator.validateAddress, controller.changeParcelDestination);
+  validator.validateDestination, controller.changeParcelDestination);
 router.patch('/:id/status', jwtVerify.verifyToken, jwtVerify.isAdmin,
   validator.validateStatus, controller.changeParcelStatus);
 router.patch('/:id/currentlocation', jwtVerify.verifyToken, jwtVerify.isAdmin,
-  validator.validateAddress, controller.changeParcelCurrentLocation);
+  validator.validateCurrentLocation, controller.changeParcelCurrentLocation);
 export default router;

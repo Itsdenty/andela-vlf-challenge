@@ -18,7 +18,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @returns {String} fstring
  */
 
-describe('User API endpoints intgeration Tests', function () {
+describe('User API endpoints integration Tests', function () {
   var parcel = {
     parcel: {
       placedBy: 1,
@@ -413,11 +413,12 @@ describe('User API endpoints intgeration Tests', function () {
         (0, _chai.expect)(res.statusCode).to.equal(500);
         (0, _chai.expect)(res.body.status).to.equal(500);
         (0, _chai.expect)(res.body).to.be.an('object');
-        (0, _chai.expect)(res.body.error).to.have.string('authorized');
+        (0, _chai.expect)(res.body.error).to.have.string('cannot change the destination');
         done();
       });
     });
   });
+
   describe('#PATCH / parcel', function () {
     it('should throw a 500 error for cancelling a parcel order', function (done) {
       (0, _supertest2.default)(_index2.default).patch('/api/v1/parcels/' + parcelId + '/cancel').set('Authorization', token).end(function (err, res) {
@@ -425,7 +426,7 @@ describe('User API endpoints intgeration Tests', function () {
         (0, _chai.expect)(res.statusCode).to.equal(500);
         (0, _chai.expect)(res.body.status).to.equal(500);
         (0, _chai.expect)(res.body).to.be.an('object');
-        (0, _chai.expect)(res.body.error).to.have.string('authorized');
+        (0, _chai.expect)(res.body.error).to.have.string('cannot cancel');
         done();
       });
     });

@@ -47,7 +47,7 @@ var parcelProcessor = function () {
           id: newParcel.id
         };
       } catch (error) {
-        var err = { error: 'An error occured' };
+        var err = 'an error occured';
         throw err;
       }
     }
@@ -69,9 +69,8 @@ var parcelProcessor = function () {
         client.release();
         return parcels;
       } catch (error) {
-        return {
-          error: 'an error occured'
-        };
+        var err = error.error ? 'an error occured' : error;
+        throw err;
       }
     }
 
@@ -94,9 +93,8 @@ var parcelProcessor = function () {
         client.release();
         return parcel;
       } catch (error) {
-        return {
-          error: 'an error occured'
-        };
+        var err = error.error ? 'an error occured' : error;
+        throw err;
       }
     }
 
@@ -196,7 +194,8 @@ var parcelProcessor = function () {
     key: 'changeParcelStatus',
     value: async function changeParcelStatus(pid, uid, status, deliveryDate) {
       var query = 'SELECT * from bParcels \n                    where id=$1 AND placedBy=$2',
-          cancelParcel = 'UPDATE bParcels \n                    SET status=$1, deliveredOn=$2\n                    WHERE id=$3',
+          deliverParcel = 'UPDATE bParcels \n                        SET status=$1, deliveredOn=$2\n                        WHERE id=$3',
+          statusParcel = 'UPDATE bParcels \n                        SET status=$1 \n                        WHERE id=$3',
           values = [pid, uid];
       try {
         var client = await clientPool.connect(),
@@ -208,20 +207,50 @@ var parcelProcessor = function () {
           throw error;
         }
         var updateParcel = await client.query({
-          text: cancelParcel,
-          values: [status, deliveryDate, pid]
+          text: status === 'delivered' ? deliverParcel : statusParcel,
+          values: status === 'delivered' ? [status, deliveryDate, pid] : [status, pid]
         });
         client.release();
         if (updateParcel) {
           return {
             id: pid,
+            status: status,
             message: 'Order status successfully changed'
           };
         }
       } catch (error) {
-        return {
-          error: error || 'an error occured'
-        };
+        var err = error.error ? 'an error occured' : error;
+        throw err;
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @param {*} pid
+     * @param {*} currentLocation
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'changeParcelCurrentLocation',
+    value: async function changeParcelCurrentLocation(pid, currentLocation) {
+      var query = 'UPDATE bParcels \n                    SET currentLocation=$1\n                    WHERE id=$2';
+      try {
+        var client = await clientPool.connect();
+        var updateParcel = await client.query({
+          text: query,
+          values: [currentLocation, pid]
+        });
+        client.release();
+        if (updateParcel) {
+          return {
+            id: pid,
+            message: 'Order destination successfully changed'
+          };
+        }
+      } catch (error) {
+        var err = error.error ? 'an error occured' : error;
+        throw err;
       }
     }
   }]);

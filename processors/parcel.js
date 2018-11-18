@@ -195,6 +195,7 @@ class parcelProcessor {
       if (updateParcel) {
         return {
           id: pid,
+          status,
           message: 'Order status successfully changed'
         };
       }
@@ -224,7 +225,8 @@ class parcelProcessor {
       if (updateParcel) {
         return {
           id: pid,
-          message: 'Order destination successfully changed'
+          currentLocation,
+          message: 'Order current location successfully changed'
         };
       }
     } catch (error) {
