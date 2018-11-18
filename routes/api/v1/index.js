@@ -45,7 +45,7 @@ router.get('/swagger.json', (req, res) => {
 router.get('/', (req, res) => {
   res.send('You\'ve reached api/v1 routes');
 });
-router.get('/users/:id/parcels', jwtVerify.verifyToken, validator.validateId, controller.getOneParcel);
+router.get('/users/:id/parcels', jwtVerify.verifyToken, validator.validateId, controller.getUserParcels);
 router.use('/auth', user);
 router.use('/parcels', parcel);
 
