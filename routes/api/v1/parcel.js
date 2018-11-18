@@ -15,5 +15,5 @@ router.patch('/:id/destination', jwtVerify.verifyToken,
 router.patch('/:id/status', jwtVerify.verifyToken, jwtVerify.isAdmin,
   validator.validateStatus, controller.changeParcelStatus);
 router.patch('/:id/currentlocation', jwtVerify.verifyToken, jwtVerify.isAdmin,
-  validator.validateAddress, controller.changeParcelStatus);
+  validator.validateAddress, controller.changeParcelCurrentLocation);
 export default router;
