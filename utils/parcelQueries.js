@@ -26,7 +26,7 @@ queries.deliverParcel = `UPDATE bParcels
 queries.changeLocation = `UPDATE bParcels 
                           SET currentLocation=$1
                           WHERE id=$2`;
-queries.userParcels = `SELECT * from bParcels 
+queries.userParcels = `SELECT * from bParcels
                         where placedBy=$1`;
 queries.values = parcel => [parcel.placedBy, parcel.weight, parcel.weightmetric,
   parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation];
