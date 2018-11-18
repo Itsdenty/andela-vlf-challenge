@@ -33,7 +33,6 @@ JWT.verifyToken = function (req, res, next) {
 };
 
 JWT.isAdmin = function (req, res, next) {
-  console.log(req.decodedToken);
   if (!req.decodedToken.isadmin) {
     return res.status(403).json(_transformer2.default.transformResponse(403, 'only an admin is authorized to access this endpoint'));
   }

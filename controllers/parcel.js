@@ -1,6 +1,6 @@
 import moment from 'moment';
-import transformer from '../utils/transformer';
-import processor from '../processors/parcel';
+import transformer from '../utils/transformer'; // for transforming app response
+import processor from '../processors/parcel'; // for parcel database interactions
 
 /**
  *
@@ -95,10 +95,8 @@ class parcelController {
     try {
       const changedParcel = await processor.changeParcelDestination(req.params.id,
         req.decodedToken.id, req.body.toLocation);
-      console.log(changedParcel, 'destination response');
       res.send(transformer.transformResponse(200, changedParcel));
     } catch (error) {
-      console.log(error, 'destination error');
       res.status(500).json(transformer.transformResponse(500, error));
     }
   }
@@ -116,7 +114,7 @@ class parcelController {
     try {
       const deliveryDate = moment().format('YYYY-MM-DD'),
         changedParcel = await processor.changeParcelStatus(req.params.id,
-          req.decodedToken.id, req.body.status.toLowerCase(), deliveryDate);
+          req.body.status.toLowerCase(), deliveryDate);
       res.send(transformer.transformResponse(200, changedParcel));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));

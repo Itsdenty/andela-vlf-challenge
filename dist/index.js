@@ -26,17 +26,9 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _pg = require('pg');
-
-var _pg2 = _interopRequireDefault(_pg);
-
 var _expressValidator = require('express-validator');
 
 var _expressValidator2 = _interopRequireDefault(_expressValidator);
-
-var _postgresConfig = require('./config/postgres-config');
-
-var _postgresConfig2 = _interopRequireDefault(_postgresConfig);
 
 var _routes = require('./routes');
 
@@ -57,7 +49,6 @@ var _transformer2 = _interopRequireDefault(_transformer);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)(),
-    pool = new _pg2.default.Pool(_postgresConfig2.default),
     port = process.env.PORT || '3000';
 
 // logger
@@ -77,15 +68,14 @@ app.use('/api-docs', _express2.default.static(_path2.default.join(__dirname, '..
 app.use('/', _routes2.default);
 
 // error handler
-// app.use((err, req, res) => {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-//   res.status(err.status || 500);
-//   res.send(transformer.transformResponse(500, err));
-// });
-
+  res.status(err.status || 500);
+  res.send(_transformer2.default.transformResponse(500, err));
+});
 
 app.listen(port || 3000, function () {
   console.log('Started on port ' + port);

@@ -524,4 +524,57 @@ describe('User API endpoints integration Tests', function () {
       });
     });
   });
+
+  // get user parcels tests
+  describe('#GET / parcel', function () {
+    it('should get a user parcels', function (done) {
+      (0, _supertest2.default)(_index2.default).get('/api/v1/users/1/parcels').set('Authorization', token).end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(200);
+        (0, _chai.expect)(res.body.status).to.equal(200);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.data[0]).to.be.an('object');
+        (0, _chai.expect)(res.body.data[0].fromlocation).to.have.string('l');
+        done();
+      });
+    });
+  });
+
+  describe('#GET / parcel', function () {
+    it('should throw a 400 error for get a user parcels', function (done) {
+      (0, _supertest2.default)(_index2.default).get('/api/v1/users/some/parcels').set('Authorization', token).end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(400);
+        (0, _chai.expect)(res.body.status).to.equal(400);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.error).to.have.string('valid');
+        done();
+      });
+    });
+  });
+  describe('#GET / parcels', function () {
+    it('should throw a 401 error for getting a user parcels', function (done) {
+      (0, _supertest2.default)(_index2.default).get('/api/v1/users/1/parcels').set('Authorization', token401).end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(401);
+        (0, _chai.expect)(res.body.status).to.equal(401);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.error).to.have.string('malformed');
+        done();
+      });
+    });
+  });
+
+  describe('#GET / parcels', function () {
+    it('should throw a 403 error for getting a user parcels', function (done) {
+      (0, _supertest2.default)(_index2.default).get('/api/v1/users/1/parcels').end(function (err, res) {
+        if (err) return done(err);
+        (0, _chai.expect)(res.statusCode).to.equal(403);
+        (0, _chai.expect)(res.body.status).to.equal(403);
+        (0, _chai.expect)(res.body).to.be.an('object');
+        (0, _chai.expect)(res.body.error).to.have.string('provided');
+        done();
+      });
+    });
+  });
 });

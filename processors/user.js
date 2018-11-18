@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import { Pool } from 'pg';
-import createToken from '../utils/createToken';
+import createToken from '../utils/createToken'; // utitlity function for creating token
 import { connectionString } from '../config/postgres-config';
+import userQueries from '../utils/userQueries'; // sql queries for user
 
 const clientPool = new Pool(connectionString),
   secretKey = process.env.JWT_SECRET;
@@ -18,18 +19,17 @@ class userProcessor {
    */
   static async createUser(user) {
     // Hash password to save in the database
-    const createUser = `INSERT INTO aUsers (firstName, lastName, otherNames, username, email, password, isAdmin)
-                            VALUES ($1, $2, $3, $4, $5, $6, $7)
-                            RETURNING *`;
+    const { createUser } = userQueries;
+
     try {
-      const client = await clientPool.connect();
+      const client = await clientPool.connect(),
+        values = userQueries.values(user),
+        createdUser = await client.query({
+          text: createUser, values
+        }),
+        signedupUser = createdUser.rows[0];
 
-      const values = [user.firstName, user.lastName, user.otherNames,
-        user.username, user.email, user.password, user.isAdmin];
-
-      const createdUser = await client.query({ text: createUser, values });
-
-      const signedupUser = createdUser.rows[0];
+      // remove password from user object
       delete signedupUser.password;
       const {
         id, firstName, lastName, isadmin
@@ -39,13 +39,18 @@ class userProcessor {
       const authToken = createToken.token({
         id, firstName, lastName, isadmin
       }, secretKey);
+
+      // release client back to pool
       client.release();
+
+      // return user object
       return {
         message: 'User created successfully',
         user: signedupUser,
         token: authToken,
       };
     } catch (error) {
+      // create and throw 500 error
       const err = { error: 'and error occured or user already exists' };
       throw err;
     }
@@ -59,16 +64,18 @@ class userProcessor {
    */
   static async loginUser(req) {
     const email = req.body.login.email.trim().toLowerCase();
-    const findOneUser = `SELECT * FROM aUsers
-                          WHERE email = $1`;
+    const { findOneUser } = userQueries;
+
     try {
       const client = await clientPool.connect();
       // find a user with the given email
       const user = await client.query({ text: findOneUser, values: [email] });
+
       if (user.rows[0].id) {
         const signedInUser = user.rows[0];
         // check it the password matches
         const password = await bcrypt.compare(req.body.login.password, user.rows[0].password);
+
         if (!password) {
           // return { message: 'wrong password!' };
           throw new Error('wrong password!');
@@ -88,6 +95,7 @@ class userProcessor {
         };
       }
     } catch (error) {
+      // throw custom 500 error
       const err = { error: 'wrong username or password' };
       throw err;
     }

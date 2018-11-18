@@ -4,7 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // utitlity function for creating token
+
 
 var _bcrypt = require('bcrypt');
 
@@ -18,9 +19,15 @@ var _createToken2 = _interopRequireDefault(_createToken);
 
 var _postgresConfig = require('../config/postgres-config');
 
+var _userQueries = require('../utils/userQueries');
+
+var _userQueries2 = _interopRequireDefault(_userQueries);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// sql queries for user
 
 var clientPool = new _pg.Pool(_postgresConfig.connectionString),
     secretKey = process.env.JWT_SECRET;
@@ -45,15 +52,18 @@ var userProcessor = function () {
      */
     value: async function createUser(user) {
       // Hash password to save in the database
-      var createUser = 'INSERT INTO aUsers (firstName, lastName, otherNames, username, email, password, isAdmin)\n                            VALUES ($1, $2, $3, $4, $5, $6, $7)\n                            RETURNING *';
+      var createUser = _userQueries2.default.createUser;
+
+
       try {
-        var client = await clientPool.connect();
+        var client = await clientPool.connect(),
+            values = _userQueries2.default.values(user),
+            createdUser = await client.query({
+          text: createUser, values: values
+        }),
+            signedupUser = createdUser.rows[0];
 
-        var values = [user.firstName, user.lastName, user.otherNames, user.username, user.email, user.password, user.isAdmin];
-
-        var createdUser = await client.query({ text: createUser, values: values });
-
-        var signedupUser = createdUser.rows[0];
+        // remove password from user object
         delete signedupUser.password;
         var _createdUser$rows$ = createdUser.rows[0],
             id = _createdUser$rows$.id,
@@ -66,13 +76,18 @@ var userProcessor = function () {
         var authToken = _createToken2.default.token({
           id: id, firstName: firstName, lastName: lastName, isadmin: isadmin
         }, secretKey);
+
+        // release client back to pool
         client.release();
+
+        // return user object
         return {
           message: 'User created successfully',
           user: signedupUser,
           token: authToken
         };
       } catch (error) {
+        // create and throw 500 error
         var err = { error: 'and error occured or user already exists' };
         throw err;
       }
@@ -89,15 +104,19 @@ var userProcessor = function () {
     key: 'loginUser',
     value: async function loginUser(req) {
       var email = req.body.login.email.trim().toLowerCase();
-      var findOneUser = 'SELECT * FROM aUsers\n                          WHERE email = $1';
+      var findOneUser = _userQueries2.default.findOneUser;
+
+
       try {
         var client = await clientPool.connect();
         // find a user with the given email
         var user = await client.query({ text: findOneUser, values: [email] });
+
         if (user.rows[0].id) {
           var signedInUser = user.rows[0];
           // check it the password matches
           var password = await _bcrypt2.default.compare(req.body.login.password, user.rows[0].password);
+
           if (!password) {
             // return { message: 'wrong password!' };
             throw new Error('wrong password!');
@@ -119,8 +138,8 @@ var userProcessor = function () {
             user: signedInUser
           };
         }
-        throw new Error('user not found');
       } catch (error) {
+        // throw custom 500 error
         var err = { error: 'wrong username or password' };
         throw err;
       }
