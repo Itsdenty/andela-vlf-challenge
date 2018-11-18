@@ -70,12 +70,40 @@
  *         type: string
  *       id:
  *         type: number
+ *   StatusObject:
+ *     properties:
+ *       message:
+ *         type: string
+ *       status:
+ *         type: string
+ *       id:
+ *         type: number
+ *   CurrentLocationObject:
+ *     properties:
+ *       message:
+ *         type: string
+ *       currentLocation:
+ *         type: string
+ *       id:
+ *         type: number
  *   UpdateObjectParcel:
  *     properties:
  *       status:
  *         type: number
  *       data:
  *           $ref: '#/definitions/ManipulationObject'
+ *   StatusObjectParcel:
+ *     properties:
+ *       status:
+ *         type: number
+ *       data:
+ *           $ref: '#/definitions/StatusObject'
+ *   CurrentLocationObjectParcel:
+ *     properties:
+ *       status:
+ *         type: number
+ *       data:
+ *           $ref: '#/definitions/StatusObject'
  *   ErrorObject:
  *     properties:
  *       status:
@@ -304,7 +332,7 @@
  *         in: path
  *         required: true
  *         type: number
- *       - name: toLocation
+ *       - name: status
  *         description: parcel status
  *         in: body
  *         required: true
@@ -313,13 +341,13 @@
  *           required:
  *             - status
  *           properties:
- *             toLocation:
+ *             status:
  *               type: string
  *     responses:
  *       200:
  *         description: changed parcel description
  *         schema:
- *           $ref: '#/definitions/UpdateObjectParcel'
+ *           $ref: '#/definitions/StatusObjectParcel'
  *       500:
  *         description: Server error exists
  *         schema:
@@ -334,6 +362,95 @@
  *           $ref: '#/definitions/ErrorObject'
  *       403:
  *         description: Authourization error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ */
+/**
+ * @swagger
+ * /parcels/{id}/currentlocation:
+ *   patch:
+ *     tags:
+ *       - Parcel
+ *     description: Changes a parcel's currentLocation
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: Parcel's id
+ *         in: path
+ *         required: true
+ *         type: number
+ *       - name: currentLocation
+ *         description: parcel currentlocation
+ *         in: body
+ *         required: true
+ *         schema:
+ *           type: object
+ *           required:
+ *             - currentLocation
+ *           properties:
+ *             currentLocation:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: changed parcel currentLocation
+ *         schema:
+ *           $ref: '#/definitions/CurrentLocationObjectParcel'
+ *       500:
+ *         description: Server error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       404:
+ *         description: Supplied parcel id or currentLocation incorrect
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       401:
+ *         description: Authentication error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       403:
+ *         description: Authourization error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ */
+/**
+ * @swagger
+ * /users/{id}/parcels:
+ *   get:
+ *     tags:
+ *       - Parcel
+ *     description: Returns a single parcels
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: User's id
+ *         in: path
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: a single parcel data
+ *         schema:
+ *           $ref: '#/definitions/ResponseObjectParcel'
+ *       500:
+ *         description: Server error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       404:
+ *         description: Supplied parcel id incorrect
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       401:
+ *         description: Authentication error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       403:
+ *         description: Authorization error exists
  *         schema:
  *           $ref: '#/definitions/ErrorObject'
  */

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import transformer from '../utils/transformer';
-import processor from '../processors/user';
+import processor from '../processors/user'; // for user database interaction
 
 /**
  *

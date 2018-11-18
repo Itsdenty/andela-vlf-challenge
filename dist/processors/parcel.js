@@ -4,13 +4,26 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // custom utility for sending email
+
 
 var _pg = require('pg');
 
 var _postgresConfig = require('../config/postgres-config');
 
+var _mail = require('../utils/mail');
+
+var _mail2 = _interopRequireDefault(_mail);
+
+var _parcelQueries = require('../utils/parcelQueries');
+
+var _parcelQueries2 = _interopRequireDefault(_parcelQueries);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// sql queries for parcel
 
 var clientPool = new _pg.Pool(_postgresConfig.connectionString);
 
@@ -33,11 +46,13 @@ var parcelProcessor = function () {
      * @return{json} the registered user's detail
      */
     value: async function createParcel(parcel) {
-      // Hash password to save in the database
-      var createParcel = 'INSERT INTO bParcels (placedBy, weight, weightmetric, sentOn, status, fromLocation, toLocation)\n                            VALUES ($1, $2, $3, $4, $5, $6, $7)\n                            RETURNING *';
+      //  retrieve sql insert statement from parcelQueries
+      var createParcel = _parcelQueries2.default.createParcel;
+
+
       try {
         var client = await clientPool.connect(),
-            values = [parcel.placedBy, parcel.weight, parcel.weightmetric, parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation],
+            values = _parcelQueries2.default.values(parcel),
             createdParcel = await client.query({ text: createParcel, values: values }),
             newParcel = createdParcel.rows[0];
 
@@ -47,7 +62,7 @@ var parcelProcessor = function () {
           id: newParcel.id
         };
       } catch (error) {
-        var err = { error: 'An error occured' };
+        var err = 'an error occured';
         throw err;
       }
     }
@@ -60,18 +75,20 @@ var parcelProcessor = function () {
   }, {
     key: 'getAllParcels',
     value: async function getAllParcels() {
-      var getAll = 'SELECT * from bParcels';
+      //  retrieve sql statement from parcelQueries
+      var getAllParcels = _parcelQueries2.default.getAllParcels;
+
+
       try {
         var client = await clientPool.connect(),
-            getParcels = await client.query({ text: getAll }),
+            getParcels = await client.query({ text: getAllParcels }),
             parcels = getParcels.rows;
 
         client.release();
         return parcels;
       } catch (error) {
-        return {
-          error: 'an error occured'
-        };
+        var err = error.error ? 'an error occured' : error;
+        throw err;
       }
     }
 
@@ -84,19 +101,21 @@ var parcelProcessor = function () {
   }, {
     key: 'getOneParcel',
     value: async function getOneParcel(id) {
-      var getAll = 'SELECT * from bParcels \n                    where id=$1',
+      //  retrieve sql statement from parcelQueries
+      var getOne = _parcelQueries2.default.getOne,
           values = [id];
+
+
       try {
         var client = await clientPool.connect(),
-            getParcels = await client.query({ text: getAll, values: values }),
+            getParcels = await client.query({ text: getOne, values: values }),
             parcel = getParcels.rows[0];
 
         client.release();
         return parcel;
       } catch (error) {
-        return {
-          error: 'an error occured'
-        };
+        var err = error.error ? 'an error occured' : error;
+        throw err;
       }
     }
 
@@ -110,13 +129,17 @@ var parcelProcessor = function () {
   }, {
     key: 'cancelParcelOrder',
     value: async function cancelParcelOrder(pid, uid) {
-      var query = 'SELECT * from bParcels \n                    where id=$1 AND placedBy=$2',
-          cancelParcel = 'UPDATE bParcels \n                    SET status=$1\n                    WHERE id=$2',
+      //  retrieve sql statement from parcelQueries
+      var getSingleParcel = _parcelQueries2.default.getSingleParcel,
+          changeStatus = _parcelQueries2.default.changeStatus,
           values = [pid, uid];
+
+
       try {
         var client = await clientPool.connect(),
-            getParcel = await client.query({ text: query, values: values }),
+            getParcel = await client.query({ text: getSingleParcel, values: values }),
             parcel = getParcel.rows[0];
+
         if (!parcel) {
           client.release();
           var error = 'you are not authorized to cancel this order';
@@ -127,8 +150,12 @@ var parcelProcessor = function () {
           throw _error;
         }
 
-        var updateParcel = await client.query({ text: cancelParcel, values: ['cancelled', pid] });
+        var updateParcel = await client.query({
+          text: changeStatus,
+          values: ['cancelled', pid]
+        });
         client.release();
+
         if (updateParcel) {
           return {
             id: pid,
@@ -152,13 +179,17 @@ var parcelProcessor = function () {
   }, {
     key: 'changeParcelDestination',
     value: async function changeParcelDestination(pid, uid, toLocation) {
-      var query = 'SELECT * from bParcels \n                    where id=$1 AND placedBy=$2',
-          cancelParcel = 'UPDATE bParcels \n                    SET toLocation=$1\n                    WHERE id=$2',
+      //  retrieve sql statement from parcelQueries
+      var getSingleParcel = _parcelQueries2.default.getSingleParcel,
+          changeDestination = _parcelQueries2.default.changeDestination,
           values = [pid, uid];
+
+
       try {
         var client = await clientPool.connect(),
-            getParcel = await client.query({ text: query, values: values }),
+            getParcel = await client.query({ text: getSingleParcel, values: values }),
             parcel = getParcel.rows[0];
+
         if (!parcel) {
           client.release();
           var error = 'you are not authorized to change the destination of this order';
@@ -169,8 +200,12 @@ var parcelProcessor = function () {
           throw _error2;
         }
 
-        var updateParcel = await client.query({ text: cancelParcel, values: [toLocation, pid] });
+        var updateParcel = await client.query({
+          text: changeDestination,
+          values: [toLocation, pid]
+        });
         client.release();
+
         if (updateParcel) {
           return {
             id: pid,
@@ -186,7 +221,6 @@ var parcelProcessor = function () {
     /**
      * @description - Get all ride offers
      * @param {*} pid
-     * @param {*} uid
      * @param {*} status
      * @param {*} deliveryDate
      * @return{json} registered ride offer details
@@ -194,34 +228,108 @@ var parcelProcessor = function () {
 
   }, {
     key: 'changeParcelStatus',
-    value: async function changeParcelStatus(pid, uid, status, deliveryDate) {
-      var query = 'SELECT * from bParcels \n                    where id=$1 AND placedBy=$2',
-          cancelParcel = 'UPDATE bParcels \n                    SET status=$1, deliveredOn=$2\n                    WHERE id=$3',
-          values = [pid, uid];
+    value: async function changeParcelStatus(pid, status, deliveryDate) {
+      //  retrieve sql statement from parcelQueries
+      var parcelUser = _parcelQueries2.default.parcelUser,
+          deliverParcel = _parcelQueries2.default.deliverParcel,
+          changeStatus = _parcelQueries2.default.changeStatus,
+          values = [pid];
+
+
       try {
         var client = await clientPool.connect(),
-            getParcel = await client.query({ text: query, values: values }),
-            parcel = getParcel.rows[0];
-        if (!parcel) {
-          client.release();
-          var error = 'you are not authorized to change the status of this order';
-          throw error;
-        }
-        var updateParcel = await client.query({
-          text: cancelParcel,
-          values: [status, deliveryDate, pid]
-        });
+            userParcel = await client.query({ text: parcelUser, values: values }),
+            updateParcel = await client.query({
+          text: status === 'delivered' ? deliverParcel : changeStatus,
+          values: status === 'delivered' ? [status, deliveryDate, pid] : [status, pid]
+        }),
+            user = userParcel.rows[0],
+            mailIt = await _mail2.default.notifyStatus(user, status);
+        console.log(mailIt);
         client.release();
+
         if (updateParcel) {
           return {
             id: pid,
+            status: status,
             message: 'Order status successfully changed'
           };
         }
       } catch (error) {
-        return {
-          error: error || 'an error occured'
-        };
+        console.log(error);
+        var err = 'an error occured';
+        throw err;
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @param {*} pid
+     * @param {*} currentLocation
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'changeParcelCurrentLocation',
+    value: async function changeParcelCurrentLocation(pid, currentLocation) {
+      //  retrieve sql statement from parcelQueries
+      var changeLocation = _parcelQueries2.default.changeLocation,
+          parcelUser = _parcelQueries2.default.parcelUser;
+
+
+      try {
+        var client = await clientPool.connect();
+        var updateParcel = await client.query({
+          text: changeLocation,
+          values: [currentLocation, pid]
+        });
+        var userParcel = await client.query({
+          text: parcelUser,
+          values: [pid]
+        }),
+            user = userParcel.rows[0],
+            mailIt = await _mail2.default.notifyLocation(user, currentLocation);
+
+        client.release();
+        console.log(mailIt);
+
+        if (updateParcel) {
+          return {
+            id: pid,
+            currentLocation: currentLocation,
+            message: 'Order current location successfully changed'
+          };
+        }
+      } catch (error) {
+        console.log(error);
+        var err = 'an error occured';
+        throw err;
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @param {*} id
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'getUserParcels',
+    value: async function getUserParcels(id) {
+      //  retrieve sql statement from parcelQueries
+      var userParcels = _parcelQueries2.default.userParcels,
+          values = [id];
+
+
+      try {
+        var client = await clientPool.connect(),
+            getParcels = await client.query({ text: userParcels, values: values }),
+            parcel = getParcels.rows;
+        client.release();
+        return parcel;
+      } catch (error) {
+        var err = 'an error occured';
+        throw err;
       }
     }
   }]);
