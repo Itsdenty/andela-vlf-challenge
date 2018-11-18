@@ -87,7 +87,6 @@ class userProcessor {
           user: signedInUser
         };
       }
-      throw new Error('user not found');
     } catch (error) {
       const err = { error: 'wrong username or password' };
       throw err;

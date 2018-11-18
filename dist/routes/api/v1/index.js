@@ -20,6 +20,18 @@ var _parcel = require('./parcel');
 
 var _parcel2 = _interopRequireDefault(_parcel);
 
+var _parcel3 = require('../../../controllers/parcel');
+
+var _parcel4 = _interopRequireDefault(_parcel3);
+
+var _parcel5 = require('../../../middlewares/validators/parcel');
+
+var _parcel6 = _interopRequireDefault(_parcel5);
+
+var _auth = require('../../../middlewares/auth');
+
+var _auth2 = _interopRequireDefault(_auth);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -59,6 +71,7 @@ router.get('/swagger.json', function (req, res) {
 router.get('/', function (req, res) {
   res.send('You\'ve reached api/v1 routes');
 });
+router.get('/users/:id/parcels', _auth2.default.verifyToken, _parcel6.default.validateId, _parcel4.default.getUserParcels);
 router.use('/auth', _user2.default);
 router.use('/parcels', _parcel2.default);
 

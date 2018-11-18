@@ -245,11 +245,35 @@ var parcelProcessor = function () {
         if (updateParcel) {
           return {
             id: pid,
-            message: 'Order destination successfully changed'
+            currentLocation: currentLocation,
+            message: 'Order current location successfully changed'
           };
         }
       } catch (error) {
-        var err = error.error ? 'an error occured' : error;
+        var err = 'an error occured';
+        throw err;
+      }
+    }
+
+    /**
+     * @description - Get all ride offers
+     * @param {*} id
+     * @return{json} registered ride offer details
+     */
+
+  }, {
+    key: 'getUserParcels',
+    value: async function getUserParcels(id) {
+      var userParcels = 'SELECT * from bParcels \n                    where placedBy=$1',
+          values = [id];
+      try {
+        var client = await clientPool.connect(),
+            getParcels = await client.query({ text: userParcels, values: values }),
+            parcel = getParcels.rows;
+        client.release();
+        return parcel;
+      } catch (error) {
+        var err = 'an error occured';
         throw err;
       }
     }

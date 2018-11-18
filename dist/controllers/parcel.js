@@ -183,6 +183,27 @@ var parcelController = function () {
         res.status(500).json(_transformer2.default.transformResponse(500, error.error));
       }
     }
+
+    /**
+     *
+     *
+     * @static
+     * @param {*} req
+     * @param {*} res
+     * @memberof parcelController
+     * @returns {json} oneParcel response
+     */
+
+  }, {
+    key: 'getUserParcels',
+    value: async function getUserParcels(req, res) {
+      try {
+        var oneParcel = await _parcel2.default.getUserParcels(req.params.id);
+        res.send(_transformer2.default.transformResponse(200, oneParcel));
+      } catch (error) {
+        res.status(500).json(_transformer2.default.transformResponse(500, error));
+      }
+    }
   }]);
 
   return parcelController;

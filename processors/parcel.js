@@ -247,7 +247,7 @@ class parcelProcessor {
     try {
       const client = await clientPool.connect(),
         getParcels = await client.query({ text: userParcels, values }),
-        parcel = getParcels.rows[0];
+        parcel = getParcels.rows;
       client.release();
       return parcel;
     } catch (error) {
