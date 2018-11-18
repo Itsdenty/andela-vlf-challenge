@@ -415,3 +415,42 @@
  *         schema:
  *           $ref: '#/definitions/ErrorObject'
  */
+/**
+ * @swagger
+ * /users/{id}/parcels:
+ *   get:
+ *     tags:
+ *       - Parcel
+ *     description: Returns a single parcels
+ *     security:
+ *       - Bearer: []
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: User's id
+ *         in: path
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: a single parcel data
+ *         schema:
+ *           $ref: '#/definitions/ResponseObjectParcel'
+ *       500:
+ *         description: Server error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       404:
+ *         description: Supplied parcel id incorrect
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       401:
+ *         description: Authentication error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ *       403:
+ *         description: Authorization error exists
+ *         schema:
+ *           $ref: '#/definitions/ErrorObject'
+ */

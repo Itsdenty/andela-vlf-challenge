@@ -592,4 +592,64 @@ describe('User API endpoints integration Tests', () => {
         });
     });
   });
+
+  // get user parcels tests
+  describe('#GET / parcel', () => {
+    it('should get a user parcels', (done) => {
+      request(app).get('/api/v1/users/1/parcels')
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.data[0]).to.be.an('object');
+          expect(res.body.data[0].fromlocation).to.have.string('l');
+          done();
+        });
+    });
+  });
+
+  describe('#GET / parcel', () => {
+    it('should throw a 400 error for get a user parcels', (done) => {
+      request(app).get('/api/v1/users/some/parcels')
+        .set('Authorization', token)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('valid');
+          done();
+        });
+    });
+  });
+  describe('#GET / parcels', () => {
+    it('should throw a 401 error for getting a user parcels', (done) => {
+      request(app).get('/api/v1/users/1/parcels')
+        .set('Authorization', token401)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(401);
+          expect(res.body.status).to.equal(401);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('malformed');
+          done();
+        });
+    });
+  });
+
+  describe('#GET / parcels', () => {
+    it('should throw a 403 error for getting a user parcels', (done) => {
+      request(app).get('/api/v1/users/1/parcels')
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.have.string('provided');
+          done();
+        });
+    });
+  });
 });
