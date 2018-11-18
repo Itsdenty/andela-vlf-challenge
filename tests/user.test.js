@@ -39,7 +39,7 @@ describe('User API endpoints intgeration Tests', () => {
     user: {
       firstName: 1234,
       lastName: 'te',
-      otherNames: 'test-othername',
+      otherNames: 'te',
       username: `test-${emailFrag1}`,
       password: 'password1234',
       isAdmin: false,

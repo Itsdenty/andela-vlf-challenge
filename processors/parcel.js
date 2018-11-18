@@ -1,5 +1,7 @@
 import { Pool } from 'pg';
 import { connectionString } from '../config/postgres-config';
+import mail from '../utils/mail'; // custom utility for sending email
+import parcelQueries from '../utils/parcelQueries'; // sql queries for parcel
 
 const clientPool = new Pool(connectionString);
 
@@ -14,14 +16,12 @@ class parcelProcessor {
    * @return{json} the registered user's detail
    */
   static async createParcel(parcel) {
-    // Hash password to save in the database
-    const createParcel = `INSERT INTO bParcels (placedBy, weight, weightmetric, sentOn, status, fromLocation, toLocation)
-                            VALUES ($1, $2, $3, $4, $5, $6, $7)
-                            RETURNING *`;
+    //  retrieve sql insert statement from parcelQueries
+    const { createParcel } = parcelQueries;
+
     try {
       const client = await clientPool.connect(),
-        values = [parcel.placedBy, parcel.weight, parcel.weightmetric,
-          parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation],
+        values = parcelQueries.values(parcel),
         createdParcel = await client.query({ text: createParcel, values }),
         newParcel = createdParcel.rows[0];
 
@@ -41,10 +41,12 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async getAllParcels() {
-    const getAll = 'SELECT * from bParcels';
+    //  retrieve sql statement from parcelQueries
+    const { getAllParcels } = parcelQueries;
+
     try {
       const client = await clientPool.connect(),
-        getParcels = await client.query({ text: getAll }),
+        getParcels = await client.query({ text: getAllParcels }),
         parcels = getParcels.rows;
 
       client.release();
@@ -61,12 +63,13 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async getOneParcel(id) {
-    const getAll = `SELECT * from bParcels 
-                    where id=$1`,
+    //  retrieve sql statement from parcelQueries
+    const { getOne } = parcelQueries,
       values = [id];
+
     try {
       const client = await clientPool.connect(),
-        getParcels = await client.query({ text: getAll, values }),
+        getParcels = await client.query({ text: getOne, values }),
         parcel = getParcels.rows[0];
 
       client.release();
@@ -84,16 +87,15 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async cancelParcelOrder(pid, uid) {
-    const query = `SELECT * from bParcels 
-                    where id=$1 AND placedBy=$2`,
-      cancelParcel = `UPDATE bParcels 
-                    SET status=$1
-                    WHERE id=$2`,
+    //  retrieve sql statement from parcelQueries
+    const { getSingleParcel, changeStatus } = parcelQueries,
       values = [pid, uid];
+
     try {
       const client = await clientPool.connect(),
-        getParcel = await client.query({ text: query, values }),
+        getParcel = await client.query({ text: getSingleParcel, values }),
         parcel = getParcel.rows[0];
+
       if (!parcel) {
         client.release();
         const error = 'you are not authorized to cancel this order';
@@ -104,8 +106,12 @@ class parcelProcessor {
         throw error;
       }
 
-      const updateParcel = await client.query({ text: cancelParcel, values: ['cancelled', pid] });
+      const updateParcel = await client.query({
+        text: changeStatus,
+        values: ['cancelled', pid]
+      });
       client.release();
+
       if (updateParcel) {
         return {
           id: pid,
@@ -126,16 +132,15 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async changeParcelDestination(pid, uid, toLocation) {
-    const query = `SELECT * from bParcels 
-                    where id=$1 AND placedBy=$2`,
-      cancelParcel = `UPDATE bParcels 
-                    SET toLocation=$1
-                    WHERE id=$2`,
+    //  retrieve sql statement from parcelQueries
+    const { getSingleParcel, changeDestination } = parcelQueries,
       values = [pid, uid];
+
     try {
       const client = await clientPool.connect(),
-        getParcel = await client.query({ text: query, values }),
+        getParcel = await client.query({ text: getSingleParcel, values }),
         parcel = getParcel.rows[0];
+
       if (!parcel) {
         client.release();
         const error = 'you are not authorized to change the destination of this order';
@@ -146,8 +151,12 @@ class parcelProcessor {
         throw error;
       }
 
-      const updateParcel = await client.query({ text: cancelParcel, values: [toLocation, pid] });
+      const updateParcel = await client.query({
+        text: changeDestination,
+        values: [toLocation, pid]
+      });
       client.release();
+
       if (updateParcel) {
         return {
           id: pid,
@@ -163,35 +172,27 @@ class parcelProcessor {
   /**
    * @description - Get all ride offers
    * @param {*} pid
-   * @param {*} uid
    * @param {*} status
    * @param {*} deliveryDate
    * @return{json} registered ride offer details
    */
-  static async changeParcelStatus(pid, uid, status, deliveryDate) {
-    const query = `SELECT * from bParcels 
-                    where id=$1 AND placedBy=$2`,
-      deliverParcel = `UPDATE bParcels 
-                        SET status=$1, deliveredOn=$2
-                        WHERE id=$3`,
-      statusParcel = `UPDATE bParcels 
-                        SET status=$1 
-                        WHERE id=$3`,
-      values = [pid, uid];
+  static async changeParcelStatus(pid, status, deliveryDate) {
+    //  retrieve sql statement from parcelQueries
+    const { parcelUser, deliverParcel, changeStatus } = parcelQueries,
+      values = [pid];
+
     try {
       const client = await clientPool.connect(),
-        getParcel = await client.query({ text: query, values }),
-        parcel = getParcel.rows[0];
-      if (!parcel) {
-        client.release();
-        const error = 'you are not authorized to change the status of this order';
-        throw error;
-      }
-      const updateParcel = await client.query({
-        text: status === 'delivered' ? deliverParcel : statusParcel,
-        values: status === 'delivered' ? [status, deliveryDate, pid] : [status, pid]
-      });
+        userParcel = await client.query({ text: parcelUser, values }),
+        updateParcel = await client.query({
+          text: status === 'delivered' ? deliverParcel : changeStatus,
+          values: status === 'delivered' ? [status, deliveryDate, pid] : [status, pid]
+        }),
+        user = userParcel.rows[0],
+        mailIt = await mail.notifyStatus(user, status);
+      console.log(mailIt);
       client.release();
+
       if (updateParcel) {
         return {
           id: pid,
@@ -200,7 +201,8 @@ class parcelProcessor {
         };
       }
     } catch (error) {
-      const err = error.error ? 'an error occured' : error;
+      console.log(error);
+      const err = 'an error occured';
       throw err;
     }
   }
@@ -212,16 +214,25 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async changeParcelCurrentLocation(pid, currentLocation) {
-    const query = `UPDATE bParcels 
-                    SET currentLocation=$1
-                    WHERE id=$2`;
+    //  retrieve sql statement from parcelQueries
+    const { changeLocation, parcelUser } = parcelQueries;
+
     try {
       const client = await clientPool.connect();
       const updateParcel = await client.query({
-        text: query,
+        text: changeLocation,
         values: [currentLocation, pid]
       });
+      const userParcel = await client.query({
+          text: parcelUser,
+          values: [pid]
+        }),
+        user = userParcel.rows[0],
+        mailIt = await mail.notifyLocation(user, currentLocation);
+
       client.release();
+      console.log(mailIt);
+
       if (updateParcel) {
         return {
           id: pid,
@@ -230,6 +241,7 @@ class parcelProcessor {
         };
       }
     } catch (error) {
+      console.log(error);
       const err = 'an error occured';
       throw err;
     }
@@ -241,9 +253,10 @@ class parcelProcessor {
    * @return{json} registered ride offer details
    */
   static async getUserParcels(id) {
-    const userParcels = `SELECT * from bParcels 
-                    where placedBy=$1`,
+    //  retrieve sql statement from parcelQueries
+    const { userParcels } = parcelQueries,
       values = [id];
+
     try {
       const client = await clientPool.connect(),
         getParcels = await client.query({ text: userParcels, values }),

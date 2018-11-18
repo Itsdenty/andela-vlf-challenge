@@ -50,4 +50,17 @@ describe('test the default api endpoint', () => {
         });
     });
   });
+
+  describe('#GET / vi route', () => {
+    it('should test the 404 fallback route', (done) => {
+      request(app).get('/cool')
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.statusCode).to.equal(404);
+          expect(res.body).to.be.an('object');
+          expect(res.body.message).to.have.string('wrong route');
+          done();
+        });
+    });
+  });
 });
