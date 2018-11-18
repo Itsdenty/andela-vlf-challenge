@@ -153,7 +153,7 @@ class parcelController {
    */
   static async getUserParcels(req, res) {
     try {
-      const oneParcel = await processor.getOneParcel(req.params.id);
+      const oneParcel = await processor.getUserParcels(req.params.id);
       res.send(transformer.transformResponse(200, oneParcel));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error));

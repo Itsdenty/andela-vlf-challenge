@@ -234,6 +234,27 @@ class parcelProcessor {
       throw err;
     }
   }
+
+  /**
+   * @description - Get all ride offers
+   * @param {*} id
+   * @return{json} registered ride offer details
+   */
+  static async getUserParcels(id) {
+    const userParcels = `SELECT * from bParcels 
+                    where placedBy=$1`,
+      values = [id];
+    try {
+      const client = await clientPool.connect(),
+        getParcels = await client.query({ text: userParcels, values }),
+        parcel = getParcels.rows[0];
+      client.release();
+      return parcel;
+    } catch (error) {
+      const err = 'an error occured';
+      throw err;
+    }
+  }
 }
 
 export default parcelProcessor;
