@@ -16,7 +16,7 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Api documentation for Andela vlf challenge.',
   },
-  host: 'localhost:3100',
+  host: 'andela-vlf.herokuapp.com',
   basePath: '/api/v1',
 };
 
