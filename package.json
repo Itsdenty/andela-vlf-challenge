@@ -4,7 +4,8 @@
   "description": "for the andela vlf challenge",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_ENV=development rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./public,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "heroku-postbuild": "npm install --production",
+    "build": "NODE_ENV=developmenttgit rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./public,./.babelrc,./package.json,./npm-debug.log --copy-files",
     "start": "npm run build && node dist/index.js",
     "test:dev": "NODE_ENV=test nyc mocha tests/*.test.js --exit --compilers js:babel-register",
     "test": "NODE_ENV=test npm run for-test && nyc mocha tests/*.test.js --exit --compilers js:babel-register",
@@ -45,7 +46,8 @@
     "morgan": "^1.9.0",
     "path": "^0.12.7",
     "pg": "^7.4.3",
-    "swagger-jsdoc": "^3.0.2"
+    "swagger-jsdoc": "^3.0.2",
+    "rimraf": "^2.6.2"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
