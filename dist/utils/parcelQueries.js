@@ -15,7 +15,7 @@ queries.changeDestination = 'UPDATE bParcels\n                        SET toLoca
 queries.parcelUser = 'SELECT p.id, u.email, u.username\n                      FROM bParcels p\n                      JOIN aUsers u ON p.placedBy=u.id\n                      WHERE p.id=$1';
 queries.deliverParcel = 'UPDATE bParcels \n                          SET status=$1, deliveredOn=$2\n                          WHERE id=$3';
 queries.changeLocation = 'UPDATE bParcels \n                          SET currentLocation=$1\n                          WHERE id=$2';
-queries.userParcels = 'SELECT * from bParcels \n                        where placedBy=$1';
+queries.userParcels = 'SELECT * from bParcels\n                        where placedBy=$1';
 queries.values = function (parcel) {
                         return [parcel.placedBy, parcel.weight, parcel.weightmetric, parcel.sentOn, parcel.status, parcel.fromLocation, parcel.toLocation];
 };
