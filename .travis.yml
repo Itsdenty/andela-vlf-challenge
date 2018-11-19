@@ -3,7 +3,7 @@ env:
   global:
     - CC_TEST_REPORTER_ID=ccb0b742510740eb72d6e6e686b6873192a63ea832e9370ce9ad6bbff9ad2e4e
     - JWT_SECRET=cool-secret;
-    - MAILGUN_API_KEY=key-6392b1150b892cb0d46e99ce06517897
+    - MAILGUN_API_KEY=key-6392b1150b892cb0d46e99ce06524609
 node_js:
  - "8.12.0"
 before_script:
