@@ -1,4 +1,4 @@
-# Ride-my-way
+# Andela VLF Challenge
 
 A carpooling application that provides drivers with the ability to create ride offers and passengers to join available ride offers
 
@@ -112,4 +112,3 @@ For more details on how to use this API, check the **Documentation** out [ here 
 &copy; Abd-afeez Abd-hamid
 
 Licensed under the [MIT License](LICENSE).
-
