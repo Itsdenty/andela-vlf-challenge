@@ -1,6 +1,6 @@
 # Andela VLF Challenge
 
-A carpooling application that provides drivers with the ability to create ride offers and passengers to join available ride offers
+Andela VLF Sendit is an app that allows users to send parcels to anywhere in Nigeria
 
 [![Build Status](https://travis-ci.org/Itsdenty/andela-vlf-challenge.svg?branch=master)](https://travis-ci.org/Itsdenty/andela-vlf-challenge) [![Coverage Status](https://coveralls.io/repos/github/Itsdenty/andela-vlf-challenge/badge.svg?branch=master)](https://coveralls.io/github/Itsdenty/andela-vlf-challenge?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/48ad51dc49c1a2d3a026/maintainability)](https://codeclimate.com/github/Itsdenty/andela-vlf-challenge/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/48ad51dc49c1a2d3a026/test_coverage)](https://codeclimate.com/github/Itsdenty/andela-vlf-challenge/test_coverage)
 
