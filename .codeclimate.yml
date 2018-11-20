@@ -32,3 +32,4 @@ exclude_patterns:
   - server/index/
   - server/public/
   - dist/
+  - ui
