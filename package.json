@@ -15,7 +15,8 @@
     "db-migrate": "babel-node ./server/database/models/index.js",
     "db-migrate:test": "NODE_ENV=test babel-node ./server/database/models/index.js",
     "db-seed": "babel-node ./server/database/seeders/index.js",
-    "db-seed:dev": "NODE_ENV=test babel-node ./server/database/seeders/index.js"
+    "db-seed:dev": "NODE_ENV=test babel-node ./server/database/seeders/index.js",
+    "ui-build" : "rimraf ui/script && babel ./ui/js --out-dir ui/script --copy-files"
   },
   "repository": {
     "type": "git",
