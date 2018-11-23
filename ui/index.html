@@ -41,35 +41,44 @@
                 <div class="modal-design">
                     <h1 class="center-it">Signup Form</h1>
                     <p class="point-it dismiss">x</p>
-                    <form id="signupForm">
+                    <form id="signupForm" method="POST">
                         <div class="form-group">
                             <label for="first-name">First Name: </label>
-                            <input class="form-control" name="firstName" type="text">
+                            <input class="form-control" name="firstName" type="text" required>
                         </div>
                         <div class="form-group">
                             <label for="last-name">Last Name: </label>
-                            <input class="form-control" name="lastName" type="text">
+                            <input class="form-control" name="lastName" type="text" required>
                         </div>
                         <div class="form-group">
                             <label for="last-name">Username: </label>
-                            <input class="form-control" name="username" type="text">
+                            <input class="form-control" name="username" type="text" required>
                         </div>
                         <div class="form-group">
                             <label for="last-name">Other Names: </label>
-                            <input class="form-control" name="otherNames" type="text">
+                            <input class="form-control" name="otherNames" type="text" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Your Email: </label>
-                            <input class="form-control" name="email" type="text">
+                            <input class="form-control" name="email" type="text" required>
                         </div>
                         <div class="form-group">
                             <label for="message">User type</label>
-                            <select class="form-control" name="isAdmin">
-                              <option value="0">User</option>
-                              <option value="1">Admin</option>
+                            <select class="form-control" name="isAdmin" required>
+                              <option value="true">User</option>
+                              <option value="false">Admin</option>
                             </select>
                         </div>
-                        <button class="btn-small btn-primary shift-center">Signup</button>
+                        <div class="form-group">
+                            <label for="email">Password: </label>
+                            <input class="form-control" name="password" type="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Confirm Password: </label>
+                            <input class="form-control" name="confirmPassword" type="password" required>
+                        </div>
+                        <p class="error"></p>
+                        <button class="btn-small btn-primary shift-center" id="submit-signup">Signup</button>
                     </form>
                 </div>
             </div>
@@ -88,11 +97,15 @@
                             <label for="email">Password: </label>
                             <input class="form-control" name="password" type="password">
                         </div>
+                        <br>
                         <button class="btn-small btn-primary shift-center">Login</button>
                     </form>
                 </div>
             </div>
         </div>
+        </div>
+        <div id="toast" class="hidden">
+            <p>successful</p>
         </div>
     </body>
       <script src="script/startup.js" type="text/javascript"></script>
