@@ -100,7 +100,7 @@ body {
     top: 20px;
 }
 /* #content {
-    padding-bottom:100px; /* Height of the footer element */
+    padding-bottom:100px; /* Height of the footer element
 } */
 .img-p{
     margin-left: -10% !important;
@@ -192,7 +192,7 @@ hr:after {
   margin-right: 25%;
 }
 
-input[type=text] {
+input {
   -webkit-transition: all 0.30s ease-in-out;
   -moz-transition: all 0.30s ease-in-out;
   -ms-transition: all 0.30s ease-in-out;
@@ -203,10 +203,10 @@ input[type=text] {
   border: 1px solid #AAAA39;
 }
 .form-group {
-  padding: 10px;
+  padding: 5px;
 }
 .form-control {
-  height: 25px;
+  height: 20px;
   width: 100%;
 }
 .hidden {
@@ -242,5 +242,56 @@ input[type=text] {
   width: 50%;
 }
 #login {
-  margin-top: 10%;
+  margin-top: 15%;
 }
+.error {
+  color: #cc0033;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 0 0;
+}
+.error {
+    color: #cc0033;
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0 0;
+  }
+
+  .display-error {
+    background: #e84118;
+    color: #fff;
+    padding: 0.3rem;
+    text-align: right;
+  }
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  .toast-green{
+    background-color: rgb(14, 143, 79);
+    transition: 0.3s;
+  }
+  .toast-red{
+      background-color: #dd4b39;
+      transition: 0.3s;
+  }
+  #toast{
+    width:150px; 
+    height:60px; 
+    position:fixed; 
+    z-index: 3000; 
+    top: 100px; 
+    right:50px;
+    text-align: center;
+    margin:0 auto; 
+  }
+  #toast>p{
+    color:white; 
+    font-size: 16px; 
+    display: flex;
+    justify-content:center;
+    align-content:center;
+    flex-direction:column;
+  }
