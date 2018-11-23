@@ -5,9 +5,12 @@ let status = 0,
 
 const errorMessage = document.getElementsByClassName('error'),
   signupBtn = document.getElementById('submit-signup'),
+  loginBtn = document.getElementById('submit-login'),
+  loginForm = document.getElementById('loginForm'),
   signupForm = document.getElementById('signupForm'),
   toast = document.getElementById('toast'),
-  route = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
+  loginRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/login',
+  signupRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
 
   // algorithm function for homepage animated text
   animateText = () => {
@@ -66,6 +69,7 @@ const errorMessage = document.getElementsByClassName('error'),
     toast.innerHTML = `<p>${data.substr(0, 50)}</p>`;
     const flashError = setTimeout(() => {
       toast.classList.add('hidden');
+      toast.classList.remove(toastClass);
     }, 5000);
   },
 
@@ -137,7 +141,7 @@ const errorMessage = document.getElementsByClassName('error'),
 
       startLoader = setInterval(loader, 500, 'submit-signup');
 
-    fetch(route, {
+    fetch(signupRoute, {
       method: 'POST',
       body: JSON.stringify({ user: userDetails }),
       headers,
@@ -159,6 +163,44 @@ const errorMessage = document.getElementsByClassName('error'),
         localStorage.setItem('user', JSON.stringify(data.data.user));
       })
       .catch(error => alert(error.message));
+  },
+
+  // create account method for signup
+  loginUser = (evt) => {
+    evt.preventDefault();
+    const headers = new Headers({
+        'content-type': 'application/json',
+      }),
+
+      loginDetails = {
+        email: loginForm.email.value,
+        password: loginForm.password.value,
+      },
+
+      startLoader = setInterval(loader, 500, 'submit-login');
+    console.log(loginDetails);
+    fetch(loginRoute, {
+      method: 'POST',
+      body: JSON.stringify({ login: loginDetails }),
+      headers,
+    })
+      .then(res => Promise.all([res.json(), res]))
+      .then(([data, res]) => {
+        if (!res.ok) {
+          clearInterval(startLoader);
+          showToast('toast-red', data.error);
+          loginBtn.innerText = 'Login';
+          return;
+        }
+        showToast('toast-green', 'login successful');
+        loginBtn.innerText = 'Login';
+        dismissModal();
+        currentModal = '';
+        // window.location.href = '/profile.html';
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+      })
+      .catch(error => alert(error.message));
   };
 
 // onload methods for ui animation and signup and login modal events
@@ -170,3 +212,4 @@ window.onload = () => {
 signupForm.confirmPassword.addEventListener('input', checkPassword);
 signupForm.password.addEventListener('input', checkPassword);
 signupForm.addEventListener('submit', createAccount);
+loginForm.addEventListener('submit', loginUser);
