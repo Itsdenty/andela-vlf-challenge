@@ -9,6 +9,7 @@ const errorMessage = document.getElementsByClassName('error'),
   toast = document.getElementById('toast'),
   route = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
 
+  // algorithm function for homepage animated text
   animateText = () => {
     switch (status) {
       case '0':
@@ -33,6 +34,7 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  // algorithm for loader animation
   loader = (id) => {
     switch (loaderStatus) {
       case 0:
@@ -57,6 +59,7 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  //  function for displaying toaster
   showToast = (toastClass, data) => {
     toast.classList.remove('hidden');
     toast.classList.add(toastClass);
@@ -66,6 +69,7 @@ const errorMessage = document.getElementsByClassName('error'),
     }, 5000);
   },
 
+  // function for toggling login and signup modal
   toggleModal = (e) => {
     const elem = e.target.getAttribute('data-modal');
     if (currentModal && currentModal !== elem) {
@@ -77,6 +81,7 @@ const errorMessage = document.getElementsByClassName('error'),
     currentModal = elem;
   },
 
+  // function for dismissing modal
   dismissModal = () => {
     if (currentModal) {
       document.getElementById(currentModal).classList.add('hidden');
@@ -84,6 +89,7 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  // function for page animation and modal script
   startAnimation = () => {
     const startAnim = setInterval(animateText, 3000);
     const classname = document.getElementsByClassName('trigger');
@@ -96,6 +102,7 @@ const errorMessage = document.getElementsByClassName('error'),
     });
   },
 
+  // check password function for validating password
   checkPassword = () => {
     if (signupForm.confirmPassword.value
       && (signupForm.password.value !== signupForm.confirmPassword.value)) {
@@ -111,21 +118,25 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  // create account method for signup
   createAccount = (evt) => {
     evt.preventDefault();
     const headers = new Headers({
-      'content-type': 'application/json',
-    });
-    const userDetails = {
-      firstName: signupForm.firstName.value,
-      lastName: signupForm.lastName.value,
-      otherNames: signupForm.otherNames.value,
-      username: signupForm.username.value,
-      isAdmin: signupForm.isAdmin.value,
-      email: signupForm.email.value,
-      password: signupForm.password.value,
-    };
-    const startLoader = setInterval(loader, 500, 'submit-signup');
+        'content-type': 'application/json',
+      }),
+
+      userDetails = {
+        firstName: signupForm.firstName.value,
+        lastName: signupForm.lastName.value,
+        otherNames: signupForm.otherNames.value,
+        username: signupForm.username.value,
+        isAdmin: signupForm.isAdmin.value,
+        email: signupForm.email.value,
+        password: signupForm.password.value,
+      },
+
+      startLoader = setInterval(loader, 500, 'submit-signup');
+
     fetch(route, {
       method: 'POST',
       body: JSON.stringify({ user: userDetails }),
@@ -150,18 +161,12 @@ const errorMessage = document.getElementsByClassName('error'),
       .catch(error => alert(error.message));
   };
 
+// onload methods for ui animation and signup and login modal events
 window.onload = () => {
   startAnimation();
-  const classname = document.getElementsByClassName('trigger');
-  Array.from(classname).forEach((element) => {
-    element.addEventListener('click', toggleModal);
-  });
-  const dismissname = document.getElementsByClassName('dismiss');
-  Array.from(dismissname).forEach((element) => {
-    element.addEventListener('click', dismissModal);
-  });
 };
 
+// add event listeners
 signupForm.confirmPassword.addEventListener('input', checkPassword);
 signupForm.password.addEventListener('input', checkPassword);
 signupForm.addEventListener('submit', createAccount);
