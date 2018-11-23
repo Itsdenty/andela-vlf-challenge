@@ -8,6 +8,7 @@ const errorMessage = document.getElementsByClassName('error'),
   signupForm = document.getElementById('signupForm'),
   toast = document.getElementById('toast'),
   route = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
+
   animateText = () => {
     switch (status) {
       case '0':
@@ -31,6 +32,7 @@ const errorMessage = document.getElementsByClassName('error'),
         status = 0;
     }
   },
+
   loader = (id) => {
     switch (loaderStatus) {
       case 0:
@@ -54,6 +56,7 @@ const errorMessage = document.getElementsByClassName('error'),
         loaderStatus = 0;
     }
   },
+
   showToast = (toastClass, data) => {
     toast.classList.remove('hidden');
     toast.classList.add(toastClass);
@@ -62,6 +65,7 @@ const errorMessage = document.getElementsByClassName('error'),
       toast.classList.add('hidden');
     }, 5000);
   },
+
   toggleModal = (e) => {
     const elem = e.target.getAttribute('data-modal');
     if (currentModal && currentModal !== elem) {
@@ -72,12 +76,14 @@ const errorMessage = document.getElementsByClassName('error'),
     }
     currentModal = elem;
   },
+
   dismissModal = () => {
     if (currentModal) {
       document.getElementById(currentModal).classList.add('hidden');
       currentModal = null;
     }
   },
+
   startAnimation = () => {
     const startAnim = setInterval(animateText, 3000);
     const classname = document.getElementsByClassName('trigger');
@@ -89,6 +95,7 @@ const errorMessage = document.getElementsByClassName('error'),
       element.addEventListener('click', dismissModal);
     });
   },
+
   checkPassword = () => {
     if (signupForm.confirmPassword.value
       && (signupForm.password.value !== signupForm.confirmPassword.value)) {
@@ -103,6 +110,7 @@ const errorMessage = document.getElementsByClassName('error'),
       signupBtn.disabled = false;
     }
   },
+
   createAccount = (evt) => {
     evt.preventDefault();
     const headers = new Headers({
