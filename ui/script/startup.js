@@ -82,7 +82,10 @@ var errorMessage = document.getElementsByClassName('error'),
     currentModal = null;
   }
 },
-    startAnimation = function startAnimation() {
+
+
+// function for page animation and modal script
+startAnimation = function startAnimation() {
   var startAnim = setInterval(animateText, 3000);
   var classname = document.getElementsByClassName('trigger');
   Array.from(classname).forEach(function (element) {
@@ -93,7 +96,10 @@ var errorMessage = document.getElementsByClassName('error'),
     element.addEventListener('click', dismissModal);
   });
 },
-    checkPassword = function checkPassword() {
+
+
+// check password function for validating password
+checkPassword = function checkPassword() {
   if (signupForm.confirmPassword.value && signupForm.password.value !== signupForm.confirmPassword.value) {
     errorMessage[0].classList.add('display-error');
     errorMessage[0].innerHTML = 'password does not match';
@@ -106,12 +112,15 @@ var errorMessage = document.getElementsByClassName('error'),
     signupBtn.disabled = false;
   }
 },
-    createAccount = function createAccount(evt) {
+
+
+// create account method for signup
+createAccount = function createAccount(evt) {
   evt.preventDefault();
   var headers = new Headers({
     'content-type': 'application/json'
-  });
-  var userDetails = {
+  }),
+      userDetails = {
     firstName: signupForm.firstName.value,
     lastName: signupForm.lastName.value,
     otherNames: signupForm.otherNames.value,
@@ -119,8 +128,9 @@ var errorMessage = document.getElementsByClassName('error'),
     isAdmin: signupForm.isAdmin.value,
     email: signupForm.email.value,
     password: signupForm.password.value
-  };
-  var startLoader = setInterval(loader, 500, 'submit-signup');
+  },
+      startLoader = setInterval(loader, 500, 'submit-signup');
+
   fetch(route, {
     method: 'POST',
     body: JSON.stringify({ user: userDetails }),
@@ -150,18 +160,12 @@ var errorMessage = document.getElementsByClassName('error'),
   });
 };
 
+// onload methods for ui animation and signup and login modal events
 window.onload = function () {
   startAnimation();
-  var classname = document.getElementsByClassName('trigger');
-  Array.from(classname).forEach(function (element) {
-    element.addEventListener('click', toggleModal);
-  });
-  var dismissname = document.getElementsByClassName('dismiss');
-  Array.from(dismissname).forEach(function (element) {
-    element.addEventListener('click', dismissModal);
-  });
 };
 
+// add event listeners
 signupForm.confirmPassword.addEventListener('input', checkPassword);
 signupForm.password.addEventListener('input', checkPassword);
 signupForm.addEventListener('submit', createAccount);
