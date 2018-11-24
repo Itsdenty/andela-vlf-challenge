@@ -9,10 +9,16 @@ var status = 0,
 
 var errorMessage = document.getElementsByClassName('error'),
     signupBtn = document.getElementById('submit-signup'),
+    loginBtn = document.getElementById('submit-login'),
+    loginForm = document.getElementById('loginForm'),
     signupForm = document.getElementById('signupForm'),
     toast = document.getElementById('toast'),
-    route = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
-    animateText = function animateText() {
+    loginRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/login',
+    signupRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
+
+
+// algorithm function for homepage animated text
+animateText = function animateText() {
   switch (status) {
     case '0':
       document.getElementById('text-anim').innerText = 'We deliver packages promptly';
@@ -35,7 +41,10 @@ var errorMessage = document.getElementsByClassName('error'),
       status = 0;
   }
 },
-    loader = function loader(id) {
+
+
+// algorithm for loader animation
+loader = function loader(id) {
   switch (loaderStatus) {
     case 0:
       document.getElementById(id).innerText = 'loading.';
@@ -58,15 +67,22 @@ var errorMessage = document.getElementsByClassName('error'),
       loaderStatus = 0;
   }
 },
-    showToast = function showToast(toastClass, data) {
+
+
+//  function for displaying toaster
+showToast = function showToast(toastClass, data) {
   toast.classList.remove('hidden');
   toast.classList.add(toastClass);
   toast.innerHTML = '<p>' + data.substr(0, 50) + '</p>';
   var flashError = setTimeout(function () {
     toast.classList.add('hidden');
+    toast.classList.remove(toastClass);
   }, 5000);
 },
-    toggleModal = function toggleModal(e) {
+
+
+// function for toggling login and signup modal
+toggleModal = function toggleModal(e) {
   var elem = e.target.getAttribute('data-modal');
   if (currentModal && currentModal !== elem) {
     document.getElementById(currentModal).classList.add('hidden');
@@ -76,7 +92,10 @@ var errorMessage = document.getElementsByClassName('error'),
   }
   currentModal = elem;
 },
-    dismissModal = function dismissModal() {
+
+
+// function for dismissing modal
+dismissModal = function dismissModal() {
   if (currentModal) {
     document.getElementById(currentModal).classList.add('hidden');
     currentModal = null;
@@ -131,7 +150,7 @@ createAccount = function createAccount(evt) {
   },
       startLoader = setInterval(loader, 500, 'submit-signup');
 
-  fetch(route, {
+  fetch(signupRoute, {
     method: 'POST',
     body: JSON.stringify({ user: userDetails }),
     headers: headers
@@ -158,6 +177,48 @@ createAccount = function createAccount(evt) {
   }).catch(function (error) {
     return alert(error.message);
   });
+},
+
+
+// create account method for signup
+loginUser = function loginUser(evt) {
+  evt.preventDefault();
+  var headers = new Headers({
+    'content-type': 'application/json'
+  }),
+      loginDetails = {
+    email: loginForm.email.value,
+    password: loginForm.password.value
+  },
+      startLoader = setInterval(loader, 500, 'submit-login');
+  console.log(loginDetails);
+  fetch(loginRoute, {
+    method: 'POST',
+    body: JSON.stringify({ login: loginDetails }),
+    headers: headers
+  }).then(function (res) {
+    return Promise.all([res.json(), res]);
+  }).then(function (_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+        data = _ref4[0],
+        res = _ref4[1];
+
+    if (!res.ok) {
+      clearInterval(startLoader);
+      showToast('toast-red', data.error);
+      loginBtn.innerText = 'Login';
+      return;
+    }
+    showToast('toast-green', 'login successful');
+    loginBtn.innerText = 'Login';
+    dismissModal();
+    currentModal = '';
+    // window.location.href = '/profile.html';
+    localStorage.setItem('token', data.data.token);
+    localStorage.setItem('user', JSON.stringify(data.data.user));
+  }).catch(function (error) {
+    return alert(error.message);
+  });
 };
 
 // onload methods for ui animation and signup and login modal events
@@ -169,3 +230,4 @@ window.onload = function () {
 signupForm.confirmPassword.addEventListener('input', checkPassword);
 signupForm.password.addEventListener('input', checkPassword);
 signupForm.addEventListener('submit', createAccount);
+loginForm.addEventListener('submit', loginUser);
