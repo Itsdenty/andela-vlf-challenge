@@ -75,8 +75,7 @@ dismissModal = function dismissModal() {
 
 
 // function for page animation and modal script
-startAnimation = function startAnimation() {
-  var startAnim = setInterval(animateText, 3000);
+configureModals = function configureModals() {
   var classname = document.getElementsByClassName('trigger');
   Array.from(classname).forEach(function (element) {
     element.addEventListener('click', toggleModal);
@@ -178,7 +177,7 @@ loginUser = function loginUser(evt) {
 
 // onload methods for ui animation and signup and login modal events
 window.onload = function () {
-  startAnimation();
+  configureModals();
 };
 
 // add event listeners

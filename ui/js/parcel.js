@@ -66,7 +66,7 @@ const errorMessage = document.getElementsByClassName('error'),
   },
 
   // function for page animation and modal script
-  startAnimation = () => {
+  configureModals = () => {
     const classname = document.getElementsByClassName('trigger');
     Array.from(classname).forEach((element) => {
       element.addEventListener('click', toggleModal);
@@ -160,7 +160,7 @@ const errorMessage = document.getElementsByClassName('error'),
 
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
-  startAnimation();
+  configureModals();
 };
 
 // add event listeners
