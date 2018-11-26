@@ -16,6 +16,7 @@ const errorMessage = document.getElementsByClassName('error'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   orderList = document.getElementById('orders'),
   directionsService = new google.maps.DirectionsService(),
+  service = new google.maps.DistanceMatrixService(),
 
   // algorithm for loader animation
   loader = (id) => {
@@ -54,6 +55,35 @@ const errorMessage = document.getElementsByClassName('error'),
         window.location.href = redirectUrl;
       }
     }, 5000);
+  },
+  calculateDistance = () => {
+    let orderFrom = currentParcel.fromlocation.split(',');
+    orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
+    let orderTo = currentParcel.tolocation.split(',');
+    orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+    const callback = (response, status) => {
+      const orig = document.getElementById('orig'),
+        dest = document.getElementById('dest'),
+        dist = document.getElementById('dist');
+
+      if (status === 'OK') {
+        [orig.value] = response.destinationAddresses;
+        [dest.value] = response.originAddresses;
+        dist.value = response.rows[0].elements[0].distance.text;
+      } else {
+        alert(`Error: ${status}`);
+      }
+    };
+    service.getDistanceMatrix(
+      {
+        origins: [orderFrom],
+        destinations: [orderTo],
+        travelMode: google.maps.TravelMode.DRIVING,
+        avoidHighways: false,
+        avoidTolls: false
+      },
+      callback
+    );
   },
   calcRoute = () => {
     let orderFrom = currentParcel.fromlocation.split(',');
