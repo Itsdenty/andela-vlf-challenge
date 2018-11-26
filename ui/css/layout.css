@@ -74,15 +74,17 @@ and (min-width : 1224px) {
 .main-margin {
   margin-left: 50px !important;
 }
-.row {
-  max-width: 100%;
-  display: block;
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 .col-md-1 {
   width: 100%;
 }
 .col-md-2 {
-  max-width: 45%;
+  width: 43% !important;
+  float: left !important;
 }
 .col-md-4 {
   width: 24%;

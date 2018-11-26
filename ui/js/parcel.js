@@ -12,7 +12,9 @@ let currentModal = '',
 const errorMessage = document.getElementsByClassName('error'),
   parcelBtn = document.getElementById('submit-parcel'),
   parcelForm = document.getElementById('signupForm'),
+  distDiv = document.getElementById('dist'),
   toast = document.getElementById('toast'),
+  loaderDiv = document.getElementById('loader'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   orderList = document.getElementById('orders'),
   directionsService = new google.maps.DirectionsService(),
@@ -62,14 +64,16 @@ const errorMessage = document.getElementsByClassName('error'),
     let orderTo = currentParcel.tolocation.split(',');
     orderTo = `${orderTo[1]}, ${orderTo[2]}`;
     const callback = (response, status) => {
-      const orig = document.getElementById('orig'),
-        dest = document.getElementById('dest'),
-        dist = document.getElementById('dist');
-
       if (status === 'OK') {
-        [orig.value] = response.destinationAddresses;
-        [dest.value] = response.originAddresses;
-        dist.value = response.rows[0].elements[0].distance.text;
+        const [orig] = response.destinationAddresses,
+          [dest] = response.originAddresses,
+          dist = response.rows[0].elements[0].distance.text;
+        distDiv.innerHTML = `The distance between ${orderTo} and ${orderFrom} is ${dist}
+                              <br>
+                                The price for delivery is ${(parseInt(dist) * 10) + 200} Naira;
+                              `;
+                              
+        console.log(orig, dest, dist);
       } else {
         alert(`Error: ${status}`);
       }
@@ -99,6 +103,7 @@ const errorMessage = document.getElementsByClassName('error'),
       if (status === google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
         directionsDisplay.setMap(map);
+        // calculateDistance();
       } else {
         showToast('toast-red', `Directions Request from ${start.toUrlValue(6)} to  ${end.toUrlValue(6)} failed: ${status}`);
       }
@@ -118,6 +123,7 @@ const errorMessage = document.getElementsByClassName('error'),
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
     directionsDisplay.setMap(map);
     calcRoute();
+    loaderDiv.classList.add('hidden');
   },
   // function for toggling login and signup modal
   toggleModal = (e) => {
@@ -195,6 +201,7 @@ const errorMessage = document.getElementsByClassName('error'),
     if (!token) {
       showToast('toast-red', 'Please login to access this page', 'index.html');
     }
+    loaderDiv.classList.remove('hidden');
     fetch(parcelRoute, {
       headers: {
         'Content-Type': 'application/json',
@@ -211,6 +218,7 @@ const errorMessage = document.getElementsByClassName('error'),
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
           initialize();
+          calculateDistance();
           const orderHeader = `
                                 <tr>
                                   <th>From</th>
@@ -230,8 +238,8 @@ const errorMessage = document.getElementsByClassName('error'),
             if (index === 0) {
               orderDetails += `
               <tr class="highlight">
-                <td> ${orderTo}</td>
                 <td> ${orderFrom}</td>
+                <td> ${orderTo}</td>
                 <td> ${order.weight} ${order.weightmetric}</td>
                 <td> ${order.status}</td>
                 <td><select name="orderAction">
