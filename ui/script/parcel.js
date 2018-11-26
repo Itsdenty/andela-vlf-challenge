@@ -10,6 +10,8 @@ var currentModal = '',
     fromGeocode = '',
     autocomplete2 = {},
     currentParcel = {},
+    parcelList = [],
+    currentIndex = 0,
     directionsDisplay = void 0,
     map = void 0;
 
@@ -159,6 +161,19 @@ configureModals = function configureModals() {
   Array.from(dismissname).forEach(function (element) {
     element.addEventListener('click', dismissModal);
   });
+  document.addEventListener('click', function (e) {
+    console.log('cool', e.target, e.target.classList.contains('select-parcel'));
+    if (e.target && e.target.classList.contains('select-parcel')) {
+      var parcelIndex = e.target.getAttribute('data-index');
+      currentParcel = parcelList[parcelIndex];
+      console.log(currentIndex, parcelIndex);
+      document.getElementsByClassName('parcel-row')[currentIndex].classList.remove('highlight');
+      document.getElementsByClassName('parcel-row')[parcelIndex].classList.add('highlight');
+      currentIndex = parcelIndex;
+      initialize();
+      calculateDistance();
+    }
+  });
 },
 
 
@@ -232,6 +247,7 @@ createParcel = function createParcel(evt) {
 
       currentParcel = _parcelOrders[0];
 
+      parcelList = parcelOrders;
       initialize();
       calculateDistance();
       var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
@@ -244,9 +260,9 @@ createParcel = function createParcel(evt) {
         var orderTo = order.tolocation.split(',');
         orderTo = orderTo[1] + ', ' + orderTo[2];
         if (index === 0) {
-          orderDetails += '\n              <tr class="highlight">\n                <td> ' + orderFrom + '</td>\n                <td> ' + orderTo + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
         } else {
-          orderDetails += '\n              <tr>\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Destination</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr class="parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Destination</option>\n                </select></td>\n              </tr>';
         }
         orderList.innerHTML += orderDetails;
         orderDetails = '';

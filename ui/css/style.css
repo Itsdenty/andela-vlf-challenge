@@ -323,7 +323,9 @@ td, th {
     text-align: left;
     padding: 8px;
 }
-
+tr {
+    cursor: pointer;
+}
 tr:nth-child(even) {
     background-color: #FFF0AA;
 }
