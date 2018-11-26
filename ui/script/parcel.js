@@ -22,6 +22,7 @@ var errorMessage = document.getElementsByClassName('error'),
     toast = document.getElementById('toast'),
     loaderDiv = document.getElementById('loader'),
     parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
+    userParcels = 'https://andela-vlf.herokuapp.comapi/v1/users/',
     orderList = document.getElementById('orders'),
     directionsService = new google.maps.DirectionsService(),
     service = new google.maps.DistanceMatrixService(),
@@ -219,8 +220,10 @@ createParcel = function createParcel(evt) {
     return alert(error.message);
   });
 },
-    getAllOrders = function getAllOrders() {
-  var token = 'Bearer ' + localStorage.getItem('token');
+    getUserOrders = function getUserOrders() {
+  var token = 'Bearer ' + localStorage.getItem('token'),
+      user = JSON.parse(localStorage.getItem('user')),
+      userRoute = '' + userParcels + user.id + '/parcels';
   if (!token) {
     showToast('toast-red', 'Please login to access this page', 'index.html');
   }
@@ -341,7 +344,7 @@ loginUser = function loginUser(evt) {
 window.onload = function () {
   configureModals();
   initAutocomplete();
-  getAllOrders();
+  getUserOrders();
 };
 
 // add event listeners
