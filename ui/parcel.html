@@ -12,72 +12,62 @@
         <div id="header">
             <ul>
                <li class="to-left"><a>SENDIT</a></li> 
-               <li class="to-right trigger point-it" data-modal="login">Login</li>
-               <li class="to-right trigger point-it" data-modal="signup">Signup</li>
+               <li class="to-right trigger point-it" data-modal="login">Logout</li>
+               <li class="to-right trigger point-it" data-modal="signup">Profile</li>
                <li class="to-right">Home</li>
            </ul>
         </div>
         <!-- Main content container -->
         <div id="content">
                 <!-- Jumbotrone header section -->
-        <div id="jumbo"> <!-- the header image would be attached to this div via css -->
+        <div id="jumbo2"> <!-- the header image would be attached to this div via css -->
           <div class="row">
-            <h1 class="col-md-4 to-left main-margin" id="move-down">SENDIT</h1>
-            <h3 class="col-md-1 to-left drop-down main-margin" id="text-anim">A package delivery solution you can trust</h3>
+            <div class="col-md-2 card main-margin" id="">
+              <h2>Parcel Orders <span><button class="btn-small btn-primary to-right trigger" id="cr-button" data-modal="create-parcel">create parcel</button></span></h2>
+              <table id="orders">
+              </table>
+            </div>
+            <div class="col-md-2 main-margin" id="map"></div>
+            </div>
+            <div class="row">
+              <div class="col-md-2 main-margin"><p></p></div>
+              <div class="col-md-2 card" id="details"><p id="dist">Calculating distance......</p></div>
+            </div>
           </div>
-          <div class="row">
+          <!-- <div class="row">
               <div class="col-md-3-4">
                 <button class="btn btn-primary text-color to-right" id="check-out">Check us out</button>
               </div>
-          </div>
+          </div> -->
         </div>
             <!-- The footer container -->
         <div id="footer" class="center-it">
             <p><span>SENDIT Parcel Delivery Service</span> Copyright 2018</p>
         </div>
-        <div class="hidden modal" id="signup">
+        <div class="hidden modal" id="create-parcel">
             <div class="row">
                 <div class="modal-design">
-                    <h1 class="center-it">Signup Form</h1>
+                    <h1 class="center-it">Parcel Order Form</h1>
                     <p class="point-it dismiss">x</p>
-                    <form id="signupForm" method="POST">
+                    <form id="createParcelForm" method="POST">
                         <div class="form-group">
-                            <label for="first-name">First Name: </label>
-                            <input class="form-control" name="firstName" type="text" required>
+                            <label for="first-name">Sender Address: </label>
+                            <input class="form-control" placeholder="search for your location" id="fromLocation" name="fromLocation" type="text" required>
                         </div>
                         <div class="form-group">
-                            <label for="last-name">Last Name: </label>
-                            <input class="form-control" name="lastName" type="text" required>
+                            <label for="last-name">Delivery Location: </label>
+                            <input class="form-control" name="toLocation" id="toLocation" placeholder="search for your location" type="text" required>
                         </div>
                         <div class="form-group">
-                            <label for="last-name">Username: </label>
-                            <input class="form-control" name="username" type="text" required>
+                            <label for="last-name">Weight: </label>
+                            <input class="form-control" placeholder="Enter parcel weight" name="weight" type="text" required>
                         </div>
                         <div class="form-group">
-                            <label for="last-name">Other Names: </label>
-                            <input class="form-control" name="otherNames" type="text" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Your Email: </label>
-                            <input class="form-control" name="email" type="text" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">User type</label>
-                            <select class="form-control" name="isAdmin" required>
-                              <option value="true">User</option>
-                              <option value="false">Admin</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Password: </label>
-                            <input class="form-control" name="password" type="password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Confirm Password: </label>
-                            <input class="form-control" name="confirmPassword" type="password" required>
+                            <label for="last-name">Weight Metric: </label>
+                            <input class="form-control" placeholder="Enter parcel weight metric" name="weightmetric" type="text" required>
                         </div>
                         <p class="error"></p>
-                        <button class="btn-small btn-primary shift-center" id="submit-signup">Signup</button>
+                        <button class="btn-small btn-primary shift-center" id="submit-parcel">Create Parcel</button>
                     </form>
                 </div>
             </div>
@@ -87,7 +77,7 @@
                 <div class="modal-design">
                     <h1 class="center-it">Login Form</h1>
                     <p class="point-it dismiss">x</p>
-                    <form id="loginForm" method="POST">
+                    <form id="loginForm">
                         <div class="form-group">
                             <label for="email">Your Email: </label>
                             <input class="form-control" name="email" type="text">
@@ -106,6 +96,10 @@
         <div id="toast" class="hidden">
             <p>successful</p>
         </div>
+        <div id="loader" class="hidden">
+          
+        </div>
     </body>
-      <script src="script/startup.js" type="text/javascript"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4cMpykgi9M9lnlpCl4P34eAy-El-3YYg&libraries=places"></script>
+      <script src="script/parcel.js" type="text/javascript"></script>
 </html>
