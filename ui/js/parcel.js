@@ -39,6 +39,8 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  // function to load default ride details
+  // fillDeta
   //  function for displaying toaster
   showToast = (toastClass, data, redirectUrl) => {
     toast.classList.remove('hidden');

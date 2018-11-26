@@ -70,13 +70,16 @@ loader = function loader(id) {
 
 
 //  function for displaying toaster
-showToast = function showToast(toastClass, data) {
+showToast = function showToast(toastClass, data, redirectUrl) {
   toast.classList.remove('hidden');
   toast.classList.add(toastClass);
   toast.innerHTML = '<p>' + data.substr(0, 50) + '</p>';
   var flashError = setTimeout(function () {
     toast.classList.add('hidden');
     toast.classList.remove(toastClass);
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
   }, 5000);
 },
 
@@ -167,11 +170,10 @@ createAccount = function createAccount(evt) {
       signupBtn.innerText = 'Signup';
       return;
     }
-    showToast('toast-green', 'registration successful');
     signupBtn.innerText = 'Signup';
     dismissModal();
     currentModal = '';
-    // window.location.href = '/profile.html';
+    showToast('toast-green', 'registration successful', 'parcel.html');
     localStorage.setItem('token', data.data.token);
     localStorage.setItem('user', JSON.stringify(data.data.user));
   }).catch(function (error) {
@@ -209,11 +211,11 @@ loginUser = function loginUser(evt) {
       loginBtn.innerText = 'Login';
       return;
     }
-    showToast('toast-green', 'login successful');
     loginBtn.innerText = 'Login';
     dismissModal();
     currentModal = '';
-    // window.location.href = '/profile.html';
+    showToast('toast-green', 'login successful', 'parcel.html');
+    // window.location.href = '/parcel.html';
     localStorage.setItem('token', data.data.token);
     localStorage.setItem('user', JSON.stringify(data.data.user));
   }).catch(function (error) {
