@@ -9,7 +9,9 @@ var currentModal = '',
     toGeocode = '',
     fromGeocode = '',
     autocomplete2 = {},
-    currentParcel = {};
+    currentParcel = {},
+    directionsDisplay = void 0,
+    map = void 0;
 
 var errorMessage = document.getElementsByClassName('error'),
     parcelBtn = document.getElementById('submit-parcel'),
@@ -17,6 +19,7 @@ var errorMessage = document.getElementsByClassName('error'),
     toast = document.getElementById('toast'),
     parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
     orderList = document.getElementById('orders'),
+    directionsService = new google.maps.DirectionsService(),
 
 
 // algorithm for loader animation
@@ -58,7 +61,50 @@ showToast = function showToast(toastClass, data, redirectUrl) {
     }
   }, 5000);
 },
-
+    calcRoute = function calcRoute() {
+  console.log('fired');
+  var orderFrom = currentParcel.fromlocation.split(',');
+  orderFrom = orderFrom[1] + ', ' + orderFrom[2];
+  var orderTo = currentParcel.tolocation.split(',');
+  orderTo = orderTo[1] + ', ' + orderTo[2];
+  var toMarker = currentParcel.tolocation.split(','),
+      toLng = parseFloat(toMarker[toMarker.length - 1].substr(6)),
+      toLat = parseFloat(toMarker[toMarker.length - 2].substr(5)),
+      fromMarker = currentParcel.tolocation.split(','),
+      fromLng = parseFloat(fromMarker[fromMarker.length - 1].substr(6)),
+      fromLat = parseFloat(fromMarker[fromMarker.length - 2].substr(5)),
+      start = new google.maps.LatLng(fromLat, fromLng),
+      end = new google.maps.LatLng(toLat, toLng),
+      request = {
+    origin: orderFrom,
+    destination: orderTo,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function (response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      directionsDisplay.setMap(map);
+      console.log('here');
+    } else {
+      showToast('toast-red', 'Directions Request from ' + start.toUrlValue(6) + ' to  ' + end.toUrlValue(6) + ' failed: ' + status);
+      console.log(here);
+    }
+  });
+},
+    initialize = function initialize() {
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  var fromMarker = currentParcel.tolocation.split(','),
+      fromLng = parseFloat(fromMarker[fromMarker.length - 1].substr(6)),
+      fromLat = parseFloat(fromMarker[fromMarker.length - 2].substr(5)),
+      center = new google.maps.LatLng(fromLat, fromLng),
+      mapOptions = {
+    zoom: 7,
+    center: center
+  };
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  directionsDisplay.setMap(map);
+  calcRoute();
+},
 
 // function for toggling login and signup modal
 toggleModal = function toggleModal(e) {
@@ -143,7 +189,6 @@ createParcel = function createParcel(evt) {
   if (!token) {
     showToast('toast-red', 'Please login to access this page', 'index.html');
   }
-  var startLoader = setInterval(loader, 500, 'loader');
   fetch(parcelRoute, {
     headers: {
       'Content-Type': 'application/json',
@@ -163,6 +208,7 @@ createParcel = function createParcel(evt) {
 
       currentParcel = _parcelOrders[0];
 
+      initialize();
       var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
       var orderDetails = '',
           index = 0;

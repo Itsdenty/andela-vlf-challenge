@@ -334,7 +334,7 @@ tr:nth-child(even) {
     background-color: #887CAF !important;
     color: white;
 }
-.loader {
+#loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3D1255; /* Blue */
     border-radius: 50%;
@@ -350,6 +350,9 @@ tr:nth-child(even) {
 }
 
 #map {
-    height: 400px;  /* The height is 400 pixels */
-    width: 100%;  /* The width is the width of the web page */
+    height: 400px;
+    width: 90%;
+    margin: 0px;
+    padding: 0px;
+    float: right;
    }
