@@ -4,14 +4,18 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 /* eslint-disable no-undef, no-unused-vars */
 var currentModal = '',
-    loaderStatus = 0;
+    loaderStatus = 0,
+    autocomplete = {},
+    toGeocode = '',
+    fromGeocode = '',
+    autocomplete2 = {};
 
 var errorMessage = document.getElementsByClassName('error'),
-    parcelBtn = document.getElementById('submit-signup'),
-    createParcelBtn = document.getElementById('submit-login'),
+    parcelBtn = document.getElementById('submit-parcel'),
     parcelForm = document.getElementById('signupForm'),
     toast = document.getElementById('toast'),
-    createRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/login',
+    parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
+    orderList = document.getElementById('orders'),
 
 
 // algorithm for loader animation
@@ -88,25 +92,25 @@ configureModals = function configureModals() {
 
 
 // create account method for signup
-createAccount = function createAccount(evt) {
+createParcel = function createParcel(evt) {
   evt.preventDefault();
-  var headers = new Headers({
-    'content-type': 'application/json'
+  var user = JSON.parse(localStorage.getItem('user')),
+      token = 'Bearer ' + localStorage.getItem('token'),
+      headers = new Headers({
+    'content-type': 'application/json',
+    authorization: token
   }),
-      userDetails = {
-    firstName: signupForm.firstName.value,
-    lastName: signupForm.lastName.value,
-    otherNames: signupForm.otherNames.value,
-    username: signupForm.username.value,
-    isAdmin: signupForm.isAdmin.value,
-    email: signupForm.email.value,
-    password: signupForm.password.value
+      parcelDetails = {
+    fromLocation: createParcelForm.fromLocation.value + ', ' + fromGeocode,
+    toLocation: createParcelForm.toLocation.value + ', ' + toGeocode,
+    weight: createParcelForm.weight.value,
+    weightmetric: createParcelForm.weightmetric.value,
+    placedBy: user.id
   },
-      startLoader = setInterval(loader, 500, 'submit-signup');
-
-  fetch(signupRoute, {
+      startLoader = setInterval(loader, 500, 'submit-parcel');
+  fetch(parcelRoute, {
     method: 'POST',
-    body: JSON.stringify({ user: userDetails }),
+    body: JSON.stringify({ parcel: parcelDetails }),
     headers: headers
   }).then(function (res) {
     return Promise.all([res.json(), res]);
@@ -118,21 +122,45 @@ createAccount = function createAccount(evt) {
     if (!res.ok) {
       clearInterval(startLoader);
       showToast('toast-red', data.error);
-      signupBtn.innerText = 'Signup';
+      parcelBtn.innerText = 'Create Parcel';
       return;
     }
-    showToast('toast-green', 'registration successful');
-    signupBtn.innerText = 'Signup';
+    showToast('toast-green', data.data.message);
+    parcelBtn.innerText = 'Create Parcel';
     dismissModal();
     currentModal = '';
     // window.location.href = '/profile.html';
-    localStorage.setItem('token', data.data.token);
-    localStorage.setItem('user', JSON.stringify(data.data.user));
   }).catch(function (error) {
     return alert(error.message);
   });
 },
-
+    getAllOrders = function getAllOrders() {
+  var token = 'Bearer ' + localStorage.getItem('token');
+  fetch(parcelRoute, {
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: token
+    }
+  }).then(function (res) {
+    return res.json();
+  }).then(function (data, res) {
+    if (data.data.length < 1) {
+      showToast('toast-red', 'No Order available at the moment');
+    } else {
+      var parcelOrders = data.data;
+      var orderDetails = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
+      return parcelOrders.map(function (order) {
+        var orderFrom = order.fromlocation.split(',');
+        orderFrom = orderFrom[1] + ', ' + orderFrom[2];
+        var orderTo = order.tolocation.split(',');
+        orderTo = orderTo[1] + ', ' + orderTo[2];
+        orderDetails += '\n              <tr >\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
+        orderList.innerHTML += orderDetails;
+        return '';
+      });
+    }
+  });
+},
 
 // create account method for signup
 loginUser = function loginUser(evt) {
@@ -173,11 +201,39 @@ loginUser = function loginUser(evt) {
   }).catch(function (error) {
     return alert(error.message);
   });
-};
+},
+    fillInFromLocation = function fillInFromLocation() {
+  // Get the place details from the autocomplete object.
+  var place = autocomplete.getPlace();
+  fromGeocode = 'lat:' + place.geometry.location.lat() + ', long:' + place.geometry.location.lng();
+},
+    fillInToLocation = function fillInToLocation() {
+  // Get the place details from the autocomplete object.
+  var place = autocomplete2.getPlace();
+  toGeocode = 'lat:' + place.geometry.location.lat() + ', long:' + place.geometry.location.lng();
+},
+    initAutocomplete = function initAutocomplete() {
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+  autocomplete = new google.maps.places.Autocomplete(
+  /** @type {!HTMLInputElement} */document.getElementById('fromLocation'), { types: ['geocode'] });
 
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete.addListener('place_changed', fillInFromLocation);
+
+  autocomplete2 = new google.maps.places.Autocomplete(
+  /** @type {!HTMLInputElement} */document.getElementById('toLocation'), { types: ['geocode'] });
+
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete2.addListener('place_changed', fillInToLocation);
+};
 // onload methods for ui animation and signup and login modal events
 window.onload = function () {
   configureModals();
+  initAutocomplete();
+  getAllOrders();
 };
 
 // add event listeners
