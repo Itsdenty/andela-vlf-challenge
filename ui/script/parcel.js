@@ -8,7 +8,8 @@ var currentModal = '',
     autocomplete = {},
     toGeocode = '',
     fromGeocode = '',
-    autocomplete2 = {};
+    autocomplete2 = {},
+    currentParcel = {};
 
 var errorMessage = document.getElementsByClassName('error'),
     parcelBtn = document.getElementById('submit-parcel'),
@@ -45,13 +46,16 @@ loader = function loader(id) {
 
 
 //  function for displaying toaster
-showToast = function showToast(toastClass, data) {
+showToast = function showToast(toastClass, data, redirectUrl) {
   toast.classList.remove('hidden');
   toast.classList.add(toastClass);
   toast.innerHTML = '<p>' + data.substr(0, 50) + '</p>';
   var flashError = setTimeout(function () {
     toast.classList.add('hidden');
     toast.classList.remove(toastClass);
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
   }, 5000);
 },
 
@@ -136,6 +140,10 @@ createParcel = function createParcel(evt) {
 },
     getAllOrders = function getAllOrders() {
   var token = 'Bearer ' + localStorage.getItem('token');
+  if (!token) {
+    showToast('toast-red', 'Please login to access this page', 'index.html');
+  }
+  var startLoader = setInterval(loader, 500, 'loader');
   fetch(parcelRoute, {
     headers: {
       'Content-Type': 'application/json',
@@ -144,18 +152,34 @@ createParcel = function createParcel(evt) {
   }).then(function (res) {
     return res.json();
   }).then(function (data, res) {
-    if (data.data.length < 1) {
+    if (data.status === 401) {
+      showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
+    } else if (data.data.length < 1) {
       showToast('toast-red', 'No Order available at the moment');
     } else {
       var parcelOrders = data.data;
-      var orderDetails = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
+
+      var _parcelOrders = _slicedToArray(parcelOrders, 1);
+
+      currentParcel = _parcelOrders[0];
+
+      var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
+      var orderDetails = '',
+          index = 0;
+      orderList.innerHTML += orderHeader;
       return parcelOrders.map(function (order) {
         var orderFrom = order.fromlocation.split(',');
         orderFrom = orderFrom[1] + ', ' + orderFrom[2];
         var orderTo = order.tolocation.split(',');
         orderTo = orderTo[1] + ', ' + orderTo[2];
-        orderDetails += '\n              <tr >\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
+        if (index === 0) {
+          orderDetails += '\n              <tr class="highlight">\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
+        } else {
+          orderDetails += '\n              <tr>\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
+        }
         orderList.innerHTML += orderDetails;
+        orderDetails = '';
+        index += 1;
         return '';
       });
     }

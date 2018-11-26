@@ -283,7 +283,7 @@ input {
     opacity: 0.9;
   }
   .toast-red{
-      background-color: #7c1305;
+      background-color: #e84118;
       transition: 0.3s;
       opacity: 0.8;
   }
@@ -329,4 +329,22 @@ tr:nth-child(even) {
 }
 #cr-button {
     margin-top: -1%;
+}
+.highlight{
+    background-color: #887CAF !important;
+    color: white;
+}
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3D1255; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    background-color: #fff;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
