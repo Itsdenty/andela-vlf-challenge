@@ -16,6 +16,7 @@ const errorMessage = document.getElementsByClassName('error'),
   toast = document.getElementById('toast'),
   loaderDiv = document.getElementById('loader'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
+  userParcels = 'https://andela-vlf.herokuapp.comapi/v1/users/',
   orderList = document.getElementById('orders'),
   directionsService = new google.maps.DirectionsService(),
   service = new google.maps.DistanceMatrixService(),
@@ -70,12 +71,10 @@ const errorMessage = document.getElementsByClassName('error'),
           dist = response.rows[0].elements[0].distance.text;
         distDiv.innerHTML = `The distance between ${orderTo} and ${orderFrom} is ${dist}
                               <br>
-                                The price for delivery is ${(parseInt(dist) * 10) + 200} Naira;
+                                The price for delivery is ${(parseInt(dist, 10) * 10) + 200} Naira.
                               `;
-                              
-        console.log(orig, dest, dist);
       } else {
-        alert(`Error: ${status}`);
+        showToast('toast-red', `Error: ${status}`);
       }
     };
     service.getDistanceMatrix(
@@ -196,8 +195,10 @@ const errorMessage = document.getElementsByClassName('error'),
       })
       .catch(error => alert(error.message));
   },
-  getAllOrders = () => {
-    const token = `Bearer ${localStorage.getItem('token')}`;
+  getUserOrders = () => {
+    const token = `Bearer ${localStorage.getItem('token')}`,
+      user = JSON.parse(localStorage.getItem('user')),
+      userRoute = `${userParcels}${user.id}/parcels`;
     if (!token) {
       showToast('toast-red', 'Please login to access this page', 'index.html');
     }
@@ -347,7 +348,7 @@ const errorMessage = document.getElementsByClassName('error'),
 window.onload = () => {
   configureModals();
   initAutocomplete();
-  getAllOrders();
+  getUserOrders();
 };
 
 // add event listeners
