@@ -353,15 +353,15 @@ tr:nth-child(even) {
 }
 
 #map {
-    height: 400px;
+    height: 50vh;
     width: 90%;
     margin: 0px;
     padding: 0px;
     float: right;
    }
 #details {
-    width: 40% !important;
+    width: 43% !important;
     float: right;
-    margin-top: 0.5%;
+    padding: 4px;
     margin-left: 54.5% !important;
 }
