@@ -4,7 +4,10 @@ let currentModal = '',
   autocomplete = {},
   toGeocode = '',
   fromGeocode = '',
-  autocomplete2 = {};
+  autocomplete2 = {},
+  currentParcel = {},
+  directionsDisplay,
+  map;
 
 const errorMessage = document.getElementsByClassName('error'),
   parcelBtn = document.getElementById('submit-parcel'),
@@ -12,6 +15,7 @@ const errorMessage = document.getElementsByClassName('error'),
   toast = document.getElementById('toast'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   orderList = document.getElementById('orders'),
+  directionsService = new google.maps.DirectionsService(),
 
   // algorithm for loader animation
   loader = (id) => {
@@ -39,16 +43,52 @@ const errorMessage = document.getElementsByClassName('error'),
   },
 
   //  function for displaying toaster
-  showToast = (toastClass, data) => {
+  showToast = (toastClass, data, redirectUrl) => {
     toast.classList.remove('hidden');
     toast.classList.add(toastClass);
     toast.innerHTML = `<p>${data.substr(0, 50)}</p>`;
     const flashError = setTimeout(() => {
       toast.classList.add('hidden');
       toast.classList.remove(toastClass);
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      }
     }, 5000);
   },
+  calcRoute = () => {
+    let orderFrom = currentParcel.fromlocation.split(',');
+    orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
+    let orderTo = currentParcel.tolocation.split(',');
+    orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+    const request = {
+      origin: orderFrom,
+      destination: orderTo,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+    directionsService.route(request, (response, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+        directionsDisplay.setMap(map);
+      } else {
+        showToast('toast-red', `Directions Request from ${start.toUrlValue(6)} to  ${end.toUrlValue(6)} failed: ${status}`);
+      }
+    });
+  },
 
+  initialize = () => {
+    directionsDisplay = new google.maps.DirectionsRenderer();
+    const fromMarker = currentParcel.tolocation.split(','),
+      fromLng = parseFloat(fromMarker[fromMarker.length - 1].substr(6)),
+      fromLat = parseFloat(fromMarker[fromMarker.length - 2].substr(5)),
+      center = new google.maps.LatLng(fromLat, fromLng),
+      mapOptions = {
+        zoom: 7,
+        center
+      };
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    directionsDisplay.setMap(map);
+    calcRoute();
+  },
   // function for toggling login and signup modal
   toggleModal = (e) => {
     const elem = e.target.getAttribute('data-modal');
@@ -122,6 +162,9 @@ const errorMessage = document.getElementsByClassName('error'),
   },
   getAllOrders = () => {
     const token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token) {
+      showToast('toast-red', 'Please login to access this page', 'index.html');
+    }
     fetch(parcelRoute, {
       headers: {
         'Content-Type': 'application/json',
@@ -130,11 +173,15 @@ const errorMessage = document.getElementsByClassName('error'),
     })
       .then(res => res.json())
       .then((data, res) => {
-        if (data.data.length < 1) {
+        if (data.status === 401) {
+          showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
+        } else if (data.data.length < 1) {
           showToast('toast-red', 'No Order available at the moment');
         } else {
           const parcelOrders = data.data;
-          let orderDetails = `
+          [currentParcel] = parcelOrders;
+          initialize();
+          const orderHeader = `
                                 <tr>
                                   <th>From</th>
                                   <th>To</th>
@@ -142,13 +189,17 @@ const errorMessage = document.getElementsByClassName('error'),
                                   <th>Status</th>
                                   <th>Actions</th>
                                 </tr>`;
+          let orderDetails = '',
+            index = 0;
+          orderList.innerHTML += orderHeader;
           return parcelOrders.map((order) => {
             let orderFrom = order.fromlocation.split(',');
             orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
             let orderTo = order.tolocation.split(',');
             orderTo = `${orderTo[1]}, ${orderTo[2]}`;
-            orderDetails += `
-              <tr >
+            if (index === 0) {
+              orderDetails += `
+              <tr class="highlight">
                 <td> ${orderTo}</td>
                 <td> ${orderFrom}</td>
                 <td> ${order.weight} ${order.weightmetric}</td>
@@ -159,7 +210,23 @@ const errorMessage = document.getElementsByClassName('error'),
                   <option value="status">Change Status</option>
                 </select></td>
               </tr>`;
+            } else {
+              orderDetails += `
+              <tr>
+                <td> ${orderTo}</td>
+                <td> ${orderFrom}</td>
+                <td> ${order.weight} ${order.weightmetric}</td>
+                <td> ${order.status}</td>
+                <td><select name="orderAction">
+                  <option value="">Select Action</option>
+                  <option value="cancel">Cancel</option>
+                  <option value="status">Change Destination</option>
+                </select></td>
+              </tr>`;
+            }
             orderList.innerHTML += orderDetails;
+            orderDetails = '';
+            index += 1;
             return '';
           });
         }

@@ -25,126 +25,10 @@
             <div class="col-md-2 to-left main-margin card" id="">
               <h2>Parcel Orders <span><button class="btn-small btn-primary to-right trigger" id="cr-button" data-modal="create-parcel">create parcel</button></span></h2>
               <table id="orders">
-                <!-- <tr>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Weight</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-                <tr>
-                  <td>yaba</td>
-                  <td>Ikeja</td>
-                  <td>500kg</td>
-                  <td>Transiting</td>
-                  <td><select name="orderAction">
-                    <option value="">Select Action</option>
-                    <option value="cancel">Cancel</option>
-                    <option value="status">Change Status</option>
-                  </select></td>
-                </tr>
-                <tr>
-                  <td>Abuja</td>
-                  <td>Lagos</td>
-                  <td>500kg</td>
-                  <td>Transiting</td>
-                  <td><select name="orderAction">
-                    <option value="">Select Action</option>
-                    <option value="cancel">Cancel</option>
-                    <option value="status">Change Status</option>
-                  </select></td>
-                </tr>
-                <tr>
-                  <td>Shomolu</td>
-                  <td>Badagry</td>
-                  <td>500kg</td>
-                  <td>Transiting</td>
-                  <td><select name="orderAction">
-                    <option value="">Select Action</option>
-                    <option value="cancel">Cancel</option>
-                    <option value="status">Change Status</option>
-                  </select></td>
-                </tr>
-                <tr>
-                  <td>Lagos</td>
-                  <td>Abeokuta</td>
-                  <td>500g</td>
-                  <td>Transiting</td>
-                  <td><select name="orderAction">
-                    <option value="">Select Action</option>
-                    <option value="cancel">Cancel</option>
-                    <option value="status">Change Status</option>
-                  </select></td>
-                </tr>
-                  <tr>
-                    <td>yaba</td>
-                    <td>Ikeja</td>
-                    <td>500kg</td>
-                    <td>Transiting</td>
-                    <td><select name="orderAction">
-                      <option value="">Select Action</option>
-                      <option value="cancel">Cancel</option>
-                      <option value="status">Change Status</option>
-                    </select></td>
-                  </tr>
-                  <tr>
-                    <td>Abuja</td>
-                    <td>Lagos</td>
-                    <td>500kg</td>
-                    <td>Transiting</td>
-                    <td><select name="orderAction">
-                      <option value="">Select Action</option>
-                      <option value="cancel">Cancel</option>
-                      <option value="status">Change Status</option>
-                    </select></td>
-                  </tr>
-                  <tr>
-                    <td>Shomolu</td>
-                    <td>Badagry</td>
-                    <td>500kg</td>
-                    <td>Transiting</td>
-                    <td><select name="orderAction">
-                      <option value="">Select Action</option>
-                      <option value="cancel">Cancel</option>
-                      <option value="status">Change Status</option>
-                    </select></td>
-                  </tr>
-                  <tr>
-                    <td>Lagos</td>
-                    <td>Abeokuta</td>
-                    <td>500g</td>
-                    <td>Transiting</td>
-                    <td><select name="orderAction">
-                      <option value="">Select Action</option>
-                      <option value="cancel">Cancel</option>
-                      <option value="status">Change Status</option>
-                    </select></td>
-                  </tr>
-                  <tr>
-                      <td>Shomolu</td>
-                      <td>Badagry</td>
-                      <td>500kg</td>
-                      <td>Transiting</td>
-                      <td><select name="orderAction">
-                        <option value="">Select Action</option>
-                        <option value="cancel">Cancel</option>
-                        <option value="status">Change Status</option>
-                      </select></td>
-                    </tr>
-                    <tr>
-                      <td>Lagos</td>
-                      <td>Abeokuta</td>
-                      <td>500g</td>
-                      <td>Transiting</td>
-                      <td><select name="orderAction">
-                        <option value="">Select Action</option>
-                        <option value="cancel">Cancel</option>
-                        <option value="status">Change Status</option>
-                      </select></td>
-                    </tr> -->
               </table>
             </div>
-            <div class="col-md-2 to-right drop-down main-margin">A package delivery solution you can trust</div>
+            <div class="col-md-2 drop-down main-margin" id="map">
+            </div>
           </div>
           <!-- <div class="row">
               <div class="col-md-3-4">
@@ -207,6 +91,9 @@
         </div>
         <div id="toast" class="hidden">
             <p>successful</p>
+        </div>
+        <div id="loader">
+          
         </div>
     </body>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4cMpykgi9M9lnlpCl4P34eAy-El-3YYg&libraries=places"></script>
