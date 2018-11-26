@@ -6,6 +6,8 @@ let currentModal = '',
   fromGeocode = '',
   autocomplete2 = {},
   currentParcel = {},
+  parcelList = [],
+  currentIndex = 0,
   directionsDisplay,
   map;
 
@@ -153,6 +155,19 @@ const errorMessage = document.getElementsByClassName('error'),
     Array.from(dismissname).forEach((element) => {
       element.addEventListener('click', dismissModal);
     });
+    document.addEventListener('click', (e) => {
+      console.log('cool', e.target, e.target.classList.contains('select-parcel'));
+      if (e.target && e.target.classList.contains('select-parcel')) {
+        const parcelIndex = e.target.getAttribute('data-index');
+        currentParcel = parcelList[parcelIndex];
+        console.log(currentIndex, parcelIndex);
+        document.getElementsByClassName('parcel-row')[currentIndex].classList.remove('highlight');
+        document.getElementsByClassName('parcel-row')[parcelIndex].classList.add('highlight');
+        currentIndex = parcelIndex;
+        initialize();
+        calculateDistance();
+      }
+    });
   },
 
   // create account method for signup
@@ -215,6 +230,7 @@ const errorMessage = document.getElementsByClassName('error'),
         } else {
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
+          parcelList = parcelOrders;
           initialize();
           calculateDistance();
           const orderHeader = `
@@ -235,11 +251,11 @@ const errorMessage = document.getElementsByClassName('error'),
             orderTo = `${orderTo[1]}, ${orderTo[2]}`;
             if (index === 0) {
               orderDetails += `
-              <tr class="highlight">
-                <td> ${orderFrom}</td>
-                <td> ${orderTo}</td>
-                <td> ${order.weight} ${order.weightmetric}</td>
-                <td> ${order.status}</td>
+              <tr class="highlight parcel-row" data-index="${index}">
+                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
+                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
+                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
+                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
                 <td><select name="orderAction">
                   <option value="">Select Action</option>
                   <option value="cancel">Cancel</option>
@@ -248,11 +264,11 @@ const errorMessage = document.getElementsByClassName('error'),
               </tr>`;
             } else {
               orderDetails += `
-              <tr>
-                <td> ${orderTo}</td>
-                <td> ${orderFrom}</td>
-                <td> ${order.weight} ${order.weightmetric}</td>
-                <td> ${order.status}</td>
+              <tr class="parcel-row" data-index="${index}">
+                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
+                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
+                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
+                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
                 <td><select name="orderAction">
                   <option value="">Select Action</option>
                   <option value="cancel">Cancel</option>
