@@ -62,6 +62,10 @@ const errorMessage = document.getElementsByClassName('error'),
     }, 5000);
   },
   calculateDistance = () => {
+    const index = currentParcel.tolocation.indexOf('lat');
+    const toLocation = currentParcel.tolocation.substring(0, index);
+    const index2 = currentParcel.fromlocation.indexOf('lat');
+    const fromLocation = currentParcel.fromlocation.substring(0, index2);
     let orderFrom = currentParcel.fromlocation.split(',');
     orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
     let orderTo = currentParcel.tolocation.split(',');
@@ -70,10 +74,35 @@ const errorMessage = document.getElementsByClassName('error'),
       if (status === 'OK') {
         const [orig] = response.destinationAddresses,
           [dest] = response.originAddresses,
-          dist = response.rows[0].elements[0].distance.text;
-        distDiv.innerHTML = `The distance between ${orderTo} and ${orderFrom} is ${dist}
-                              <br>
-                                The price for delivery is ${(parseInt(dist, 10) * 10) + 200} Naira.
+          dist = response.rows[0].elements[0].distance.text,
+          duration = response.rows[0].elements[0].duration.text;
+        distDiv.innerHTML = `
+                              <table>
+                              <tr>
+                                <th>Data</th>
+                                <th>Value</th>
+                                <th>Data</th>
+                                <th>Value</th>
+                              </tr>
+                              <tr>
+                                <td><b>Order Location</b></td>
+                                <td>${fromLocation}</td>
+                                <td><b>Delivery Location</b></td>
+                                <td>${toLocation}</td>
+                              </tr>
+                              <tr>
+                              <td><b>Current Location</b></td>
+                              <td>${currentParcel.currentStatus || 'not available'}</td>
+                              <td><b>Delivery Price</b></td>
+                              <td>${(parseInt(dist, 10) * 10) + 200}</td>
+                              </tr>
+                              <tr>
+                              <td><b>Delivery Distance</b></td>
+                              <td>${dist} naira</td>
+                              <td><b>Estimated Duration</b></td>
+                              <td>${duration}</td>
+                              </tr>
+                            </table>
                               `;
       } else {
         showToast('toast-red', `Error: ${status}`);
