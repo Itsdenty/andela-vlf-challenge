@@ -16,10 +16,13 @@ var currentModal = '',
 var errorMessage = document.getElementsByClassName('error'),
     parcelBtn = document.getElementById('submit-parcel'),
     parcelForm = document.getElementById('signupForm'),
+    distDiv = document.getElementById('dist'),
     toast = document.getElementById('toast'),
+    loaderDiv = document.getElementById('loader'),
     parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
     orderList = document.getElementById('orders'),
     directionsService = new google.maps.DirectionsService(),
+    service = new google.maps.DistanceMatrixService(),
 
 
 // algorithm for loader animation
@@ -61,21 +64,40 @@ showToast = function showToast(toastClass, data, redirectUrl) {
     }
   }, 5000);
 },
-    calcRoute = function calcRoute() {
-  console.log('fired');
+    calculateDistance = function calculateDistance() {
   var orderFrom = currentParcel.fromlocation.split(',');
   orderFrom = orderFrom[1] + ', ' + orderFrom[2];
   var orderTo = currentParcel.tolocation.split(',');
   orderTo = orderTo[1] + ', ' + orderTo[2];
-  var toMarker = currentParcel.tolocation.split(','),
-      toLng = parseFloat(toMarker[toMarker.length - 1].substr(6)),
-      toLat = parseFloat(toMarker[toMarker.length - 2].substr(5)),
-      fromMarker = currentParcel.tolocation.split(','),
-      fromLng = parseFloat(fromMarker[fromMarker.length - 1].substr(6)),
-      fromLat = parseFloat(fromMarker[fromMarker.length - 2].substr(5)),
-      start = new google.maps.LatLng(fromLat, fromLng),
-      end = new google.maps.LatLng(toLat, toLng),
-      request = {
+  var callback = function callback(response, status) {
+    if (status === 'OK') {
+      var _response$destination = _slicedToArray(response.destinationAddresses, 1),
+          orig = _response$destination[0],
+          _response$originAddre = _slicedToArray(response.originAddresses, 1),
+          dest = _response$originAddre[0],
+          dist = response.rows[0].elements[0].distance.text;
+
+      distDiv.innerHTML = 'The distance between ' + orderTo + ' and ' + orderFrom + ' is ' + dist + '\n                              <br>\n                                The price for delivery is ' + (parseInt(dist) * 10 + 200) + ' Naira;\n                              ';
+
+      console.log(orig, dest, dist);
+    } else {
+      alert('Error: ' + status);
+    }
+  };
+  service.getDistanceMatrix({
+    origins: [orderFrom],
+    destinations: [orderTo],
+    travelMode: google.maps.TravelMode.DRIVING,
+    avoidHighways: false,
+    avoidTolls: false
+  }, callback);
+},
+    calcRoute = function calcRoute() {
+  var orderFrom = currentParcel.fromlocation.split(',');
+  orderFrom = orderFrom[1] + ', ' + orderFrom[2];
+  var orderTo = currentParcel.tolocation.split(',');
+  orderTo = orderTo[1] + ', ' + orderTo[2];
+  var request = {
     origin: orderFrom,
     destination: orderTo,
     travelMode: google.maps.TravelMode.DRIVING
@@ -84,10 +106,9 @@ showToast = function showToast(toastClass, data, redirectUrl) {
     if (status === google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
       directionsDisplay.setMap(map);
-      console.log('here');
+      // calculateDistance();
     } else {
       showToast('toast-red', 'Directions Request from ' + start.toUrlValue(6) + ' to  ' + end.toUrlValue(6) + ' failed: ' + status);
-      console.log(here);
     }
   });
 },
@@ -104,6 +125,7 @@ showToast = function showToast(toastClass, data, redirectUrl) {
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsDisplay.setMap(map);
   calcRoute();
+  loaderDiv.classList.add('hidden');
 },
 
 // function for toggling login and signup modal
@@ -189,6 +211,7 @@ createParcel = function createParcel(evt) {
   if (!token) {
     showToast('toast-red', 'Please login to access this page', 'index.html');
   }
+  loaderDiv.classList.remove('hidden');
   fetch(parcelRoute, {
     headers: {
       'Content-Type': 'application/json',
@@ -209,6 +232,7 @@ createParcel = function createParcel(evt) {
       currentParcel = _parcelOrders[0];
 
       initialize();
+      calculateDistance();
       var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
       var orderDetails = '',
           index = 0;
@@ -219,9 +243,9 @@ createParcel = function createParcel(evt) {
         var orderTo = order.tolocation.split(',');
         orderTo = orderTo[1] + ', ' + orderTo[2];
         if (index === 0) {
-          orderDetails += '\n              <tr class="highlight">\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr class="highlight">\n                <td> ' + orderFrom + '</td>\n                <td> ' + orderTo + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
         } else {
-          orderDetails += '\n              <tr>\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Status</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr>\n                <td> ' + orderTo + '</td>\n                <td> ' + orderFrom + '</td>\n                <td> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td> ' + order.status + '</td>\n                <td><select name="orderAction">\n                  <option value="">Select Action</option>\n                  <option value="cancel">Cancel</option>\n                  <option value="status">Change Destination</option>\n                </select></td>\n              </tr>';
         }
         orderList.innerHTML += orderDetails;
         orderDetails = '';

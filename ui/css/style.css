@@ -335,13 +335,16 @@ tr:nth-child(even) {
     color: white;
 }
 #loader {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #3D1255; /* Blue */
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3D1255; /* Blue */
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
+    width: 60px;
+    height: 60px;
     animation: spin 2s linear infinite;
-    background-color: #fff;
+    background-color: #fff !important;
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
 }
 
 @keyframes spin {
@@ -356,3 +359,9 @@ tr:nth-child(even) {
     padding: 0px;
     float: right;
    }
+#details {
+    width: 40% !important;
+    float: right;
+    margin-top: 0.5%;
+    margin-left: 54.5% !important;
+}
