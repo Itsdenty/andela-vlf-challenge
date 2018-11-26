@@ -77,11 +77,10 @@ showToast = function showToast(toastClass, data, redirectUrl) {
           dest = _response$originAddre[0],
           dist = response.rows[0].elements[0].distance.text;
 
-      distDiv.innerHTML = 'The distance between ' + orderTo + ' and ' + orderFrom + ' is ' + dist + '\n                              <br>\n                                The price for delivery is ' + (parseInt(dist) * 10 + 200) + ' Naira;\n                              ';
-
-      console.log(orig, dest, dist);
+      console.log(response);
+      distDiv.innerHTML = 'The distance between ' + orderTo + ' and ' + orderFrom + ' is ' + dist + '\n                              <br>\n                                The price for delivery is ' + (parseInt(dist, 10) * 10 + 200) + ' Naira.\n                              ';
     } else {
-      alert('Error: ' + status);
+      showToast('toast-red', 'Error: ' + status);
     }
   };
   service.getDistanceMatrix({

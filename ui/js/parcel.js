@@ -67,7 +67,8 @@ const errorMessage = document.getElementsByClassName('error'),
       if (status === 'OK') {
         const [orig] = response.destinationAddresses,
           [dest] = response.originAddresses,
-          dist = response.rows[0].elements[0].distance.text;
+          dist = response.rows[0].elements[0].distance.text,
+          duration = response.rows[0].elements[0].duration.text;
         distDiv.innerHTML = `The distance between ${orderTo} and ${orderFrom} is ${dist}
                               <br>
                                 The price for delivery is ${(parseInt(dist, 10) * 10) + 200} Naira.
