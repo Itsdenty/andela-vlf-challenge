@@ -70,12 +70,10 @@ const errorMessage = document.getElementsByClassName('error'),
           dist = response.rows[0].elements[0].distance.text;
         distDiv.innerHTML = `The distance between ${orderTo} and ${orderFrom} is ${dist}
                               <br>
-                                The price for delivery is ${(parseInt(dist) * 10) + 200} Naira;
+                                The price for delivery is ${(parseInt(dist, 10) * 10) + 200} Naira.
                               `;
-                              
-        console.log(orig, dest, dist);
       } else {
-        alert(`Error: ${status}`);
+        showToast('toast-red', `Error: ${status}`);
       }
     };
     service.getDistanceMatrix(
