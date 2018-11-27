@@ -77,7 +77,6 @@ showToast = function showToast(toastClass, data, redirectUrl) {
     calculateDistance = function calculateDistance() {
   var index = currentParcel.tolocation.indexOf('lat');
   var toLocation = currentParcel.tolocation.substring(0, index);
-  console.log(currentParcel.tolocation, 'destination');
   var index2 = currentParcel.fromlocation.indexOf('lat');
   var fromLocation = currentParcel.fromlocation.substring(0, index2);
   var orderFrom = currentParcel.fromlocation.split(',');
@@ -93,7 +92,7 @@ showToast = function showToast(toastClass, data, redirectUrl) {
           dist = response.rows[0].elements[0].distance.text,
           duration = response.rows[0].elements[0].duration.text;
 
-      distDiv.innerHTML = '\n                              <table>\n                              <tr>\n                                <th>Data</th>\n                                <th>Value</th>\n                                <th>Data</th>\n                                <th>Value</th>\n                              </tr>\n                              <tr>\n                                <td><b>Order Location</b></td>\n                                <td>' + fromLocation + '</td>\n                                <td><b>Delivery Location</b></td>\n                                <td>' + toLocation + '</td>\n                              </tr>\n                              <tr>\n                              <td><b>Current Location</b></td>\n                              <td>' + (currentParcel.currentStatus || 'not available') + '</td>\n                              <td><b>Delivery Price</b></td>\n                              <td>' + (parseInt(dist, 10) * 10 + 200) + '</td>\n                              </tr>\n                              <tr>\n                              <td><b>Delivery Distance</b></td>\n                              <td>' + dist + ' naira</td>\n                              <td><b>Estimated Duration</b></td>\n                              <td>' + duration + '</td>\n                              </tr>\n                            </table>\n                              ';
+      distDiv.innerHTML = '\n                              <table>\n                              <tr>\n                                <th>Data</th>\n                                <th>Value</th>\n                                <th>Data</th>\n                                <th>Value</th>\n                              </tr>\n                              <tr>\n                                <td><b>Order Location</b></td>\n                                <td>' + fromLocation + '</td>\n                                <td><b>Delivery Location</b></td>\n                                <td>' + toLocation + '</td>\n                              </tr>\n                              <tr>\n                              <td><b>Current Location</b></td>\n                              <td>' + (currentParcel.currentStatus || 'not available') + '</td>\n                              <td><b>Delivery Price</b></td>\n                              <td>' + (parseInt(dist, 10) * 10 + 200) + ' naira</td>\n                              </tr>\n                              <tr>\n                              <td><b>Delivery Distance</b></td>\n                              <td>' + dist + ' naira</td>\n                              <td><b>Estimated Duration</b></td>\n                              <td>' + duration + '</td>\n                              </tr>\n                            </table>\n                              ';
     } else {
       showToast('toast-red', 'Error: ' + status);
     }
@@ -180,7 +179,6 @@ configureModals = function configureModals() {
       currentModal = 'cancel-parcel';
       document.getElementById(currentModal).classList.remove('hidden');
       var cancelId = selected.split('').pop();
-      console.log(cancelId);
       selectedId = cancelId;
     } else if (selected.includes('destination')) {
       currentModal = 'change-destination';
@@ -191,11 +189,9 @@ configureModals = function configureModals() {
   };
 
   document.addEventListener('click', function (e) {
-    console.log('cool', e.target, e.target.classList.contains('select-parcel'));
     if (e.target && e.target.classList.contains('select-parcel')) {
       var parcelIndex = e.target.getAttribute('data-index');
       currentParcel = parcelList[parcelIndex];
-      console.log(currentIndex, parcelIndex);
       document.getElementsByClassName('parcel-row')[currentIndex].classList.remove('highlight');
       document.getElementsByClassName('parcel-row')[parcelIndex].classList.add('highlight');
       currentIndex = parcelIndex;
@@ -282,7 +278,6 @@ createParcel = function createParcel(evt) {
       currentParcel = _parcelOrders[0];
 
       parcelList = parcelOrders;
-      console.log(parcelList);
       initialize();
       calculateDistance();
       var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
@@ -393,7 +388,6 @@ changeDestination = function changeDestination(evt) {
   // Get the place details from the autocomplete object.
   var place = autocomplete3.getPlace();
   changeGeocode = 'lat:' + place.geometry.location.lat() + ', long:' + place.geometry.location.lng();
-  console.log(changeGeocode, 'new geocode');
 },
     initAutocomplete = function initAutocomplete() {
   // Create the autocomplete object, restricting the search to geographical

@@ -31,6 +31,9 @@ body {
      display: inline-block !important; 
      padding:20px;
 }
+#header>ul>li>a{
+    color: white;
+}
 .to-left{
     float: left !important;
 }
@@ -373,4 +376,18 @@ tr:nth-child(even) {
 #cancel-parcel {
     margin-top: 8%;
     padding: 5%;
+}
+#total-deliveries {
+    color: black;
+    padding: 10px;
+}
+#total-transitting {
+    color: black;
+    padding: 10px;
+}
+#total-transitting>p:nth-child(1) {
+    font-weight: bold;
+}
+#total-deliveries>p:nth-child(1) {
+    font-weight: bold;
 }
