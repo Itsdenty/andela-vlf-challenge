@@ -4,24 +4,31 @@ let currentModal = '',
   autocomplete = {},
   toGeocode = '',
   fromGeocode = '',
+  changeGeocode = '',
   autocomplete2 = {},
+  autocomplete3 = {},
   currentParcel = {},
   parcelList = [],
   currentIndex = 0,
+  selectedId = 0,
   directionsDisplay,
   map;
 
 const errorMessage = document.getElementsByClassName('error'),
   parcelBtn = document.getElementById('submit-parcel'),
   parcelForm = document.getElementById('signupForm'),
+  changeDestinationForm = document.getElementById('destination-form'),
   distDiv = document.getElementById('dist'),
   toast = document.getElementById('toast'),
   loaderDiv = document.getElementById('loader'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
-  userParcels = 'https://andela-vlf.herokuapp.comapi/v1/users/',
+  userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
   orderList = document.getElementById('orders'),
   directionsService = new google.maps.DirectionsService(),
   service = new google.maps.DistanceMatrixService(),
+  dismissParcelBtn = document.getElementById('dismiss-cancel-order'),
+  confirmParcelBtn = document.getElementById('confirm-cancel-order'),
+  changeDestinationBtn = document.getElementById('submit-change-destination'),
 
   // algorithm for loader animation
   loader = (id) => {
@@ -185,17 +192,34 @@ const errorMessage = document.getElementsByClassName('error'),
     Array.from(dismissname).forEach((element) => {
       element.addEventListener('click', dismissModal);
     });
+
+    const processSelection = (selected) => {
+      if (selected.includes('cancel')) {
+        currentModal = 'cancel-parcel';
+        document.getElementById(currentModal).classList.remove('hidden');
+        const cancelId = selected.split('').pop();
+        selectedId = cancelId;
+      } else if (selected.includes('destination')) {
+        currentModal = 'change-destination';
+        document.getElementById(currentModal).classList.remove('hidden');
+        const destinationId = selected.split('').pop();
+        selectedId = destinationId;
+      }
+    };
+
     document.addEventListener('click', (e) => {
-      console.log('cool', e.target, e.target.classList.contains('select-parcel'));
       if (e.target && e.target.classList.contains('select-parcel')) {
         const parcelIndex = e.target.getAttribute('data-index');
         currentParcel = parcelList[parcelIndex];
-        console.log(currentIndex, parcelIndex);
         document.getElementsByClassName('parcel-row')[currentIndex].classList.remove('highlight');
         document.getElementsByClassName('parcel-row')[parcelIndex].classList.add('highlight');
         currentIndex = parcelIndex;
         initialize();
         calculateDistance();
+      }
+      if (e.target && e.target.classList.contains('my-actions')) {
+        const selected = e.target.value;
+        processSelection(selected);
       }
     });
   },
@@ -231,6 +255,7 @@ const errorMessage = document.getElementsByClassName('error'),
           parcelBtn.innerText = 'Create Parcel';
           return;
         }
+        clearInterval(startLoader);
         showToast('toast-green', data.data.message);
         parcelBtn.innerText = 'Create Parcel';
         dismissModal();
@@ -239,6 +264,7 @@ const errorMessage = document.getElementsByClassName('error'),
       })
       .catch(error => alert(error.message));
   },
+
   getUserOrders = () => {
     const token = `Bearer ${localStorage.getItem('token')}`,
       user = JSON.parse(localStorage.getItem('user')),
@@ -247,7 +273,7 @@ const errorMessage = document.getElementsByClassName('error'),
       showToast('toast-red', 'Please login to access this page', 'index.html');
     }
     loaderDiv.classList.remove('hidden');
-    fetch(parcelRoute, {
+    fetch(userRoute, {
       headers: {
         'Content-Type': 'application/json',
         authorization: token
@@ -288,10 +314,10 @@ const errorMessage = document.getElementsByClassName('error'),
                 <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction">
+                <td><select name="orderAction" class="my-actions">
                   <option value="">Select Action</option>
-                  <option value="cancel">Cancel</option>
-                  <option value="status">Change Status</option>
+                  <option value="cancel${order.id}">Cancel</option>
+                  <option value="destination${order.id}">Change Destination</option>
                 </select></td>
               </tr>`;
             } else {
@@ -301,10 +327,10 @@ const errorMessage = document.getElementsByClassName('error'),
                 <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction">
+                <td><select name="orderAction" class="my-actions">
                   <option value="">Select Action</option>
-                  <option value="cancel">Cancel</option>
-                  <option value="status">Change Destination</option>
+                  <option value="cancel${order.id}">Cancel</option>
+                  <option value="destination${order.id}">Change Destination</option>
                 </select></td>
               </tr>`;
             }
@@ -316,40 +342,72 @@ const errorMessage = document.getElementsByClassName('error'),
         }
       });
   },
-  // create account method for signup
-  loginUser = (evt) => {
+
+  // cancelPArce method for cancelling order
+  cancelParcel = (evt) => {
     evt.preventDefault();
-    const headers = new Headers({
+    const token = `Bearer ${localStorage.getItem('token')}`,
+      cancelRoute = `${parcelRoute}/${selectedId}/cancel`,
+      headers = new Headers({
         'content-type': 'application/json',
+        authorization: token
       }),
-
-      loginDetails = {
-        email: loginForm.email.value,
-        password: loginForm.password.value,
-      },
-
-      startLoader = setInterval(loader, 500, 'submit-login');
-    console.log(loginDetails);
-    fetch(loginRoute, {
-      method: 'POST',
-      body: JSON.stringify({ login: loginDetails }),
+      startLoader = setInterval(loader, 500, 'confirm-cancel-order');
+    fetch(cancelRoute, {
+      method: 'PATCH',
       headers,
     })
-      .then(res => Promise.all([res.json(), res]))
-      .then(([data, res]) => {
-        if (!res.ok) {
+      .then(res => res.json())
+      .then((data, res) => {
+        if (data.status === 401) {
+          clearInterval(startLoader);
+          showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
+        } else if (data.status === 500) {
           clearInterval(startLoader);
           showToast('toast-red', data.error);
-          loginBtn.innerText = 'Login';
-          return;
+        } else {
+          clearInterval(startLoader);
+          showToast('toast-green', 'successfully cancelled');
+          confirmParcelBtn.innerText = 'Cancel';
+          dismissModal();
+          currentModal = '';
         }
-        showToast('toast-green', 'login successful');
-        loginBtn.innerText = 'Login';
-        dismissModal();
-        currentModal = '';
-        // window.location.href = '/profile.html';
-        localStorage.setItem('token', data.data.token);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
+      })
+      .catch(error => alert(error.message));
+  },
+
+  // create account method for signup
+  changeDestination = (evt) => {
+    evt.preventDefault();
+    const token = `Bearer ${localStorage.getItem('token')}`,
+      cancelRoute = `${parcelRoute}/${selectedId}/destination`,
+      destination = `${changeDestinationForm.changeDestination.value}, ${changeGeocode}`,
+      headers = new Headers({
+        'content-type': 'application/json',
+        authorization: token
+      }),
+
+      startLoader = setInterval(loader, 500, 'submit-change-destination');
+    fetch(cancelRoute, {
+      method: 'PATCH',
+      body: JSON.stringify({ toLocation: destination }),
+      headers,
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+        if (data.status === 401) {
+          clearInterval(startLoader);
+          showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
+        } else if (data.status === 500) {
+          clearInterval(startLoader);
+          showToast('toast-red', data.error);
+        } else {
+          clearInterval(startLoader);
+          showToast('toast-green', 'successfully cancelled');
+          confirmParcelBtn.innerText = 'Submit';
+          dismissModal();
+          currentModal = '';
+        }
       })
       .catch(error => alert(error.message));
   },
@@ -360,13 +418,17 @@ const errorMessage = document.getElementsByClassName('error'),
     fromGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
   },
 
-
   fillInToLocation = () => {
     // Get the place details from the autocomplete object.
     const place = autocomplete2.getPlace();
     toGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
   },
 
+  fillInDestination = () => {
+    // Get the place details from the autocomplete object.
+    const place = autocomplete3.getPlace();
+    changeGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
+  },
 
   initAutocomplete = () => {
     // Create the autocomplete object, restricting the search to geographical
@@ -388,6 +450,15 @@ const errorMessage = document.getElementsByClassName('error'),
     // When the user selects an address from the dropdown, populate the address
     // fields in the form.
     autocomplete2.addListener('place_changed', fillInToLocation);
+
+    autocomplete3 = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('changeDestination')),
+      { types: ['geocode'] }
+    );
+
+    // When the user selects an address from the dropdown, populate the address
+    // fields in the form.
+    autocomplete3.addListener('place_changed', fillInDestination);
   };
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
@@ -398,3 +469,6 @@ window.onload = () => {
 
 // add event listeners
 createParcelForm.addEventListener('submit', createParcel);
+changeDestinationForm.addEventListener('submit', changeDestination);
+confirmParcelBtn.addEventListener('click', cancelParcel);
+dismissParcelBtn.addEventListener('click', dismissModal);

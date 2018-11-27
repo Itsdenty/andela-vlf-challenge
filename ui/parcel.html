@@ -72,22 +72,31 @@
                 </div>
             </div>
         </div>
-        <div class="hidden modal" id="login">
+        <div class="hidden modal" id="cancel-parcel">
             <div class="row">
                 <div class="modal-design">
-                    <h1 class="center-it">Login Form</h1>
+                    <h1 class="center-it">Cancel Parcel Dialogue</h1>
                     <p class="point-it dismiss">x</p>
                     <form id="loginForm">
+                        <br>
+                        <button class="btn-small btn-primary col-md-2" id="dismiss-cancel-order">dismiss</button>
+                        <button class="btn-small btn-primary col-md-2" id="confirm-cancel-order">cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="hidden modal" id="change-destination">
+            <div class="row">
+                <div class="modal-design">
+                    <h1 class="center-it">Change Destination Form</h1>
+                    <p class="point-it dismiss">x</p>
+                    <form id="destination-form" method="POST">
                         <div class="form-group">
-                            <label for="email">Your Email: </label>
-                            <input class="form-control" name="email" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Password: </label>
-                            <input class="form-control" name="password" type="password">
+                            <label for="changeDestination">New Destination</label>
+                            <input class="form-control" id="changeDestination" placeholder="search for your location" name="changeDestination" type="text">
                         </div>
                         <br>
-                        <button class="btn-small btn-primary shift-center" id="submit-login">Login</button>
+                        <button class="btn-small btn-primary shift-center" id="submit-change-destination" type="submit">Submit</button>
                     </form>
                 </div>
             </div>

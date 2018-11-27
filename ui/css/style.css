@@ -367,3 +367,10 @@ tr:nth-child(even) {
     padding: 4px;
     margin-left: 54.5% !important;
 }
+#dismiss-cancel-order {
+    margin-left: -20%;
+}
+#cancel-parcel {
+    margin-top: 8%;
+    padding: 5%;
+}
