@@ -6,24 +6,17 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var currentParcel = {},
     parcelList = [],
     directionsDisplay = void 0,
+    delivered = 0,
+    transitting = 0,
     map = void 0;
 
 var errorMessage = document.getElementsByClassName('error'),
-    parcelBtn = document.getElementById('submit-parcel'),
-    parcelForm = document.getElementById('signupForm'),
-    changeDestinationForm = document.getElementById('destination-form'),
-    distDiv = document.getElementById('dist'),
-    toast = document.getElementById('toast'),
+    deliveryCount = document.getElementById('delivery-count'),
+    transittingCount = document.getElementById('transitting-count'),
     loaderDiv = document.getElementById('loader'),
     parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
     userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
     orderList = document.getElementById('orders'),
-    directionsService = new google.maps.DirectionsService(),
-    service = new google.maps.DistanceMatrixService(),
-    dismissParcelBtn = document.getElementById('dismiss-cancel-order'),
-    confirmParcelBtn = document.getElementById('confirm-cancel-order'),
-    changeDestinationBtn = document.getElementById('submit-change-destination'),
-
 
 //  function for displaying toaster
 showToast = function showToast(toastClass, data, redirectUrl) {
@@ -58,15 +51,15 @@ showToast = function showToast(toastClass, data, redirectUrl) {
     } else if (data.data.length < 1) {
       showToast('toast-red', 'No Order available at the moment');
     } else {
-      var parcelOrders = data.data;
+      var parcelOrders = data.data,
+          size = parcelList.length,
+          orderHeader = '\n                            <tr>\n                              <th>From</th>\n                              <th>To</th>\n                              <th>Weight</th>\n                              <th>Status</th>\n                            </tr>';
 
       var _parcelOrders = _slicedToArray(parcelOrders, 1);
 
       currentParcel = _parcelOrders[0];
 
       parcelList = parcelOrders;
-
-      var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
       var orderDetails = '',
           index = 0;
       orderList.innerHTML += orderHeader;
@@ -75,10 +68,22 @@ showToast = function showToast(toastClass, data, redirectUrl) {
         orderFrom = orderFrom[1] + ', ' + orderFrom[2];
         var orderTo = order.tolocation.split(',');
         orderTo = orderTo[1] + ', ' + orderTo[2];
+        if (order.status === 'delivered') {
+          delivered += 1;
+          if (index === size - 1) {
+            deliveryCount.innerText = '' + delivered;
+          }
+        }
+        if (order.status === 'transitting') {
+          transitting += 1;
+          if (index === size - 1) {
+            transittingCount.innerText = '' + transitting;
+          }
+        }
         if (index === 0) {
-          orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="cancel' + order.id + '">Cancel</option>\n                  <option value="destination' + order.id + '">Change Destination</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n              </tr>';
         } else {
-          orderDetails += '\n              <tr class="parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="cancel' + order.id + '">Cancel</option>\n                  <option value="destination' + order.id + '">Change Destination</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr class="parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n              </tr>';
         }
         orderList.innerHTML += orderDetails;
         orderDetails = '';

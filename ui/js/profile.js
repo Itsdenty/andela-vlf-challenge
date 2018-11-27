@@ -55,7 +55,6 @@ const errorMessage = document.getElementsByClassName('error'),
                               <th>To</th>
                               <th>Weight</th>
                               <th>Status</th>
-                              <th>Actions</th>
                             </tr>`;
           [currentParcel] = parcelOrders;
           parcelList = parcelOrders;
@@ -86,11 +85,6 @@ const errorMessage = document.getElementsByClassName('error'),
                 <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
-                </select></td>
               </tr>`;
             } else {
               orderDetails += `
@@ -99,11 +93,6 @@ const errorMessage = document.getElementsByClassName('error'),
                 <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
-                </select></td>
               </tr>`;
             }
             orderList.innerHTML += orderDetails;
