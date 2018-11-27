@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/layout.css" rel="stylesheet">
+        <link href="css/theme.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Audiowide|Berkshire+Swash|Bree+Serif|Cantarell|Passion+One|Playfair+Display+SC|Raleway|Sanchez|Shrikhand|Teko" rel="stylesheet">
+    </head>
+    <body>
+        <div id="wrapper"> <!-- content container -->
+        <!-- Navigation bar section -->
+        <div id="header">
+            <ul>
+               <li class="to-left"><a>SENDIT</a></li> 
+               <li class="to-right trigger point-it" data-modal="login">Logout</li>
+               <li class="to-right trigger point-it" data-modal="signup"><a href="profile.html">Profile</a></li>
+               <li class="to-right">Home</li>
+           </ul>
+        </div>
+        <!-- Main content container -->
+        <div id="content">
+                <!-- Jumbotrone header section -->
+        <div id="jumbo2"> <!-- the header image would be attached to this div via css -->
+          <div class="row">
+            <div class="col-md-2 card main-margin" id="">
+              <h2>Parcel Orders <span><button class="btn-small btn-primary to-right trigger" id="cr-button" data-modal="create-parcel">create parcel</button></span></h2>
+              <table id="orders">
+              </table>
+            </div>
+            <div class="col-md-2 main-margin" id="map"></div>
+            </div>
+            <div class="row">
+              <div class="col-md-2 main-margin"><p></p></div>
+              <div class="col-md-2 card" id="details"><p id="dist">Calculating distance......</p></div>
+            </div>
+          </div>
+          <!-- <div class="row">
+              <div class="col-md-3-4">
+                <button class="btn btn-primary text-color to-right" id="check-out">Check us out</button>
+              </div>
+          </div> -->
+        </div>
+            <!-- The footer container -->
+        <div id="footer" class="center-it">
+            <p><span>SENDIT Parcel Delivery Service</span> Copyright 2018</p>
+        </div>
+        <div class="hidden modal" id="create-parcel">
+            <div class="row">
+                <div class="modal-design">
+                    <h1 class="center-it">Parcel Order Form</h1>
+                    <p class="point-it dismiss">x</p>
+                    <form id="createParcelForm" method="POST">
+                        <div class="form-group">
+                            <label for="first-name">Sender Address: </label>
+                            <input class="form-control" placeholder="search for your location" id="fromLocation" name="fromLocation" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">Delivery Location: </label>
+                            <input class="form-control" name="toLocation" id="toLocation" placeholder="search for your location" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">Weight: </label>
+                            <input class="form-control" placeholder="Enter parcel weight" name="weight" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">Weight Metric: </label>
+                            <input class="form-control" placeholder="Enter parcel weight metric" name="weightmetric" type="text" required>
+                        </div>
+                        <p class="error"></p>
+                        <button class="btn-small btn-primary shift-center" id="submit-parcel">Create Parcel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="hidden modal" id="cancel-parcel">
+            <div class="row">
+                <div class="modal-design">
+                    <h1 class="center-it">Cancel Parcel Dialogue</h1>
+                    <p class="point-it dismiss">x</p>
+                    <form id="loginForm">
+                        <br>
+                        <button class="btn-small btn-primary col-md-2" id="dismiss-cancel-order">dismiss</button>
+                        <button class="btn-small btn-primary col-md-2" id="confirm-cancel-order">cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="hidden modal" id="change-destination">
+            <div class="row">
+                <div class="modal-design">
+                    <h1 class="center-it">Change Destination Form</h1>
+                    <p class="point-it dismiss">x</p>
+                    <form id="destination-form" method="POST">
+                        <div class="form-group">
+                            <label for="changeDestination">New Destination</label>
+                            <input class="form-control" id="changeDestination" placeholder="search for your location" name="changeDestination" type="text">
+                        </div>
+                        <br>
+                        <button class="btn-small btn-primary shift-center" id="submit-change-destination" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="toast" class="hidden">
+            <p>successful</p>
+        </div>
+        <div id="loader" class="hidden">
+          
+        </div>
+    </body>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4cMpykgi9M9lnlpCl4P34eAy-El-3YYg&libraries=places"></script>
+      <script src="script/admin.js" type="text/javascript"></script>
+</html>
