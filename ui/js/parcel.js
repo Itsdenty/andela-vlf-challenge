@@ -262,7 +262,7 @@ const errorMessage = document.getElementsByClassName('error'),
         currentModal = '';
         // window.location.href = '/profile.html';
       })
-      .catch(error => alert(error.message));
+      .catch(error => showToast('toast-red', error.message));
   },
 
   getUserOrders = () => {
@@ -373,7 +373,7 @@ const errorMessage = document.getElementsByClassName('error'),
           currentModal = '';
         }
       })
-      .catch(error => alert(error.message));
+      .catch(error => showToast('toast-red', error.message));
   },
 
   // create account method for signup
@@ -409,7 +409,7 @@ const errorMessage = document.getElementsByClassName('error'),
           currentModal = '';
         }
       })
-      .catch(error => alert(error.message));
+      .catch(error => showToast('toast-red', error.message));
   },
 
   fillInFromLocation = () => {
