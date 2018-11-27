@@ -101,7 +101,7 @@ const errorMessage = document.getElementsByClassName('error'),
                               <td><b>Current Location</b></td>
                               <td>${currentParcel.currentStatus || 'not available'}</td>
                               <td><b>Delivery Price</b></td>
-                              <td>${(parseInt(dist, 10) * 10) + 200}</td>
+                              <td>${(parseInt(dist, 10) * 10) + 200} naira</td>
                               </tr>
                               <tr>
                               <td><b>Delivery Distance</b></td>

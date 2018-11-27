@@ -1,35 +1,18 @@
 /* eslint-disable no-undef, no-unused-vars */
-let currentModal = '',
-  loaderStatus = 0,
-  autocomplete = {},
-  toGeocode = '',
-  fromGeocode = '',
-  changeGeocode = '',
-  autocomplete2 = {},
-  autocomplete3 = {},
-  currentParcel = {},
+let currentParcel = {},
   parcelList = [],
-  currentIndex = 0,
-  selectedId = 0,
   directionsDisplay,
+  delivered = 0,
+  transitting = 0,
   map;
 
 const errorMessage = document.getElementsByClassName('error'),
-  parcelBtn = document.getElementById('submit-parcel'),
-  parcelForm = document.getElementById('signupForm'),
-  changeDestinationForm = document.getElementById('destination-form'),
-  distDiv = document.getElementById('dist'),
-  toast = document.getElementById('toast'),
+  deliveryCount = document.getElementById('delivery-count'),
+  transittingCount = document.getElementById('transitting-count'),
   loaderDiv = document.getElementById('loader'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
   orderList = document.getElementById('orders'),
-  directionsService = new google.maps.DirectionsService(),
-  service = new google.maps.DistanceMatrixService(),
-  dismissParcelBtn = document.getElementById('dismiss-cancel-order'),
-  confirmParcelBtn = document.getElementById('confirm-cancel-order'),
-  changeDestinationBtn = document.getElementById('submit-change-destination'),
-
   //  function for displaying toaster
   showToast = (toastClass, data, redirectUrl) => {
     toast.classList.remove('hidden');
@@ -58,24 +41,24 @@ const errorMessage = document.getElementsByClassName('error'),
     })
       .then(res => res.json())
       .then((data, res) => {
+        loaderDiv.classList.add('hidden');
         if (data.status === 401) {
           showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
         } else if (data.data.length < 1) {
           showToast('toast-red', 'No Order available at the moment');
         } else {
-          const parcelOrders = data.data;
+          const parcelOrders = data.data,
+            size = parcelList.length,
+            orderHeader = `
+                            <tr>
+                              <th>From</th>
+                              <th>To</th>
+                              <th>Weight</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                            </tr>`;
           [currentParcel] = parcelOrders;
           parcelList = parcelOrders;
-          initialize();
-          calculateDistance();
-          const orderHeader = `
-                                <tr>
-                                  <th>From</th>
-                                  <th>To</th>
-                                  <th>Weight</th>
-                                  <th>Status</th>
-                                  <th>Actions</th>
-                                </tr>`;
           let orderDetails = '',
             index = 0;
           orderList.innerHTML += orderHeader;
@@ -84,6 +67,18 @@ const errorMessage = document.getElementsByClassName('error'),
             orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
             let orderTo = order.tolocation.split(',');
             orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+            if (order.status === 'delivered') {
+              delivered += 1;
+              if (index === (size - 1)) {
+                deliveryCount.innerText = `${delivered}`;
+              }
+            }
+            if (order.status === 'transitting') {
+              transitting += 1;
+              if (index === (size - 1)) {
+                transittingCount.innerText = `${transitting}`;
+              }
+            }
             if (index === 0) {
               orderDetails += `
               <tr class="highlight parcel-row" data-index="${index}">
@@ -118,7 +113,7 @@ const errorMessage = document.getElementsByClassName('error'),
           });
         }
       });
-  },
+  };
 
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {

@@ -8,47 +8,47 @@
     </head>
     <body>
         <div id="wrapper"> <!-- content container -->
-        <!-- Navigation bar section -->
-        <div id="header">
-            <ul>
-               <li class="to-left"><a>SENDIT</a></li> 
-               <li class="to-right trigger point-it" data-modal="login">Logout</li>
-               <li class="to-right trigger point-it" data-modal="signup">Profile</li>
-               <li class="to-right">Home</li>
-           </ul>
-        </div>
-        <!-- Main content container -->
-        <div id="content">
-                <!-- Jumbotrone header section -->
-        <div id="jumbo2"> <!-- the header image would be attached to this div via css -->
-          <div class="row">
-            <div class="col-md-2 card main-margin" id="">
-              <h2>Parcel Orders <span><button class="btn-small btn-primary to-right trigger" id="cr-button" data-modal="create-parcel">create parcel</button></span></h2>
-              <table id="orders">
-              </table>
-            </div>
-            <div class="col-md-2 main-margin">
-              <div class="card col-md-2">
-                <h3 class="center-it">Total count of parcel deliveries</h3>
-                <p class="center-it">54</p>
-              </div>
-              <div class="card col-md-2">
-                  <h3 class="center-it">Total count of parcel in transit</h3>
-                  <p class="center-it">54</p>
+          <!-- Navigation bar section -->
+          <div id="header">
+              <ul>
+                <li class="to-left"><a>SENDIT</a></li> 
+                <li class="to-right trigger point-it" data-modal="login">Logout</li>
+                <li class="to-right trigger point-it" href="profile.html" data-modal="signup">Profile</li>
+                <li class="to-right">Home</li>
+            </ul>
+          </div>
+          <!-- Main content container -->
+          <div id="content">
+                    <!-- Jumbotrone header section -->
+            <div id="jumbo2"> <!-- the header image would be attached to this div via css -->
+              <div class="row">
+                <div class="col-md-2 card main-margin" id="">
+                  <h2>Parcel Orders <span><button class="btn-small btn-primary to-right trigger" id="cr-button" data-modal="create-parcel">create parcel</button></span></h2>
+                  <table id="orders">
+                  </table>
+                </div>
+                <div class="col-md-2 main-margin">
+                  <div class="card col-md-2 center-it" id="total-deliveries">
+                    <p>Total count of parcel deliveries</p>
+                    <p delivered="delivery-count">0</p>
+                  </div>
+                  <div class="card col-md-2 center-it" id="total-transitting">
+                      <p>Total count of parcels in transit</p>
+                      <p id="transitting-count">0</p>
+                    </div>
+                </div>
                 </div>
             </div>
-            </div>
+            <!-- <div class="row">
+                <div class="col-md-3-4">
+                  <button class="btn btn-primary text-color to-right" id="check-out">Check us out</button>
+                </div>
+            </div> -->
           </div>
-          <!-- <div class="row">
-              <div class="col-md-3-4">
-                <button class="btn btn-primary text-color to-right" id="check-out">Check us out</button>
-              </div>
-          </div> -->
-        </div>
-            <!-- The footer container -->
-        <div id="footer" class="center-it">
-            <p><span>SENDIT Parcel Delivery Service</span> Copyright 2018</p>
-        </div>
+              <!-- The footer container -->
+          <div id="footer" class="center-it">
+              <p><span>SENDIT Parcel Delivery Service</span> Copyright 2018</p>
+          </div>
         </div>
         <div id="toast" class="hidden">
             <p>successful</p>
@@ -58,5 +58,5 @@
         </div>
     </body>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4cMpykgi9M9lnlpCl4P34eAy-El-3YYg&libraries=places"></script>
-      <script src="script/parcel.js" type="text/javascript"></script>
+      <script src="script/profile.js" type="text/javascript"></script>
 </html>
