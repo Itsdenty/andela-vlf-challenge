@@ -27,6 +27,7 @@ var errorMessage = document.getElementsByClassName('error'),
     loaderDiv = document.getElementById('loader'),
     parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
     userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
+
     orderList = document.getElementById('orders'),
     directionsService = new google.maps.DirectionsService(),
     service = new google.maps.DistanceMatrixService(),
