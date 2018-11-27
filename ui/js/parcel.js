@@ -71,7 +71,6 @@ const errorMessage = document.getElementsByClassName('error'),
   calculateDistance = () => {
     const index = currentParcel.tolocation.indexOf('lat');
     const toLocation = currentParcel.tolocation.substring(0, index);
-    console.log(currentParcel.tolocation, 'destination');
     const index2 = currentParcel.fromlocation.indexOf('lat');
     const fromLocation = currentParcel.fromlocation.substring(0, index2);
     let orderFrom = currentParcel.fromlocation.split(',');
@@ -199,7 +198,6 @@ const errorMessage = document.getElementsByClassName('error'),
         currentModal = 'cancel-parcel';
         document.getElementById(currentModal).classList.remove('hidden');
         const cancelId = selected.split('').pop();
-        console.log(cancelId);
         selectedId = cancelId;
       } else if (selected.includes('destination')) {
         currentModal = 'change-destination';
@@ -210,11 +208,9 @@ const errorMessage = document.getElementsByClassName('error'),
     };
 
     document.addEventListener('click', (e) => {
-      console.log('cool', e.target, e.target.classList.contains('select-parcel'));
       if (e.target && e.target.classList.contains('select-parcel')) {
         const parcelIndex = e.target.getAttribute('data-index');
         currentParcel = parcelList[parcelIndex];
-        console.log(currentIndex, parcelIndex);
         document.getElementsByClassName('parcel-row')[currentIndex].classList.remove('highlight');
         document.getElementsByClassName('parcel-row')[parcelIndex].classList.add('highlight');
         currentIndex = parcelIndex;
@@ -293,7 +289,6 @@ const errorMessage = document.getElementsByClassName('error'),
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
           parcelList = parcelOrders;
-          console.log(parcelList);
           initialize();
           calculateDistance();
           const orderHeader = `
@@ -463,7 +458,7 @@ const errorMessage = document.getElementsByClassName('error'),
 
     // When the user selects an address from the dropdown, populate the address
     // fields in the form.
-    autocomplete3.addListener('place_changed', changeDestination);
+    autocomplete3.addListener('place_changed', fillInDestination);
   };
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {

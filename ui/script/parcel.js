@@ -393,6 +393,7 @@ changeDestination = function changeDestination(evt) {
   // Get the place details from the autocomplete object.
   var place = autocomplete3.getPlace();
   changeGeocode = 'lat:' + place.geometry.location.lat() + ', long:' + place.geometry.location.lng();
+  console.log(changeGeocode, 'new geocode');
 },
     initAutocomplete = function initAutocomplete() {
   // Create the autocomplete object, restricting the search to geographical
@@ -416,7 +417,7 @@ changeDestination = function changeDestination(evt) {
 
   // When the user selects an address from the dropdown, populate the address
   // fields in the form.
-  autocomplete3.addListener('place_changed', changeDestination);
+  autocomplete3.addListener('place_changed', fillInDestination);
 };
 // onload methods for ui animation and signup and login modal events
 window.onload = function () {
