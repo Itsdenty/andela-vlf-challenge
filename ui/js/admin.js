@@ -2,11 +2,7 @@
 let currentModal = '',
   loaderStatus = 0,
   autocomplete = {},
-  toGeocode = '',
-  fromGeocode = '',
-  changeGeocode = '',
-  autocomplete2 = {},
-  autocomplete3 = {},
+  currentGeocode = '',
   currentParcel = {},
   parcelList = [],
   currentIndex = 0,
@@ -15,20 +11,18 @@ let currentModal = '',
   map;
 
 const errorMessage = document.getElementsByClassName('error'),
-  parcelBtn = document.getElementById('submit-parcel'),
+  changeStatusBtn = document.getElementById('submit-status'),
   parcelForm = document.getElementById('signupForm'),
-  changeDestinationForm = document.getElementById('destination-form'),
+  changeStatusForm = document.getElementById('status-form'),
+  changeLocationForm = document.getElementById('location-form'),
   distDiv = document.getElementById('dist'),
   toast = document.getElementById('toast'),
   loaderDiv = document.getElementById('loader'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
-  userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
   orderList = document.getElementById('orders'),
   directionsService = new google.maps.DirectionsService(),
   service = new google.maps.DistanceMatrixService(),
-  dismissParcelBtn = document.getElementById('dismiss-cancel-order'),
-  confirmParcelBtn = document.getElementById('confirm-cancel-order'),
-  changeDestinationBtn = document.getElementById('submit-change-destination'),
+  changeLocationBtn = document.getElementById('submit-change-location'),
 
   // algorithm for loader animation
   loader = (id) => {
@@ -99,7 +93,7 @@ const errorMessage = document.getElementsByClassName('error'),
                               </tr>
                               <tr>
                               <td><b>Current Location</b></td>
-                              <td>${currentParcel.currentStatus || 'not available'}</td>
+                              <td>${currentParcel.currentlocation || 'not available'}</td>
                               <td><b>Delivery Price</b></td>
                               <td>${(parseInt(dist, 10) * 10) + 200} naira</td>
                               </tr>
@@ -194,16 +188,16 @@ const errorMessage = document.getElementsByClassName('error'),
     });
 
     const processSelection = (selected) => {
-      if (selected.includes('cancel')) {
-        currentModal = 'cancel-parcel';
+      if (selected.includes('status')) {
+        currentModal = 'change-status';
         document.getElementById(currentModal).classList.remove('hidden');
-        const cancelId = selected.split('').pop();
-        selectedId = cancelId;
-      } else if (selected.includes('destination')) {
-        currentModal = 'change-destination';
+        const statusId = selected.split('').pop();
+        selectedId = statusId;
+      } else if (selected.includes('location')) {
+        currentModal = 'change-location';
         document.getElementById(currentModal).classList.remove('hidden');
-        const destinationId = selected.split('').pop();
-        selectedId = destinationId;
+        const locationId = selected.split('').pop();
+        selectedId = locationId;
       }
     };
 
@@ -224,56 +218,13 @@ const errorMessage = document.getElementsByClassName('error'),
     });
   },
 
-  // create account method for signup
-  createParcel = (evt) => {
-    evt.preventDefault();
-    const user = JSON.parse(localStorage.getItem('user')),
-      token = `Bearer ${localStorage.getItem('token')}`,
-      headers = new Headers({
-        'content-type': 'application/json',
-        authorization: token
-      }),
-
-      parcelDetails = {
-        fromLocation: `${createParcelForm.fromLocation.value}, ${fromGeocode}`,
-        toLocation: `${createParcelForm.toLocation.value}, ${toGeocode}`,
-        weight: createParcelForm.weight.value,
-        weightmetric: createParcelForm.weightmetric.value,
-        placedBy: user.id,
-      },
-      startLoader = setInterval(loader, 500, 'submit-parcel');
-    fetch(parcelRoute, {
-      method: 'POST',
-      body: JSON.stringify({ parcel: parcelDetails }),
-      headers,
-    })
-      .then(res => Promise.all([res.json(), res]))
-      .then(([data, res]) => {
-        if (!res.ok) {
-          clearInterval(startLoader);
-          showToast('toast-red', data.error);
-          parcelBtn.innerText = 'Create Parcel';
-          return;
-        }
-        clearInterval(startLoader);
-        showToast('toast-green', data.data.message);
-        parcelBtn.innerText = 'Create Parcel';
-        dismissModal();
-        currentModal = '';
-        // window.location.href = '/profile.html';
-      })
-      .catch(error => showToast('toast-red', error.message));
-  },
-
-  getUserOrders = () => {
-    const token = `Bearer ${localStorage.getItem('token')}`,
-      user = JSON.parse(localStorage.getItem('user')),
-      userRoute = `${userParcels}${user.id}/parcels`;
+  getAllOrders = () => {
+    const token = `Bearer ${localStorage.getItem('token')}`;
     if (!token) {
       showToast('toast-red', 'Please login to access this page', 'index.html');
     }
     loaderDiv.classList.remove('hidden');
-    fetch(userRoute, {
+    fetch(parcelRoute, {
       headers: {
         'Content-Type': 'application/json',
         authorization: token
@@ -329,8 +280,8 @@ const errorMessage = document.getElementsByClassName('error'),
                 <td class="select-parcel" data-index="${index}"> ${order.status}</td>
                 <td><select name="orderAction" class="my-actions">
                   <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
+                  <option value="status${order.id}">Change Status</option>
+                  <option value="location${order.id}">Change Current Location</option>
                 </select></td>
               </tr>`;
             }
@@ -344,17 +295,19 @@ const errorMessage = document.getElementsByClassName('error'),
   },
 
   // cancelPArce method for cancelling order
-  cancelParcel = (evt) => {
+  changeStatus = (evt) => {
     evt.preventDefault();
     const token = `Bearer ${localStorage.getItem('token')}`,
-      cancelRoute = `${parcelRoute}/${selectedId}/cancel`,
+      statusRoute = `${parcelRoute}/${selectedId}/status`,
       headers = new Headers({
         'content-type': 'application/json',
         authorization: token
       }),
-      startLoader = setInterval(loader, 500, 'confirm-cancel-order');
-    fetch(cancelRoute, {
+      status = `${changeStatusForm.status.value}`,
+      startLoader = setInterval(loader, 500, 'submit-status');
+    fetch(statusRoute, {
       method: 'PATCH',
+      body: JSON.stringify({ status }),
       headers,
     })
       .then(res => res.json())
@@ -365,10 +318,11 @@ const errorMessage = document.getElementsByClassName('error'),
         } else if (data.status === 500) {
           clearInterval(startLoader);
           showToast('toast-red', data.error);
+          changeStatusBtn.innerText = 'Submit';
         } else {
           clearInterval(startLoader);
           showToast('toast-green', 'successfully cancelled');
-          confirmParcelBtn.innerText = 'Cancel';
+          changeStatusBtn.innerText = 'Submit';
           dismissModal();
           currentModal = '';
         }
@@ -377,20 +331,20 @@ const errorMessage = document.getElementsByClassName('error'),
   },
 
   // create account method for signup
-  changeDestination = (evt) => {
+  changeLocation = (evt) => {
     evt.preventDefault();
     const token = `Bearer ${localStorage.getItem('token')}`,
-      cancelRoute = `${parcelRoute}/${selectedId}/destination`,
-      destination = `${changeDestinationForm.changeDestination.value}, ${changeGeocode}`,
+      currentRoute = `${parcelRoute}/${selectedId}/currentLocation`,
+      currentLocation = `${changeLocationForm.changeLocation.value}`,
       headers = new Headers({
         'content-type': 'application/json',
         authorization: token
       }),
 
-      startLoader = setInterval(loader, 500, 'submit-change-destination');
-    fetch(cancelRoute, {
+      startLoader = setInterval(loader, 500, 'submit-change-location');
+    fetch(currentRoute, {
       method: 'PATCH',
-      body: JSON.stringify({ toLocation: destination }),
+      body: JSON.stringify({ currentLocation }),
       headers,
     })
       .then(res => res.json())
@@ -401,10 +355,11 @@ const errorMessage = document.getElementsByClassName('error'),
         } else if (data.status === 500) {
           clearInterval(startLoader);
           showToast('toast-red', data.error);
+          changeLocationBtn.innerText = 'Submit';
         } else {
           clearInterval(startLoader);
-          showToast('toast-green', 'successfully cancelled');
-          confirmParcelBtn.innerText = 'Submit';
+          showToast('toast-green', 'successfully changed location');
+          changeLocationBtn.innerText = 'Submit';
           dismissModal();
           currentModal = '';
         }
@@ -412,63 +367,32 @@ const errorMessage = document.getElementsByClassName('error'),
       .catch(error => showToast('toast-red', error.message));
   },
 
-  fillInFromLocation = () => {
-    // Get the place details from the autocomplete object.
-    const place = autocomplete.getPlace();
-    fromGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
-  },
-
-  fillInToLocation = () => {
+  fillInCurrentLocation = () => {
     // Get the place details from the autocomplete object.
     const place = autocomplete2.getPlace();
-    toGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
-  },
-
-  fillInDestination = () => {
-    // Get the place details from the autocomplete object.
-    const place = autocomplete3.getPlace();
-    changeGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
+    currentGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
   },
 
   initAutocomplete = () => {
     // Create the autocomplete object, restricting the search to geographical
     // location types.
     autocomplete = new google.maps.places.Autocomplete(
-    /** @type {!HTMLInputElement} */(document.getElementById('fromLocation')),
+    /** @type {!HTMLInputElement} */(document.getElementById('changeLocation')),
       { types: ['geocode'] }
     );
 
     // When the user selects an address from the dropdown, populate the address
     // fields in the form.
-    autocomplete.addListener('place_changed', fillInFromLocation);
-
-    autocomplete2 = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('toLocation')),
-      { types: ['geocode'] }
-    );
-
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
-    autocomplete2.addListener('place_changed', fillInToLocation);
-
-    autocomplete3 = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('changeDestination')),
-      { types: ['geocode'] }
-    );
-
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
-    autocomplete3.addListener('place_changed', fillInDestination);
+    autocomplete.addListener('place_changed', fillInCurrentLocation);
   };
+
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
   configureModals();
   initAutocomplete();
-  getUserOrders();
+  getAllOrders();
 };
 
 // add event listeners
-createParcelForm.addEventListener('submit', createParcel);
-changeDestinationForm.addEventListener('submit', changeDestination);
-confirmParcelBtn.addEventListener('click', cancelParcel);
-dismissParcelBtn.addEventListener('click', dismissModal);
+changeStatusForm.addEventListener('submit', changeStatus);
+changeLocationForm.addEventListener('submit', changeLocation);

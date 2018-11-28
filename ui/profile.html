@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/layout.css" rel="stylesheet">
+        <link href="css/theme.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Audiowide|Berkshire+Swash|Bree+Serif|Cantarell|Passion+One|Playfair+Display+SC|Raleway|Sanchez|Shrikhand|Teko" rel="stylesheet">
+    </head>
+    <body>
+        <div id="wrapper"> <!-- content container -->
+          <!-- Navigation bar section -->
+          <div id="header">
+              <ul>
+                <li class="to-left"><a>SENDIT</a></li> 
+                <li class="to-right trigger point-it" data-modal="login">Logout</li>
+                  <li class="to-right point-it"><a href="profile.html">Profile</a></li>
+                <li class="to-right point-it"><a href="admin.html">Admin</a></li>
+                <li class="to-right">Home</li>
+            </ul>
+          </div>
+          <!-- Main content container -->
+          <div id="content">
+                    <!-- Jumbotrone header section -->
+            <div id="jumbo2"> <!-- the header image would be attached to this div via css -->
+              <div class="row">
+                <div class="col-md-2 card main-margin" id="">
+                  <h2>Parcel Orders</h2>
+                  <table id="orders">
+                  </table>
+                </div>
+                <div class="col-md-2 main-margin">
+                  <div class="card col-md-2 center-it" id="total-deliveries">
+                    <p>Total count of parcel deliveries</p>
+                    <p delivered="delivery-count">0</p>
+                  </div>
+                  <div class="card col-md-2 center-it" id="total-transitting">
+                      <p>Total count of parcels in transit</p>
+                      <p id="transitting-count">0</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <!-- <div class="row">
+                <div class="col-md-3-4">
+                  <button class="btn btn-primary text-color to-right" id="check-out">Check us out</button>
+                </div>
+            </div> -->
+          </div>
+              <!-- The footer container -->
+          <div id="footer" class="center-it">
+              <p><span>SENDIT Parcel Delivery Service</span> Copyright 2018</p>
+          </div>
+        </div>
+        <div id="toast" class="hidden">
+            <p>successful</p>
+        </div>
+        <div id="loader" class="hidden">
+          
+        </div>
+    </body>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4cMpykgi9M9lnlpCl4P34eAy-El-3YYg&libraries=places"></script>
+      <script src="script/profile.js" type="text/javascript"></script>
+</html>

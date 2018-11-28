@@ -31,6 +31,9 @@ body {
      display: inline-block !important; 
      padding:20px;
 }
+#header>ul>li>a{
+    color: white;
+}
 .to-left{
     float: left !important;
 }
@@ -355,15 +358,36 @@ tr:nth-child(even) {
 }
 
 #map {
-    height: 400px;
+    height: 50vh;
     width: 90%;
     margin: 0px;
     padding: 0px;
     float: right;
    }
 #details {
-    width: 40% !important;
+    width: 43% !important;
     float: right;
-    margin-top: 0.5%;
+    padding: 4px;
     margin-left: 54.5% !important;
+}
+#dismiss-cancel-order {
+    margin-left: -20%;
+}
+#cancel-parcel {
+    margin-top: 8%;
+    padding: 5%;
+}
+#total-deliveries {
+    color: black;
+    padding: 10px;
+}
+#total-transitting {
+    color: black;
+    padding: 10px;
+}
+#total-transitting>p:nth-child(1) {
+    font-weight: bold;
+}
+#total-deliveries>p:nth-child(1) {
+    font-weight: bold;
 }
