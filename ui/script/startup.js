@@ -10,6 +10,7 @@ var status = 0,
 var errorMessage = document.getElementsByClassName('error'),
     signupBtn = document.getElementById('submit-signup'),
     loginBtn = document.getElementById('submit-login'),
+    checkUsOutBtn = document.getElementById('check-out'),
     loginForm = document.getElementById('loginForm'),
     signupForm = document.getElementById('signupForm'),
     toast = document.getElementById('toast'),
@@ -134,7 +135,19 @@ checkPassword = function checkPassword() {
     signupBtn.disabled = false;
   }
 },
-
+    checkState = function checkState() {
+  var user = JSON.parse(localStorage.getItem('user')),
+      token = 'Bearer ' + localStorage.getItem('token');
+  if (!token) {
+    showToast('toast-red', 'Please login/signup to access this page');
+    return;
+  }
+  if (user.isadmin) {
+    window.location.href = 'admin.html';
+    return;
+  }
+  window.location.href = 'parcel.html';
+},
 
 // create account method for signup
 createAccount = function createAccount(evt) {
@@ -215,7 +228,6 @@ loginUser = function loginUser(evt) {
     dismissModal();
     currentModal = '';
     showToast('toast-green', 'login successful', 'parcel.html');
-    // window.location.href = '/parcel.html';
     localStorage.setItem('token', data.data.token);
     localStorage.setItem('user', JSON.stringify(data.data.user));
   }).catch(function (error) {
@@ -233,3 +245,4 @@ signupForm.confirmPassword.addEventListener('input', checkPassword);
 signupForm.password.addEventListener('input', checkPassword);
 signupForm.addEventListener('submit', createAccount);
 loginForm.addEventListener('submit', loginUser);
+checkUsOutBtn.addEventListener('click', checkState);

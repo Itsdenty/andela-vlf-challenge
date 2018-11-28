@@ -6,6 +6,7 @@ let status = 0,
 const errorMessage = document.getElementsByClassName('error'),
   signupBtn = document.getElementById('submit-signup'),
   loginBtn = document.getElementById('submit-login'),
+  checkUsOutBtn = document.getElementById('check-out'),
   loginForm = document.getElementById('loginForm'),
   signupForm = document.getElementById('signupForm'),
   toast = document.getElementById('toast'),
@@ -125,6 +126,19 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  checkState = () => {
+    const user = JSON.parse(localStorage.getItem('user')),
+      token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token) {
+      showToast('toast-red', 'Please login/signup to access this page');
+      return;
+    }
+    if (user.isadmin) {
+      window.location.href = 'admin.html';
+      return;
+    }
+    window.location.href = 'parcel.html';
+  },
   // create account method for signup
   createAccount = (evt) => {
     evt.preventDefault();
@@ -139,7 +153,7 @@ const errorMessage = document.getElementsByClassName('error'),
         username: signupForm.username.value,
         isAdmin: signupForm.isAdmin.value,
         email: signupForm.email.value,
-        password: signupForm.password.value,
+        password: signupForm.password.value
       },
 
       startLoader = setInterval(loader, 500, 'submit-signup');
@@ -198,7 +212,6 @@ const errorMessage = document.getElementsByClassName('error'),
         dismissModal();
         currentModal = '';
         showToast('toast-green', 'login successful', 'parcel.html');
-        // window.location.href = '/parcel.html';
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
       })
@@ -215,3 +228,4 @@ signupForm.confirmPassword.addEventListener('input', checkPassword);
 signupForm.password.addEventListener('input', checkPassword);
 signupForm.addEventListener('submit', createAccount);
 loginForm.addEventListener('submit', loginUser);
+checkUsOutBtn.addEventListener('click', checkState);
