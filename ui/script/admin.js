@@ -34,6 +34,14 @@ checkState = function checkState() {
 },
 
 
+// updateStatus = (orderId, status) => {
+//   const classname = document.getElementsByClassName('order-id');
+//   Array.from(classname).forEach((element) => {
+//     if (element.value === orderId) {
+//       document.getElementById(`status${orderId}`).innerHTML = `${status}`;
+//     }
+//   });
+// },
 // retrieve all user orders
 getAllOrders = function getAllOrders() {
   var token = 'Bearer ' + localStorage.getItem('token');
@@ -68,14 +76,14 @@ getAllOrders = function getAllOrders() {
           index = 0;
       orderList.innerHTML += orderHeader;
       return parcelOrders.map(function (order) {
-        var orderFrom = order.fromlocation.split(',');
-        orderFrom = orderFrom[1] + ', ' + orderFrom[2];
-        var orderTo = order.tolocation.split(',');
-        orderTo = orderTo[1] + ', ' + orderTo[2];
+        var index1 = order.tolocation.indexOf('lat');
+        var orderTo = order.tolocation.substring(0, index1);
+        var index2 = order.fromlocation.indexOf('lat');
+        var orderFrom = order.fromlocation.substring(0, index2);
         if (index === 0) {
-          orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="cancel' + order.id + '">Cancel</option>\n                  <option value="destination' + order.id + '">Change Destination</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-status-id="' + order.id + '" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '" id="status' + order.id + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="status' + order.id + '">Change Status</option>\n                  <option value="location' + order.id + '">Change Current Location</option>\n                </select></td>\n              </tr>';
         } else {
-          orderDetails += '\n              <tr class="parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="status' + order.id + '">Change Status</option>\n                  <option value="location' + order.id + '">Change Current Location</option>\n                </select></td>\n              </tr>';
+          orderDetails += '\n              <tr class="parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '" id="status' + order.id + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="status' + order.id + '">Change Status</option>\n                  <option value="location' + order.id + '">Change Current Location</option>\n                </select></td>\n              </tr>';
         }
         orderList.innerHTML += orderDetails;
         orderDetails = '';
@@ -116,6 +124,7 @@ changeStatus = function changeStatus(evt) {
       showToast('toast-green', 'successfully cancelled');
       changeStatusBtn.innerText = 'Submit';
       dismissModal();
+      document.getElementById('status' + selectedId).innerHTML = '' + status;
       currentModal = '';
     }
   }).catch(function (error) {
@@ -154,6 +163,7 @@ changeLocation = function changeLocation(evt) {
       showToast('toast-green', 'successfully changed location');
       changeLocationBtn.innerText = 'Submit';
       dismissModal();
+      document.getElementById('location-id').innerHTML = '' + currentLocation;
       currentModal = '';
     }
   }).catch(function (error) {

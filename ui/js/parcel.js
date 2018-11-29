@@ -1,4 +1,4 @@
-/* eslint-disable no-undef, no-unused-vars */
+/* eslint-disable no-undef, no-unused-vars, no-plusplus */
 let currentModal = '',
   currentParcel = {},
   parcelList = [];
@@ -60,6 +60,32 @@ const errorMessage = document.getElementsByClassName('error'),
         showToast('toast-green', data.data.message);
         parcelBtn.innerText = 'Create Parcel';
         dismissModal();
+        const order = parcelDetails,
+          index = parcelList.length - 1;
+        console.log(order, 'first');
+        order.id = data.data.id;
+        order.fromlocation = order.fromLocation;
+        order.tolocation = order.toLocation;
+        order.status = 'placed';
+        console.log(order, 'second');
+        const index1 = order.tolocation.indexOf('lat');
+        const orderTo = order.tolocation.substring(0, index1);
+        const index2 = order.fromlocation.indexOf('lat');
+        const orderFrom = order.fromlocation.substring(0, index2);
+        const orderDetails = `
+        <tr class="parcel-row" data-index="${index}">
+          <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
+          <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
+          <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
+          <td class="select-parcel" data-index="${index}" id="status${order.id}"> ${order.status}</td>
+          <td><select name="orderAction" class="my-actions">
+            <option value="">Select Action</option>
+            <option value="status${order.id}">Change Status</option>
+            <option value="location${order.id}">Change Current Location</option>
+          </select></td>
+        </tr>`;
+        orderList.innerHTML += orderDetails;
+        parcelList.push(orderDetails);
         currentModal = '';
         // window.location.href = '/profile.html';
       })
@@ -87,6 +113,7 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
         } else if (data.data.length < 1) {
           showToast('toast-red', 'No Order available at the moment');
+          loaderDiv.classList.add('hidden');
         } else {
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
@@ -105,17 +132,17 @@ const errorMessage = document.getElementsByClassName('error'),
             index = 0;
           orderList.innerHTML += orderHeader;
           return parcelOrders.map((order) => {
-            let orderFrom = order.fromlocation.split(',');
-            orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-            let orderTo = order.tolocation.split(',');
-            orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+            const index1 = order.tolocation.indexOf('lat');
+            const orderTo = order.tolocation.substring(0, index1);
+            const index2 = order.fromlocation.indexOf('lat');
+            const orderFrom = order.fromlocation.substring(0, index2);
             if (index === 0) {
               orderDetails += `
               <tr class="highlight parcel-row" data-index="${index}">
                 <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
+                <td class="select-parcel" data-index="${index}" id="destination${order.id}"> ${orderTo}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
+                <td class="select-parcel" data-index="${index}" id="status${order.id}"> ${order.status}</td>
                 <td><select name="orderAction" class="my-actions">
                   <option value="">Select Action</option>
                   <option value="cancel${order.id}">Cancel</option>
@@ -125,10 +152,10 @@ const errorMessage = document.getElementsByClassName('error'),
             } else {
               orderDetails += `
               <tr class="parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
                 <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
+                <td class="select-parcel" data-index="${index}" id="destination${order.id}"> ${orderTo}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
+                <td class="select-parcel" data-index="${index}" id="status${order.id}"> ${order.status}</td>
                 <td><select name="orderAction" class="my-actions">
                   <option value="">Select Action</option>
                   <option value="cancel${order.id}">Cancel</option>
@@ -172,6 +199,7 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully cancelled');
           confirmParcelBtn.innerText = 'Cancel';
           dismissModal();
+          document.getElementById(`status${selectedId}`).innerHTML = 'cancelled';
           currentModal = '';
         }
       })
@@ -208,6 +236,11 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully cancelled');
           confirmParcelBtn.innerText = 'Submit';
           dismissModal();
+          let newTo = destination.split(',');
+          newTo = `${newTo[1]}, ${newTo[2]}`;
+
+          document.getElementById(`destination${selectedId}`).innerHTML = newTo;
+          document.getElementById('destination-id').innerHTML = newTo;
           currentModal = '';
         }
       })

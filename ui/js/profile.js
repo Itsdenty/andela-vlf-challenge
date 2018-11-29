@@ -61,10 +61,10 @@ const errorMessage = document.getElementsByClassName('error'),
             index = 0;
           orderList.innerHTML += orderHeader;
           return parcelOrders.map((order) => {
-            let orderFrom = order.fromlocation.split(',');
-            orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-            let orderTo = order.tolocation.split(',');
-            orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+            const index1 = order.tolocation.indexOf('lat');
+            const orderTo = order.tolocation.substring(0, index1);
+            const index2 = order.fromlocation.indexOf('lat');
+            const orderFrom = order.fromlocation.substring(0, index2);
             if (order.status === 'delivered') {
               delivered += 1;
               if (index === (size - 1)) {

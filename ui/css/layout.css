@@ -33,14 +33,9 @@ and (max-device-width : 767px) {
 @media only screen 
 and (min-device-width : 768px)  {
 /* Styles */
-#details {
-  width: 43% !important;
-  float: right;
-  padding: 10px !important;
-  margin-left: 54.5% !important;
-}
 .main-margin {
   margin-left: 50px;
+  margin-top: 3%;
 }
 .modal {
   position: absolute;
