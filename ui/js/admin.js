@@ -28,6 +28,14 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  // updateStatus = (orderId, status) => {
+  //   const classname = document.getElementsByClassName('order-id');
+  //   Array.from(classname).forEach((element) => {
+  //     if (element.value === orderId) {
+  //       document.getElementById(`status${orderId}`).innerHTML = `${status}`;
+  //     }
+  //   });
+  // },
   // retrieve all user orders
   getAllOrders = () => {
     const token = `Bearer ${localStorage.getItem('token')}`;
@@ -65,30 +73,30 @@ const errorMessage = document.getElementsByClassName('error'),
             index = 0;
           orderList.innerHTML += orderHeader;
           return parcelOrders.map((order) => {
-            let orderFrom = order.fromlocation.split(',');
-            orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-            let orderTo = order.tolocation.split(',');
-            orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+            const index1 = order.tolocation.indexOf('lat');
+            const orderTo = order.tolocation.substring(0, index1);
+            const index2 = order.fromlocation.indexOf('lat');
+            const orderFrom = order.fromlocation.substring(0, index2);
             if (index === 0) {
               orderDetails += `
               <tr class="highlight parcel-row" data-index="${index}">
                 <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
                 <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
+                <td class="select-parcel" data-status-id="${order.id}" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
+                <td class="select-parcel" data-index="${index}" id="status${order.id}"> ${order.status}</td>
                 <td><select name="orderAction" class="my-actions">
                   <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
+                  <option value="status${order.id}">Change Status</option>
+                  <option value="location${order.id}">Change Current Location</option>
                 </select></td>
               </tr>`;
             } else {
               orderDetails += `
               <tr class="parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
                 <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
+                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
                 <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
+                <td class="select-parcel" data-index="${index}" id="status${order.id}"> ${order.status}</td>
                 <td><select name="orderAction" class="my-actions">
                   <option value="">Select Action</option>
                   <option value="status${order.id}">Change Status</option>
@@ -134,6 +142,7 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully cancelled');
           changeStatusBtn.innerText = 'Submit';
           dismissModal();
+          document.getElementById(`status${selectedId}`).innerHTML = `${status}`;
           currentModal = '';
         }
       })
@@ -171,6 +180,7 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully changed location');
           changeLocationBtn.innerText = 'Submit';
           dismissModal();
+          document.getElementById('location-id').innerHTML = `${currentLocation}`;
           currentModal = '';
         }
       })
