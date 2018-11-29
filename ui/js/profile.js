@@ -13,6 +13,7 @@ const errorMessage = document.getElementsByClassName('error'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
   orderList = document.getElementById('orders'),
+  logoutBtn = document.getElementById('logout'),
   //  function for displaying toaster
   showToast = (toastClass, data, redirectUrl) => {
     toast.classList.remove('hidden');
@@ -26,7 +27,11 @@ const errorMessage = document.getElementsByClassName('error'),
       }
     }, 5000);
   },
-
+  logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    showToast('toast-green', 'Logged out successfully', 'index.html');
+  },
   getAllOrders = () => {
     const token = `Bearer ${localStorage.getItem('token')}`;
     if (!token) {
@@ -108,3 +113,5 @@ const errorMessage = document.getElementsByClassName('error'),
 window.onload = () => {
   getAllOrders();
 };
+
+logoutBtn.addEventListener('click', logout);
