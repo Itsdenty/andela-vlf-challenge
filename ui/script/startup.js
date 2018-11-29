@@ -13,6 +13,7 @@ var errorMessage = document.getElementsByClassName('error'),
     checkUsOutBtn = document.getElementById('check-out'),
     loginForm = document.getElementById('loginForm'),
     signupForm = document.getElementById('signupForm'),
+    navBar = document.getElementById('check-it'),
     toast = document.getElementById('toast'),
     loginRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/login',
     signupRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
@@ -135,10 +136,19 @@ checkPassword = function checkPassword() {
     signupBtn.disabled = false;
   }
 },
+    checkIt = function checkIt() {
+  var user = JSON.parse(localStorage.getItem('user')),
+      token = 'Bearer ' + localStorage.getItem('token');
+  if (!token || !user) {
+    navBar.innerHTML = '\n                          <li class="to-left"><a>SENDIT</a></li> \n                          <li class="to-right trigger point-it" data-modal="login">Login</li>\n                          <li class="to-right trigger point-it" data-modal="signup">Signup</li>\n                          <li class="to-right">Home</li>\n                        ';
+  } else {
+    navBar.innerHTML = '\n                          <li class="to-left"><a>SENDIT</a></li> \n                          <li class="to-right point-it" id="logout">Logout</li>\n                          <li class="to-right">Home</li>\n                        ';
+  }
+},
     checkState = function checkState() {
   var user = JSON.parse(localStorage.getItem('user')),
       token = 'Bearer ' + localStorage.getItem('token');
-  if (!token) {
+  if (!token || !user) {
     showToast('toast-red', 'Please login/signup to access this page');
     return;
   }
@@ -148,6 +158,7 @@ checkPassword = function checkPassword() {
   }
   window.location.href = 'parcel.html';
 },
+
 
 // create account method for signup
 createAccount = function createAccount(evt) {
@@ -237,6 +248,7 @@ loginUser = function loginUser(evt) {
 
 // onload methods for ui animation and signup and login modal events
 window.onload = function () {
+  checkIt();
   startAnimation();
 };
 

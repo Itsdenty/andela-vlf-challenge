@@ -13,25 +13,19 @@ const errorMessage = document.getElementsByClassName('error'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
   orderList = document.getElementById('orders'),
-  logoutBtn = document.getElementById('logout'),
-  //  function for displaying toaster
-  showToast = (toastClass, data, redirectUrl) => {
-    toast.classList.remove('hidden');
-    toast.classList.add(toastClass);
-    toast.innerHTML = `<p>${data.substr(0, 50)}</p>`;
-    const flashError = setTimeout(() => {
-      toast.classList.add('hidden');
-      toast.classList.remove(toastClass);
-      if (redirectUrl) {
-        window.location.href = redirectUrl;
-      }
-    }, 5000);
+
+  // check user state and redirect to admin page if an admin
+  checkState = () => {
+    const user = JSON.parse(localStorage.getItem('user')),
+      token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token || !user) {
+      showToast('toast-red', 'Please login/signup to access this page');
+    } else if (user.isadmin) {
+      window.location.href = 'admin.html';
+    }
   },
-  logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    showToast('toast-green', 'Logged out successfully', 'index.html');
-  },
+
+  // fetch all orders made by users
   getAllOrders = () => {
     const token = `Bearer ${localStorage.getItem('token')}`;
     if (!token) {
@@ -53,7 +47,7 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-red', 'No Order available at the moment');
         } else {
           const parcelOrders = data.data,
-            size = parcelList.length,
+            size = parcelOrders.length,
             orderHeader = `
                             <tr>
                               <th>From</th>
@@ -111,6 +105,8 @@ const errorMessage = document.getElementsByClassName('error'),
 
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
+  checkState();
+  configureModals();
   getAllOrders();
 };
 
