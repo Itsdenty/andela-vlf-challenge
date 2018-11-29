@@ -14,24 +14,6 @@ const errorMessage = document.getElementsByClassName('error'),
   confirmParcelBtn = document.getElementById('confirm-cancel-order'),
   changeDestinationBtn = document.getElementById('submit-change-destination'),
 
-  pagination = (currentPage, pageCount) => {
-    const delta = 2,
-      range = [];
-    for (let i = Math.max(2, currentPage - delta); i <= Math.min(pageCount - 1,
-      currentPage + delta); i++) {
-      range.push(i);
-    }
-    if (currentPage - delta > 2) {
-      range.unshift('...');
-    }
-    if (currentPage + delta < pageCount - 1) {
-      range.push('...');
-    }
-    range.unshift(1);
-    range.push(pageCount);
-    // return range;
-    console.log(range);
-  },
   // check user state and redirect to admin page if an admin
   checkState = () => {
     const user = JSON.parse(localStorage.getItem('user')),
@@ -267,7 +249,6 @@ const errorMessage = document.getElementsByClassName('error'),
 
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
-  pagination(1, 6);
   checkState();
   configureModals();
   configureMaps();
