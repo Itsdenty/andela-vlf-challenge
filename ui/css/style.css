@@ -34,18 +34,9 @@ body {
 #header>ul>li>a{
     color: white;
 }
-.to-left{
-    float: left !important;
-}
-.to-right {
-    float: right !important;
-}
-.center-it{
-    text-align: center !important;
-}
-/* #header>a{
-    display: inline;
-} */
+
+
+/* main background style */
 #jumbo{
     height: 100vh;
     width: 100%;
@@ -68,75 +59,8 @@ body {
 #jumbo>div:nth-child(2)>div>button {
   margin-top: 10% !important;
 }
-.drop-down{
-    font-size: 30px;
-    font-family: 'Raleway', sans-serif;
-}
-#move-down{
-    padding-top: 5%;
-    font-size: 45px;
-    font-family: 'Teko', sans-serif;
-}
-.section-it{
-    margin-top: 5% !important;
-}
-.offer-row{
-    display: inline-block !important;
-    width: 100% !important;
-}
-.offer-row>div{
-    width: 33%;
-    display: inline-block;
-}
-.offer-row>div>span,p{
-    display: inline;
-    margin-left: 5%;
-}
-.offer-row>div>span{
-    font-size: 100px !important;
-    margin-left: 10%;
-}
-.offer-row>div>p{
-    font-size: 25px;
-}
-.offer-row>div>img{
-    width: 65%;
-    margin-left: 10%;
-    border-radius: 50%;
-}
-#icon{
-    position: relative;
-    top: 20px;
-}
-/* #content {
-    padding-bottom:100px; /* Height of the footer element
-} */
-.img-p{
-    margin-left: -10% !important;
-}
-/* hr{
-    width: 100px;
-    border-bottom-width: 2px;
-    border-bottom-color: #AAAA39;
-    margin-bottom: 5%;
-    margin-top: -1%;
-} */
 
-hr {
-  border: 0;
-  border-top: 4px double #AAAA39;
-  text-align: center;
-}
-hr:after {
-  content: '\2665';
-  display: inline-block;
-  position: relative;
-  top: -15px;
-  padding: 0 10px;
-  background: #fff;
-  color: #AAAA39;
-  font-size: 18px;
-}
+/* Footer style */
 #footer {
     background:#3D1255;
     width:100%;
@@ -156,6 +80,8 @@ hr:after {
     font-size: 20px;
     margin-top: 1%;
 }
+
+/* button style */
 .btn {
   border: none;
   color: black;
@@ -194,6 +120,8 @@ hr:after {
 .btn-primary {
   background-color: #AAAA39;
 }
+
+/* input and generic styles */
 .text-color {
   color: white;
 }
@@ -221,6 +149,38 @@ input {
 .hidden {
   display: none;
 }
+#dismiss-cancel-order {
+    margin-left: -20%;
+}
+#cancel-parcel {
+    margin-top: 8%;
+    padding: 5%;
+}
+
+
+/* input error styles  */
+.error {
+    color: #cc0033;
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0 0;
+}
+.error {
+    color: #cc0033;
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0 0;
+}
+
+.display-error {
+background: #e84118;
+color: #fff;
+padding: 0.3rem;
+text-align: right;
+}
+
+
+/* modal generic styles */
 .modal-design {
   margin: 0 auto;
   width: 70%;
@@ -249,31 +209,9 @@ input {
 #create-parcel {
     margin-top: 5%;
 }
-.error {
-  color: #cc0033;
-  font-size: 12px;
-  line-height: 15px;
-  margin: 0 0;
-}
-.error {
-    color: #cc0033;
-    font-size: 12px;
-    line-height: 15px;
-    margin: 0 0;
-  }
 
-  .display-error {
-    background: #e84118;
-    color: #fff;
-    padding: 0.3rem;
-    text-align: right;
-  }
-  .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
+  
+  /* toast style */
   .toast-green{
     background-color: rgb(14, 143, 79);
     transition: 0.3s;
@@ -303,6 +241,27 @@ input {
     flex-direction:column;
   }
 
+
+  /* loader styles */
+  #loader {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3D1255; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    background-color: #fff !important;
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* card and table styles */
 .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     background-color: white;
@@ -333,37 +292,16 @@ tr:nth-child(even) {
     background-color: #887CAF !important;
     color: white;
 }
-#loader {
-    border: 8px solid #f3f3f3; /* Light grey */
-    border-top: 8px solid #3D1255; /* Blue */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 2s linear infinite;
-    background-color: #fff !important;
-    position: fixed;
-    left: 50vw;
-    top: 50vh;
-}
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
+/* map style */
 #map {
     height: 50vh;
     width: 90%;
     padding: 0px;
     float: right;
    }
-#dismiss-cancel-order {
-    margin-left: -20%;
-}
-#cancel-parcel {
-    margin-top: 8%;
-    padding: 5%;
-}
+
+/* extra styles */
 #total-deliveries {
     color: black;
     padding: 10px;
