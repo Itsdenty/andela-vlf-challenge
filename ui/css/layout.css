@@ -1,7 +1,20 @@
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen 
-and (max-device-width : 480px) {
+and (max-device-width : 767px) {
 /* Styles */
+.main-margin {
+  padding: 50px;
+}
+  .modal {
+    position: absolute;
+    background-color: white;
+    top: 50px;
+    left: 0px;
+    padding: 10px;
+  }
+  .drop-sm {
+    margin-top: 20%;
+  }
   .col-sm-1 {
     width: 100%;
   }
@@ -16,74 +29,31 @@ and (max-device-width : 480px) {
   }
 }
 
-/* Smartphones (portrait) ----------- */
-/* viewport size <= 320px ----------- */
-@media only screen 
-and (max-width : 320px) {
-/* Styles */
-  .col-xs-1 {
-    width: 100%;
-  }
-  .col-xs-2 {
-    width: 50%;
-  }
-  .col-xs-4 {
-    width: 25%;
-  }
-  .col-xs-3 {
-    width: 33%;
-  }
-}
-
 /* iPads (portrait and landscape) ----------- */
 @media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px) {
+and (min-device-width : 768px)  {
 /* Styles */
-  /* .col-md-1 {
-    width: 100%;
-  }
-  .col-md-2 {
-    width: 50%;
-  }
-  .col-md-4 {
-    width: 25%;
-  }
-  .col-md-3 {
-    width: 33%;
-  } */
-}
-
-/* Desktops and laptops ----------- */
-@media only screen 
-and (min-width : 1224px) {
-/* Styles */
-  .col-lg-1 {
-    width: 100%;
-  }
-  .col-lg-2 {
-    width: 50%;
-  }
-  .col-lg-4 {
-    width: 25%;
-  }
-  .col-lg-3 {
-    width: 33%;
-  }
+#details {
+  width: 43% !important;
+  float: right;
+  padding: 10px !important;
+  margin-left: 54.5% !important;
 }
 .main-margin {
-  margin-left: 50px !important;
+  margin-left: 50px;
 }
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
+.modal {
+  position: absolute;
+  background-color: white;
+  top: 20px;
+  left: 35%;
+  width: 30%;
 }
 .col-md-1 {
   width: 100%;
 }
 .col-md-2 {
-  width: 43% !important;
+  width: 42% !important;
   float: left !important;
 }
 .col-md-4 {
@@ -94,4 +64,39 @@ and (min-width : 1224px) {
 }
 .col-md-3-4 {
   width: 75%;
+}
+}
+
+/* generic layout styles */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.drop-down{
+  font-size: 30px;
+  font-family: 'Raleway', sans-serif;
+}
+#move-down{
+  padding-top: 5%;
+  font-size: 45px;
+  font-family: 'Teko', sans-serif;
+}
+.section-it{
+  margin-top: 5% !important;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.to-left{
+  float: left !important;
+}
+.to-right {
+  float: right !important;
+}
+.center-it{
+  text-align: center !important;
 }

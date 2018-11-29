@@ -6,8 +6,10 @@ let status = 0,
 const errorMessage = document.getElementsByClassName('error'),
   signupBtn = document.getElementById('submit-signup'),
   loginBtn = document.getElementById('submit-login'),
+  checkUsOutBtn = document.getElementById('check-out'),
   loginForm = document.getElementById('loginForm'),
   signupForm = document.getElementById('signupForm'),
+  navBar = document.getElementById('check-it'),
   toast = document.getElementById('toast'),
   loginRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/login',
   signupRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
@@ -125,6 +127,39 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  checkIt = () => {
+    const user = JSON.parse(localStorage.getItem('user')),
+      token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token || !user) {
+      navBar.innerHTML = `
+                          <li class="to-left"><a>SENDIT</a></li> 
+                          <li class="to-right trigger point-it" data-modal="login">Login</li>
+                          <li class="to-right trigger point-it" data-modal="signup">Signup</li>
+                          <li class="to-right">Home</li>
+                        `;
+    } else {
+      navBar.innerHTML = `
+                          <li class="to-left"><a>SENDIT</a></li> 
+                          <li class="to-right point-it" id="logout">Logout</li>
+                          <li class="to-right">Home</li>
+                        `;
+    }
+  },
+
+  checkState = () => {
+    const user = JSON.parse(localStorage.getItem('user')),
+      token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token || !user) {
+      showToast('toast-red', 'Please login/signup to access this page');
+      return;
+    }
+    if (user.isadmin) {
+      window.location.href = 'admin.html';
+      return;
+    }
+    window.location.href = 'parcel.html';
+  },
+
   // create account method for signup
   createAccount = (evt) => {
     evt.preventDefault();
@@ -139,7 +174,7 @@ const errorMessage = document.getElementsByClassName('error'),
         username: signupForm.username.value,
         isAdmin: signupForm.isAdmin.value,
         email: signupForm.email.value,
-        password: signupForm.password.value,
+        password: signupForm.password.value
       },
 
       startLoader = setInterval(loader, 500, 'submit-signup');
@@ -198,7 +233,6 @@ const errorMessage = document.getElementsByClassName('error'),
         dismissModal();
         currentModal = '';
         showToast('toast-green', 'login successful', 'parcel.html');
-        // window.location.href = '/parcel.html';
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
       })
@@ -207,6 +241,7 @@ const errorMessage = document.getElementsByClassName('error'),
 
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
+  checkIt();
   startAnimation();
 };
 
@@ -215,3 +250,4 @@ signupForm.confirmPassword.addEventListener('input', checkPassword);
 signupForm.password.addEventListener('input', checkPassword);
 signupForm.addEventListener('submit', createAccount);
 loginForm.addEventListener('submit', loginUser);
+checkUsOutBtn.addEventListener('click', checkState);

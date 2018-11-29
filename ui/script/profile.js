@@ -18,20 +18,21 @@ var errorMessage = document.getElementsByClassName('error'),
     userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
     orderList = document.getElementById('orders'),
 
-//  function for displaying toaster
-showToast = function showToast(toastClass, data, redirectUrl) {
-  toast.classList.remove('hidden');
-  toast.classList.add(toastClass);
-  toast.innerHTML = '<p>' + data.substr(0, 50) + '</p>';
-  var flashError = setTimeout(function () {
-    toast.classList.add('hidden');
-    toast.classList.remove(toastClass);
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    }
-  }, 5000);
+
+// check user state and redirect to admin page if an admin
+checkState = function checkState() {
+  var user = JSON.parse(localStorage.getItem('user')),
+      token = 'Bearer ' + localStorage.getItem('token');
+  if (!token || !user) {
+    showToast('toast-red', 'Please login/signup to access this page');
+  } else if (user.isadmin) {
+    window.location.href = 'admin.html';
+  }
 },
-    getAllOrders = function getAllOrders() {
+
+
+// fetch all orders made by users
+getAllOrders = function getAllOrders() {
   var token = 'Bearer ' + localStorage.getItem('token');
   if (!token) {
     showToast('toast-red', 'Please login to access this page', 'index.html');
@@ -52,7 +53,7 @@ showToast = function showToast(toastClass, data, redirectUrl) {
       showToast('toast-red', 'No Order available at the moment');
     } else {
       var parcelOrders = data.data,
-          size = parcelList.length,
+          size = parcelOrders.length,
           orderHeader = '\n                            <tr>\n                              <th>From</th>\n                              <th>To</th>\n                              <th>Weight</th>\n                              <th>Status</th>\n                            </tr>';
 
       var _parcelOrders = _slicedToArray(parcelOrders, 1);
@@ -96,5 +97,9 @@ showToast = function showToast(toastClass, data, redirectUrl) {
 
 // onload methods for ui animation and signup and login modal events
 window.onload = function () {
+  checkState();
+  configureModals();
   getAllOrders();
 };
+
+logoutBtn.addEventListener('click', logout);

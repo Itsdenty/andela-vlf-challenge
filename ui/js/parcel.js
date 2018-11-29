@@ -1,227 +1,28 @@
 /* eslint-disable no-undef, no-unused-vars */
 let currentModal = '',
-  loaderStatus = 0,
-  autocomplete = {},
-  toGeocode = '',
-  fromGeocode = '',
-  changeGeocode = '',
-  autocomplete2 = {},
-  autocomplete3 = {},
   currentParcel = {},
-  parcelList = [],
-  currentIndex = 0,
-  selectedId = 0,
-  directionsDisplay,
-  map;
+  parcelList = [];
 
 const errorMessage = document.getElementsByClassName('error'),
   parcelBtn = document.getElementById('submit-parcel'),
   parcelForm = document.getElementById('signupForm'),
   changeDestinationForm = document.getElementById('destination-form'),
-  distDiv = document.getElementById('dist'),
-  toast = document.getElementById('toast'),
-  loaderDiv = document.getElementById('loader'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
   orderList = document.getElementById('orders'),
-  directionsService = new google.maps.DirectionsService(),
-  service = new google.maps.DistanceMatrixService(),
   dismissParcelBtn = document.getElementById('dismiss-cancel-order'),
   confirmParcelBtn = document.getElementById('confirm-cancel-order'),
   changeDestinationBtn = document.getElementById('submit-change-destination'),
 
-  // algorithm for loader animation
-  loader = (id) => {
-    switch (loaderStatus) {
-      case 0:
-        document.getElementById(id).innerText = 'loading.';
-        loaderStatus = 1;
-        break;
-      case 1:
-        document.getElementById(id).innerText = 'loading..';
-        loaderStatus = 2;
-        break;
-      case 2:
-        document.getElementById(id).innerText = 'loading...';
-        loaderStatus = 3;
-        break;
-      case 3:
-        document.getElementById(id).innerText = 'loading....';
-        loaderStatus = 0;
-        break;
-      default:
-        document.getElementById(id).innerText = 'loading.....';
-        loaderStatus = 0;
+  // check user state and redirect to admin page if an admin
+  checkState = () => {
+    const user = JSON.parse(localStorage.getItem('user')),
+      token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token || !user) {
+      showToast('toast-red', 'Please login/signup to access this page');
+    } else if (user.isadmin) {
+      window.location.href = 'admin.html';
     }
-  },
-
-  //  function for displaying toaster
-  showToast = (toastClass, data, redirectUrl) => {
-    toast.classList.remove('hidden');
-    toast.classList.add(toastClass);
-    toast.innerHTML = `<p>${data.substr(0, 50)}</p>`;
-    const flashError = setTimeout(() => {
-      toast.classList.add('hidden');
-      toast.classList.remove(toastClass);
-      if (redirectUrl) {
-        window.location.href = redirectUrl;
-      }
-    }, 5000);
-  },
-  calculateDistance = () => {
-    const index = currentParcel.tolocation.indexOf('lat');
-    const toLocation = currentParcel.tolocation.substring(0, index);
-    const index2 = currentParcel.fromlocation.indexOf('lat');
-    const fromLocation = currentParcel.fromlocation.substring(0, index2);
-    let orderFrom = currentParcel.fromlocation.split(',');
-    orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-    let orderTo = currentParcel.tolocation.split(',');
-    orderTo = `${orderTo[1]}, ${orderTo[2]}`;
-    const callback = (response, status) => {
-      if (status === 'OK') {
-        const [orig] = response.destinationAddresses,
-          [dest] = response.originAddresses,
-          dist = response.rows[0].elements[0].distance.text,
-          duration = response.rows[0].elements[0].duration.text;
-        distDiv.innerHTML = `
-                              <table>
-                              <tr>
-                                <th>Data</th>
-                                <th>Value</th>
-                                <th>Data</th>
-                                <th>Value</th>
-                              </tr>
-                              <tr>
-                                <td><b>Order Location</b></td>
-                                <td>${fromLocation}</td>
-                                <td><b>Delivery Location</b></td>
-                                <td>${toLocation}</td>
-                              </tr>
-                              <tr>
-                              <td><b>Current Location</b></td>
-                              <td>${currentParcel.currentStatus || 'not available'}</td>
-                              <td><b>Delivery Price</b></td>
-                              <td>${(parseInt(dist, 10) * 10) + 200} naira</td>
-                              </tr>
-                              <tr>
-                              <td><b>Delivery Distance</b></td>
-                              <td>${dist} naira</td>
-                              <td><b>Estimated Duration</b></td>
-                              <td>${duration}</td>
-                              </tr>
-                            </table>
-                              `;
-      } else {
-        showToast('toast-red', `Error: ${status}`);
-      }
-    };
-    service.getDistanceMatrix(
-      {
-        origins: [orderFrom],
-        destinations: [orderTo],
-        travelMode: google.maps.TravelMode.DRIVING,
-        avoidHighways: false,
-        avoidTolls: false
-      },
-      callback
-    );
-  },
-  calcRoute = () => {
-    let orderFrom = currentParcel.fromlocation.split(',');
-    orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-    let orderTo = currentParcel.tolocation.split(',');
-    orderTo = `${orderTo[1]}, ${orderTo[2]}`;
-    const request = {
-      origin: orderFrom,
-      destination: orderTo,
-      travelMode: google.maps.TravelMode.DRIVING
-    };
-    directionsService.route(request, (response, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        directionsDisplay.setDirections(response);
-        directionsDisplay.setMap(map);
-        // calculateDistance();
-      } else {
-        showToast('toast-red', `Directions Request from ${start.toUrlValue(6)} to  ${end.toUrlValue(6)} failed: ${status}`);
-      }
-    });
-  },
-
-  initialize = () => {
-    directionsDisplay = new google.maps.DirectionsRenderer();
-    const fromMarker = currentParcel.tolocation.split(','),
-      fromLng = parseFloat(fromMarker[fromMarker.length - 1].substr(6)),
-      fromLat = parseFloat(fromMarker[fromMarker.length - 2].substr(5)),
-      center = new google.maps.LatLng(fromLat, fromLng),
-      mapOptions = {
-        zoom: 7,
-        center
-      };
-    map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    directionsDisplay.setMap(map);
-    calcRoute();
-    loaderDiv.classList.add('hidden');
-  },
-  // function for toggling login and signup modal
-  toggleModal = (e) => {
-    const elem = e.target.getAttribute('data-modal');
-    if (currentModal && currentModal !== elem) {
-      document.getElementById(currentModal).classList.add('hidden');
-      document.getElementById(elem).classList.remove('hidden');
-    } else {
-      document.getElementById(elem).classList.toggle('hidden');
-    }
-    currentModal = elem;
-  },
-
-  // function for dismissing modal
-  dismissModal = () => {
-    if (currentModal) {
-      document.getElementById(currentModal).classList.add('hidden');
-      currentModal = null;
-    }
-  },
-
-  // function for page animation and modal script
-  configureModals = () => {
-    const classname = document.getElementsByClassName('trigger');
-    Array.from(classname).forEach((element) => {
-      element.addEventListener('click', toggleModal);
-    });
-    const dismissname = document.getElementsByClassName('dismiss');
-    Array.from(dismissname).forEach((element) => {
-      element.addEventListener('click', dismissModal);
-    });
-
-    const processSelection = (selected) => {
-      if (selected.includes('cancel')) {
-        currentModal = 'cancel-parcel';
-        document.getElementById(currentModal).classList.remove('hidden');
-        const cancelId = selected.split('').pop();
-        selectedId = cancelId;
-      } else if (selected.includes('destination')) {
-        currentModal = 'change-destination';
-        document.getElementById(currentModal).classList.remove('hidden');
-        const destinationId = selected.split('').pop();
-        selectedId = destinationId;
-      }
-    };
-
-    document.addEventListener('click', (e) => {
-      if (e.target && e.target.classList.contains('select-parcel')) {
-        const parcelIndex = e.target.getAttribute('data-index');
-        currentParcel = parcelList[parcelIndex];
-        document.getElementsByClassName('parcel-row')[currentIndex].classList.remove('highlight');
-        document.getElementsByClassName('parcel-row')[parcelIndex].classList.add('highlight');
-        currentIndex = parcelIndex;
-        initialize();
-        calculateDistance();
-      }
-      if (e.target && e.target.classList.contains('my-actions')) {
-        const selected = e.target.value;
-        processSelection(selected);
-      }
-    });
   },
 
   // create account method for signup
@@ -265,6 +66,7 @@ const errorMessage = document.getElementsByClassName('error'),
       .catch(error => showToast('toast-red', error.message));
   },
 
+  // fetch orders only made by logged in user
   getUserOrders = () => {
     const token = `Bearer ${localStorage.getItem('token')}`,
       user = JSON.parse(localStorage.getItem('user')),
@@ -343,7 +145,7 @@ const errorMessage = document.getElementsByClassName('error'),
       });
   },
 
-  // cancelPArce method for cancelling order
+  // cancelParcel method for cancelling order
   cancelParcel = (evt) => {
     evt.preventDefault();
     const token = `Bearer ${localStorage.getItem('token')}`,
@@ -376,7 +178,7 @@ const errorMessage = document.getElementsByClassName('error'),
       .catch(error => showToast('toast-red', error.message));
   },
 
-  // create account method for signup
+  // change parcel destination method
   changeDestination = (evt) => {
     evt.preventDefault();
     const token = `Bearer ${localStorage.getItem('token')}`,
@@ -410,59 +212,13 @@ const errorMessage = document.getElementsByClassName('error'),
         }
       })
       .catch(error => showToast('toast-red', error.message));
-  },
-
-  fillInFromLocation = () => {
-    // Get the place details from the autocomplete object.
-    const place = autocomplete.getPlace();
-    fromGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
-  },
-
-  fillInToLocation = () => {
-    // Get the place details from the autocomplete object.
-    const place = autocomplete2.getPlace();
-    toGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
-  },
-
-  fillInDestination = () => {
-    // Get the place details from the autocomplete object.
-    const place = autocomplete3.getPlace();
-    changeGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
-  },
-
-  initAutocomplete = () => {
-    // Create the autocomplete object, restricting the search to geographical
-    // location types.
-    autocomplete = new google.maps.places.Autocomplete(
-    /** @type {!HTMLInputElement} */(document.getElementById('fromLocation')),
-      { types: ['geocode'] }
-    );
-
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
-    autocomplete.addListener('place_changed', fillInFromLocation);
-
-    autocomplete2 = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('toLocation')),
-      { types: ['geocode'] }
-    );
-
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
-    autocomplete2.addListener('place_changed', fillInToLocation);
-
-    autocomplete3 = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('changeDestination')),
-      { types: ['geocode'] }
-    );
-
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
-    autocomplete3.addListener('place_changed', fillInDestination);
   };
+
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
+  checkState();
   configureModals();
+  configureMaps();
   initAutocomplete();
   getUserOrders();
 };

@@ -4,15 +4,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 /* eslint-disable no-undef, no-unused-vars */
 var currentModal = '',
-    loaderStatus = 0,
-    autocomplete = {},
-    currentGeocode = '',
     currentParcel = {},
-    parcelList = [],
-    currentIndex = 0,
-    selectedId = 0,
-    directionsDisplay = void 0,
-    map = void 0;
+    parcelList = [];
 
 var errorMessage = document.getElementsByClassName('error'),
     changeStatusBtn = document.getElementById('submit-status'),
@@ -29,176 +22,20 @@ var errorMessage = document.getElementsByClassName('error'),
     changeLocationBtn = document.getElementById('submit-change-location'),
 
 
-// algorithm for loader animation
-loader = function loader(id) {
-  switch (loaderStatus) {
-    case 0:
-      document.getElementById(id).innerText = 'loading.';
-      loaderStatus = 1;
-      break;
-    case 1:
-      document.getElementById(id).innerText = 'loading..';
-      loaderStatus = 2;
-      break;
-    case 2:
-      document.getElementById(id).innerText = 'loading...';
-      loaderStatus = 3;
-      break;
-    case 3:
-      document.getElementById(id).innerText = 'loading....';
-      loaderStatus = 0;
-      break;
-    default:
-      document.getElementById(id).innerText = 'loading.....';
-      loaderStatus = 0;
+// check user state and redirect to admin page if an admin
+checkState = function checkState() {
+  var user = JSON.parse(localStorage.getItem('user')),
+      token = 'Bearer ' + localStorage.getItem('token');
+  if (!token || !user) {
+    showToast('toast-red', 'Please login/signup to access this page');
+  } else if (!user.isadmin) {
+    window.location.href = 'parcel.html';
   }
 },
 
 
-//  function for displaying toaster
-showToast = function showToast(toastClass, data, redirectUrl) {
-  toast.classList.remove('hidden');
-  toast.classList.add(toastClass);
-  toast.innerHTML = '<p>' + data.substr(0, 50) + '</p>';
-  var flashError = setTimeout(function () {
-    toast.classList.add('hidden');
-    toast.classList.remove(toastClass);
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    }
-  }, 5000);
-},
-    calculateDistance = function calculateDistance() {
-  var index = currentParcel.tolocation.indexOf('lat');
-  var toLocation = currentParcel.tolocation.substring(0, index);
-  var index2 = currentParcel.fromlocation.indexOf('lat');
-  var fromLocation = currentParcel.fromlocation.substring(0, index2);
-  var orderFrom = currentParcel.fromlocation.split(',');
-  orderFrom = orderFrom[1] + ', ' + orderFrom[2];
-  var orderTo = currentParcel.tolocation.split(',');
-  orderTo = orderTo[1] + ', ' + orderTo[2];
-  var callback = function callback(response, status) {
-    if (status === 'OK') {
-      var _response$destination = _slicedToArray(response.destinationAddresses, 1),
-          orig = _response$destination[0],
-          _response$originAddre = _slicedToArray(response.originAddresses, 1),
-          dest = _response$originAddre[0],
-          dist = response.rows[0].elements[0].distance.text,
-          duration = response.rows[0].elements[0].duration.text;
-
-      distDiv.innerHTML = '\n                              <table>\n                              <tr>\n                                <th>Data</th>\n                                <th>Value</th>\n                                <th>Data</th>\n                                <th>Value</th>\n                              </tr>\n                              <tr>\n                                <td><b>Order Location</b></td>\n                                <td>' + fromLocation + '</td>\n                                <td><b>Delivery Location</b></td>\n                                <td>' + toLocation + '</td>\n                              </tr>\n                              <tr>\n                              <td><b>Current Location</b></td>\n                              <td>' + (currentParcel.currentlocation || 'not available') + '</td>\n                              <td><b>Delivery Price</b></td>\n                              <td>' + (parseInt(dist, 10) * 10 + 200) + ' naira</td>\n                              </tr>\n                              <tr>\n                              <td><b>Delivery Distance</b></td>\n                              <td>' + dist + ' naira</td>\n                              <td><b>Estimated Duration</b></td>\n                              <td>' + duration + '</td>\n                              </tr>\n                            </table>\n                              ';
-    } else {
-      showToast('toast-red', 'Error: ' + status);
-    }
-  };
-  service.getDistanceMatrix({
-    origins: [orderFrom],
-    destinations: [orderTo],
-    travelMode: google.maps.TravelMode.DRIVING,
-    avoidHighways: false,
-    avoidTolls: false
-  }, callback);
-},
-    calcRoute = function calcRoute() {
-  var orderFrom = currentParcel.fromlocation.split(',');
-  orderFrom = orderFrom[1] + ', ' + orderFrom[2];
-  var orderTo = currentParcel.tolocation.split(',');
-  orderTo = orderTo[1] + ', ' + orderTo[2];
-  var request = {
-    origin: orderFrom,
-    destination: orderTo,
-    travelMode: google.maps.TravelMode.DRIVING
-  };
-  directionsService.route(request, function (response, status) {
-    if (status === google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-      directionsDisplay.setMap(map);
-      // calculateDistance();
-    } else {
-      showToast('toast-red', 'Directions Request from ' + start.toUrlValue(6) + ' to  ' + end.toUrlValue(6) + ' failed: ' + status);
-    }
-  });
-},
-    initialize = function initialize() {
-  directionsDisplay = new google.maps.DirectionsRenderer();
-  var fromMarker = currentParcel.tolocation.split(','),
-      fromLng = parseFloat(fromMarker[fromMarker.length - 1].substr(6)),
-      fromLat = parseFloat(fromMarker[fromMarker.length - 2].substr(5)),
-      center = new google.maps.LatLng(fromLat, fromLng),
-      mapOptions = {
-    zoom: 7,
-    center: center
-  };
-  map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  directionsDisplay.setMap(map);
-  calcRoute();
-  loaderDiv.classList.add('hidden');
-},
-
-// function for toggling login and signup modal
-toggleModal = function toggleModal(e) {
-  var elem = e.target.getAttribute('data-modal');
-  if (currentModal && currentModal !== elem) {
-    document.getElementById(currentModal).classList.add('hidden');
-    document.getElementById(elem).classList.remove('hidden');
-  } else {
-    document.getElementById(elem).classList.toggle('hidden');
-  }
-  currentModal = elem;
-},
-
-
-// function for dismissing modal
-dismissModal = function dismissModal() {
-  if (currentModal) {
-    document.getElementById(currentModal).classList.add('hidden');
-    currentModal = null;
-  }
-},
-
-
-// function for page animation and modal script
-configureModals = function configureModals() {
-  var classname = document.getElementsByClassName('trigger');
-  Array.from(classname).forEach(function (element) {
-    element.addEventListener('click', toggleModal);
-  });
-  var dismissname = document.getElementsByClassName('dismiss');
-  Array.from(dismissname).forEach(function (element) {
-    element.addEventListener('click', dismissModal);
-  });
-
-  var processSelection = function processSelection(selected) {
-    if (selected.includes('status')) {
-      currentModal = 'change-status';
-      document.getElementById(currentModal).classList.remove('hidden');
-      var statusId = selected.split('').pop();
-      selectedId = statusId;
-    } else if (selected.includes('location')) {
-      currentModal = 'change-location';
-      document.getElementById(currentModal).classList.remove('hidden');
-      var locationId = selected.split('').pop();
-      selectedId = locationId;
-    }
-  };
-
-  document.addEventListener('click', function (e) {
-    if (e.target && e.target.classList.contains('select-parcel')) {
-      var parcelIndex = e.target.getAttribute('data-index');
-      currentParcel = parcelList[parcelIndex];
-      document.getElementsByClassName('parcel-row')[currentIndex].classList.remove('highlight');
-      document.getElementsByClassName('parcel-row')[parcelIndex].classList.add('highlight');
-      currentIndex = parcelIndex;
-      initialize();
-      calculateDistance();
-    }
-    if (e.target && e.target.classList.contains('my-actions')) {
-      var selected = e.target.value;
-      processSelection(selected);
-    }
-  });
-},
-    getAllOrders = function getAllOrders() {
+// retrieve all user orders
+getAllOrders = function getAllOrders() {
   var token = 'Bearer ' + localStorage.getItem('token');
   if (!token) {
     showToast('toast-red', 'Please login to access this page', 'index.html');
@@ -249,8 +86,7 @@ configureModals = function configureModals() {
   });
 },
 
-
-// cancelPArce method for cancelling order
+// change parcel order status method
 changeStatus = function changeStatus(evt) {
   evt.preventDefault();
   var token = 'Bearer ' + localStorage.getItem('token'),
@@ -288,7 +124,7 @@ changeStatus = function changeStatus(evt) {
 },
 
 
-// create account method for signup
+// change parcel current location method
 changeLocation = function changeLocation(evt) {
   evt.preventDefault();
   var token = 'Bearer ' + localStorage.getItem('token'),
@@ -323,26 +159,12 @@ changeLocation = function changeLocation(evt) {
   }).catch(function (error) {
     return showToast('toast-red', error.message);
   });
-},
-    fillInCurrentLocation = function fillInCurrentLocation() {
-  // Get the place details from the autocomplete object.
-  var place = autocomplete2.getPlace();
-  currentGeocode = 'lat:' + place.geometry.location.lat() + ', long:' + place.geometry.location.lng();
-},
-    initAutocomplete = function initAutocomplete() {
-  // Create the autocomplete object, restricting the search to geographical
-  // location types.
-  autocomplete = new google.maps.places.Autocomplete(
-  /** @type {!HTMLInputElement} */document.getElementById('changeLocation'), { types: ['geocode'] });
-
-  // When the user selects an address from the dropdown, populate the address
-  // fields in the form.
-  autocomplete.addListener('place_changed', fillInCurrentLocation);
 };
 
-// onload methods for ui animation and signup and login modal events
+// onload methods for automatically firing relevant methods
 window.onload = function () {
   configureModals();
+  configureMaps();
   initAutocomplete();
   getAllOrders();
 };
