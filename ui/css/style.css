@@ -54,6 +54,7 @@ body {
 #jumbo2{
     height: 100vh;
     width: 100%;
+    margin: 0px;
     background:linear-gradient( rgba(64, 48,117, 0.8), rgba(136,124,175, 0.8)), url('../images/chest.jpg');
 }
 #jumbo>div>h1 {
@@ -220,13 +221,6 @@ input {
 .hidden {
   display: none;
 }
-.modal {
-  position: absolute;
-  background-color: white;
-  top: 20px;
-  left: 35%;
-  width: 30%;
-}
 .modal-design {
   margin: 0 auto;
   width: 70%;
@@ -312,9 +306,9 @@ input {
 .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     background-color: white;
-    padding: 2%;
+    padding: 3%;
 }
-
+d
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -324,7 +318,7 @@ table {
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 8px;
+    padding: 2px;
 }
 tr {
     cursor: pointer;
@@ -360,16 +354,9 @@ tr:nth-child(even) {
 #map {
     height: 50vh;
     width: 90%;
-    margin: 0px;
     padding: 0px;
     float: right;
    }
-#details {
-    width: 43% !important;
-    float: right;
-    padding: 4px;
-    margin-left: 54.5% !important;
-}
 #dismiss-cancel-order {
     margin-left: -20%;
 }

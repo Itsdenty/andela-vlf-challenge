@@ -10,7 +10,7 @@
         <div id="wrapper"> <!-- content container -->
         <!-- Navigation bar section -->
         <div id="header">
-            <ul>
+            <ul id="check-it">
                <li class="to-left"><a>SENDIT</a></li> 
                <li class="to-right trigger point-it" data-modal="login">Login</li>
                <li class="to-right trigger point-it" data-modal="signup">Signup</li>
@@ -23,7 +23,7 @@
         <div id="jumbo"> <!-- the header image would be attached to this div via css -->
           <div class="row">
             <h1 class="col-md-4 to-left main-margin" id="move-down">SENDIT</h1>
-            <h3 class="col-md-1 to-left drop-down main-margin" id="text-anim">A package delivery solution you can trust</h3>
+            <h3 class="col-md-1 to-left drop-down main-margin drop-sm" id="text-anim">A package delivery solution you can trust</h3>
           </div>
           <div class="row">
               <div class="col-md-3-4">
@@ -35,7 +35,7 @@
         <div id="footer" class="center-it">
             <p><span>SENDIT Parcel Delivery Service</span> Copyright 2018</p>
         </div>
-        <div class="hidden modal" id="signup">
+        <div class="hidden modal col-sm-1" id="signup">
             <div class="row">
                 <div class="modal-design">
                     <h1 class="center-it">Signup Form</h1>
@@ -82,7 +82,7 @@
                 </div>
             </div>
         </div>
-        <div class="hidden modal" id="login">
+        <div class="hidden modal col-sm-1" id="login">
             <div class="row">
                 <div class="modal-design">
                     <h1 class="center-it">Login Form</h1>
@@ -107,5 +107,6 @@
             <p>successful</p>
         </div>
     </body>
+      <script src="script/ui.js" type="text/javascript"></script>
       <script src="script/startup.js" type="text/javascript"></script>
 </html>

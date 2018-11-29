@@ -9,6 +9,7 @@ const errorMessage = document.getElementsByClassName('error'),
   checkUsOutBtn = document.getElementById('check-out'),
   loginForm = document.getElementById('loginForm'),
   signupForm = document.getElementById('signupForm'),
+  navBar = document.getElementById('check-it'),
   toast = document.getElementById('toast'),
   loginRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/login',
   signupRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/signup',
@@ -126,10 +127,29 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
+  checkIt = () => {
+    const user = JSON.parse(localStorage.getItem('user')),
+      token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token || !user) {
+      navBar.innerHTML = `
+                          <li class="to-left"><a>SENDIT</a></li> 
+                          <li class="to-right trigger point-it" data-modal="login">Login</li>
+                          <li class="to-right trigger point-it" data-modal="signup">Signup</li>
+                          <li class="to-right">Home</li>
+                        `;
+    } else {
+      navBar.innerHTML = `
+                          <li class="to-left"><a>SENDIT</a></li> 
+                          <li class="to-right point-it" id="logout">Logout</li>
+                          <li class="to-right">Home</li>
+                        `;
+    }
+  },
+
   checkState = () => {
     const user = JSON.parse(localStorage.getItem('user')),
       token = `Bearer ${localStorage.getItem('token')}`;
-    if (!token) {
+    if (!token || !user) {
       showToast('toast-red', 'Please login/signup to access this page');
       return;
     }
@@ -139,6 +159,7 @@ const errorMessage = document.getElementsByClassName('error'),
     }
     window.location.href = 'parcel.html';
   },
+
   // create account method for signup
   createAccount = (evt) => {
     evt.preventDefault();
@@ -220,6 +241,7 @@ const errorMessage = document.getElementsByClassName('error'),
 
 // onload methods for ui animation and signup and login modal events
 window.onload = () => {
+  checkIt();
   startAnimation();
 };
 
