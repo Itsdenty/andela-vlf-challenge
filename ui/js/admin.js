@@ -1,6 +1,9 @@
 /* eslint-disable no-undef, no-unused-vars */
 let currentModal = '',
   currentParcel = {},
+  // pageSize = 0,
+  // currentPage = 0,
+  // parcelCount = 0,
   parcelList = [];
 
 const errorMessage = document.getElementsByClassName('error'),
@@ -61,6 +64,7 @@ const errorMessage = document.getElementsByClassName('error'),
           parcelList = parcelOrders;
           initialize();
           calculateDistance();
+          // pageSize = parcelList.length;
           const orderHeader = `
                                 <tr>
                                   <th>From</th>
@@ -73,10 +77,10 @@ const errorMessage = document.getElementsByClassName('error'),
             index = 0;
           orderList.innerHTML += orderHeader;
           return parcelOrders.map((order) => {
-            const index1 = order.tolocation.indexOf('lat');
-            const orderTo = order.tolocation.substring(0, index1);
-            const index2 = order.fromlocation.indexOf('lat');
-            const orderFrom = order.fromlocation.substring(0, index2);
+            const index1 = order.tolocation.indexOf('lat'),
+              orderTo = order.tolocation.substring(0, index1),
+              index2 = order.fromlocation.indexOf('lat'),
+              orderFrom = order.fromlocation.substring(0, index2);
             if (index === 0) {
               orderDetails += `
               <tr class="highlight parcel-row" data-index="${index}">
@@ -112,6 +116,7 @@ const errorMessage = document.getElementsByClassName('error'),
         }
       });
   },
+
   // change parcel order status method
   changeStatus = (evt) => {
     evt.preventDefault();

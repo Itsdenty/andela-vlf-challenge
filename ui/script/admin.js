@@ -5,7 +5,11 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 /* eslint-disable no-undef, no-unused-vars */
 var currentModal = '',
     currentParcel = {},
-    parcelList = [];
+
+// pageSize = 0,
+// currentPage = 0,
+// parcelCount = 0,
+parcelList = [];
 
 var errorMessage = document.getElementsByClassName('error'),
     changeStatusBtn = document.getElementById('submit-status'),
@@ -71,15 +75,16 @@ getAllOrders = function getAllOrders() {
       parcelList = parcelOrders;
       initialize();
       calculateDistance();
+      // pageSize = parcelList.length;
       var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
       var orderDetails = '',
           index = 0;
       orderList.innerHTML += orderHeader;
       return parcelOrders.map(function (order) {
-        var index1 = order.tolocation.indexOf('lat');
-        var orderTo = order.tolocation.substring(0, index1);
-        var index2 = order.fromlocation.indexOf('lat');
-        var orderFrom = order.fromlocation.substring(0, index2);
+        var index1 = order.tolocation.indexOf('lat'),
+            orderTo = order.tolocation.substring(0, index1),
+            index2 = order.fromlocation.indexOf('lat'),
+            orderFrom = order.fromlocation.substring(0, index2);
         if (index === 0) {
           orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-status-id="' + order.id + '" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '" id="status' + order.id + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="status' + order.id + '">Change Status</option>\n                  <option value="location' + order.id + '">Change Current Location</option>\n                </select></td>\n              </tr>';
         } else {
@@ -93,6 +98,7 @@ getAllOrders = function getAllOrders() {
     }
   });
 },
+
 
 // change parcel order status method
 changeStatus = function changeStatus(evt) {
