@@ -33,50 +33,58 @@ var errorMessage = document.getElementsByClassName('error'),
 // select page
 selectPage = function selectPage(e) {
   var page = e.target.innerText;
-  selectedPage = parseInt(page, 10);
-  lowerBoundary = selectedPage * 5 - 4;
-  upperBoundary = selectedPage * 5;
-  console.log(page, lowerBoundary, upperBoundary);
-  parcelList = [];
-  // console.log(totalList.indexOf(lowerBoundary - 1), 'test', lowerBoundary, upperBoundary);
-  for (var i = lowerBoundary; i <= upperBoundary; i++) {
-    var parcel = totalList[i - 1];
-    if (parcel && parcel.id) {
-      parcelList.push(parcel);
+  page = parseInt(page, 10);
+  if (page) {
+    selectedPage = page;
+    lowerBoundary = selectedPage * 5 - 4;
+    upperBoundary = selectedPage * 5;
+    console.log(page, lowerBoundary, upperBoundary);
+    parcelList = [];
+    // console.log(totalList.indexOf(lowerBoundary - 1), 'test', lowerBoundary, upperBoundary);
+    for (var i = lowerBoundary; i <= upperBoundary; i++) {
+      var parcel = totalList[i - 1];
+      if (parcel && parcel.id) {
+        parcelList.push(parcel);
+      }
     }
+    selectedPage = page;
+    var orderDetails = '',
+        index = 0;
+    var orderHeader = fillHeader();
+    orderList.innerHTML = '';
+    orderList.innerHTML += orderHeader;
+    parcelList.map(function (order) {
+      var index1 = order.tolocation.indexOf('lat'),
+          orderTo = order.tolocation.substring(0, index1),
+          index2 = order.fromlocation.indexOf('lat'),
+          orderFrom = order.fromlocation.substring(0, index2);
+
+      if (index === 0) {
+        orderDetails += fillFirstRow(order, index, orderFrom, orderTo);
+      } else {
+        orderDetails += fillOtherRow(order, index, orderFrom, orderTo);
+      }
+
+      orderList.innerHTML += orderDetails;
+      orderDetails = '';
+      index += 1;
+      return '';
+    });
+    var _parcelList = parcelList;
+
+    var _parcelList2 = _slicedToArray(_parcelList, 1);
+
+    currentParcel = _parcelList2[0];
+  } else {
+    paginate();
   }
-  var orderDetails = '',
-      index = 0;
-  var orderHeader = fillHeader();
-  orderList.innerHTML = '';
-  orderList.innerHTML += orderHeader;
-  parcelList.map(function (order) {
-    var index1 = order.tolocation.indexOf('lat'),
-        orderTo = order.tolocation.substring(0, index1),
-        index2 = order.fromlocation.indexOf('lat'),
-        orderFrom = order.fromlocation.substring(0, index2);
-
-    if (index === 0) {
-      orderDetails += fillFirstRow(order, index, orderFrom, orderTo);
-    } else {
-      orderDetails += fillOtherRow(order, index, orderFrom, orderTo);
-    }
-
-    orderList.innerHTML += orderDetails;
-    orderDetails = '';
-    index += 1;
-    return '';
-  });
-  var _parcelList = parcelList;
-
-  var _parcelList2 = _slicedToArray(_parcelList, 1);
-
-  currentParcel = _parcelList2[0];
-
   initialize();
   calculateDistance();
 },
-    pagination = function pagination() {
+
+
+// create pagination text
+pagination = function pagination() {
   parcelCount = totalList.length;
   pageSize = Math.ceil(parcelCount / 5);
   var spilled = parcelCount % 5,
@@ -111,6 +119,11 @@ selectPage = function selectPage(e) {
   Array.from(pageName).forEach(function (element) {
     element.addEventListener('click', selectPage);
   });
+  var _parcelList3 = parcelList;
+
+  var _parcelList4 = _slicedToArray(_parcelList3, 1);
+
+  currentParcel = _parcelList4[0];
 },
 
 // algorithm for loader animation

@@ -117,9 +117,12 @@ getUserOrders = function getUserOrders() {
       currentParcel = _parcelOrders[0];
 
       totalList = parcelOrders;
-      console.log(totalList, 'list');
+
+      // load map ui
       initialize();
       calculateDistance();
+
+      // load parcel table
       selectedPage = 1;
       var orderHeader = fillHeader(),
           paginate = pagination();
@@ -131,7 +134,6 @@ getUserOrders = function getUserOrders() {
             orderTo = order.tolocation.substring(0, index1),
             index2 = order.fromlocation.indexOf('lat'),
             orderFrom = order.fromlocation.substring(0, index2);
-        console.log(paginate);
 
         if (index === 0) {
           orderDetails = fillFirstRow(order, index, orderFrom, orderTo);
@@ -176,6 +178,8 @@ cancelParcel = function cancelParcel(evt) {
       showToast('toast-green', 'successfully cancelled');
       confirmParcelBtn.innerText = 'Cancel';
       dismissModal();
+
+      // update status table data
       document.getElementById('status' + selectedId).innerHTML = 'cancelled';
       currentModal = '';
     }
@@ -217,6 +221,7 @@ changeDestination = function changeDestination(evt) {
       var newTo = destination.split(',');
       newTo = newTo[1] + ', ' + newTo[2];
 
+      // update destination ui info
       document.getElementById('destination' + selectedId).innerHTML = newTo;
       document.getElementById('destination-id').innerHTML = newTo;
       currentModal = '';

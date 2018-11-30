@@ -102,9 +102,12 @@ const errorMessage = document.getElementsByClassName('error'),
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
           totalList = parcelOrders;
-          console.log(totalList, 'list');
+
+          // load map ui
           initialize();
           calculateDistance();
+
+          // load parcel table
           selectedPage = 1;
           const orderHeader = fillHeader(),
             paginate = pagination();
@@ -116,14 +119,13 @@ const errorMessage = document.getElementsByClassName('error'),
               orderTo = order.tolocation.substring(0, index1),
               index2 = order.fromlocation.indexOf('lat'),
               orderFrom = order.fromlocation.substring(0, index2);
-            console.log(paginate);
 
             if (index === 0) {
               orderDetails = fillFirstRow(order, index, orderFrom, orderTo);
             } else {
               orderDetails = fillOtherRow(order, index, orderFrom, orderTo);
             }
-            
+
             orderList.innerHTML += orderDetails;
             orderDetails = '';
             index += 1;
@@ -160,6 +162,8 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully cancelled');
           confirmParcelBtn.innerText = 'Cancel';
           dismissModal();
+
+          // update status table data
           document.getElementById(`status${selectedId}`).innerHTML = 'cancelled';
           currentModal = '';
         }
@@ -200,6 +204,7 @@ const errorMessage = document.getElementsByClassName('error'),
           let newTo = destination.split(',');
           newTo = `${newTo[1]}, ${newTo[2]}`;
 
+          // update destination ui info
           document.getElementById(`destination${selectedId}`).innerHTML = newTo;
           document.getElementById('destination-id').innerHTML = newTo;
           currentModal = '';

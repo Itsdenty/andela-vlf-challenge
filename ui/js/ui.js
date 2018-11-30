@@ -54,46 +54,53 @@ const errorMessage = document.getElementsByClassName('error'),
 
   // select page
   selectPage = (e) => {
-    const page = e.target.innerText;
-    selectedPage = parseInt(page, 10);
-    lowerBoundary = (selectedPage * 5) - 4;
-    upperBoundary = selectedPage * 5;
-    console.log(page, lowerBoundary, upperBoundary);
-    parcelList = [];
-    // console.log(totalList.indexOf(lowerBoundary - 1), 'test', lowerBoundary, upperBoundary);
-    for (let i = lowerBoundary; i <= upperBoundary; i++) {
-      const parcel = totalList[i - 1];
-      if (parcel && parcel.id) {
-        parcelList.push(parcel);
+    let page = e.target.innerText;
+    page = parseInt(page, 10);
+    if (page) {
+      selectedPage = page;
+      lowerBoundary = (selectedPage * 5) - 4;
+      upperBoundary = selectedPage * 5;
+      console.log(page, lowerBoundary, upperBoundary);
+      parcelList = [];
+      // console.log(totalList.indexOf(lowerBoundary - 1), 'test', lowerBoundary, upperBoundary);
+      for (let i = lowerBoundary; i <= upperBoundary; i++) {
+        const parcel = totalList[i - 1];
+        if (parcel && parcel.id) {
+          parcelList.push(parcel);
+        }
       }
+      selectedPage = page;
+      let orderDetails = '',
+        index = 0;
+      const orderHeader = fillHeader();
+      orderList.innerHTML = '';
+      orderList.innerHTML += orderHeader;
+      parcelList.map((order) => {
+        const index1 = order.tolocation.indexOf('lat'),
+          orderTo = order.tolocation.substring(0, index1),
+          index2 = order.fromlocation.indexOf('lat'),
+          orderFrom = order.fromlocation.substring(0, index2);
+
+        if (index === 0) {
+          orderDetails += fillFirstRow(order, index, orderFrom, orderTo);
+        } else {
+          orderDetails += fillOtherRow(order, index, orderFrom, orderTo);
+        }
+
+        orderList.innerHTML += orderDetails;
+        orderDetails = '';
+        index += 1;
+        return '';
+      });
+      [currentParcel] = parcelList;
+    } else {
+      paginate();
     }
-    let orderDetails = '',
-      index = 0;
-    const orderHeader = fillHeader();
-    orderList.innerHTML = '';
-    orderList.innerHTML += orderHeader;
-    parcelList.map((order) => {
-      const index1 = order.tolocation.indexOf('lat'),
-        orderTo = order.tolocation.substring(0, index1),
-        index2 = order.fromlocation.indexOf('lat'),
-        orderFrom = order.fromlocation.substring(0, index2);
-
-      if (index === 0) {
-        orderDetails += fillFirstRow(order, index, orderFrom, orderTo);
-      } else {
-        orderDetails += fillOtherRow(order, index, orderFrom, orderTo);
-      }
-
-      orderList.innerHTML += orderDetails;
-      orderDetails = '';
-      index += 1;
-      return '';
-    });
-    [currentParcel] = parcelList;
     initialize();
     calculateDistance();
   },
 
+  // create pagination text
   pagination = () => {
     parcelCount = totalList.length;
     pageSize = Math.ceil(parcelCount / 5);
@@ -130,6 +137,7 @@ const errorMessage = document.getElementsByClassName('error'),
     Array.from(pageName).forEach((element) => {
       element.addEventListener('click', selectPage);
     });
+    [currentParcel] = parcelList;
   },
   // algorithm for loader animation
   loader = (id) => {
