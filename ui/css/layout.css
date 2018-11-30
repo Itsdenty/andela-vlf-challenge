@@ -33,14 +33,9 @@ and (max-device-width : 767px) {
 @media only screen 
 and (min-device-width : 768px)  {
 /* Styles */
-#details {
-  width: 43% !important;
-  float: right;
-  padding: 10px !important;
-  margin-left: 54.5% !important;
-}
 .main-margin {
-  margin-left: 50px;
+  margin-left: 30px;
+  margin-top: 2%;
 }
 .modal {
   position: absolute;
@@ -53,7 +48,7 @@ and (min-device-width : 768px)  {
   width: 100%;
 }
 .col-md-2 {
-  width: 42% !important;
+  width: 45% !important;
   float: left !important;
 }
 .col-md-4 {
@@ -99,4 +94,17 @@ and (min-device-width : 768px)  {
 }
 .center-it{
   text-align: center !important;
+}
+
+/* pagination */
+#pagination {
+  margin-top: 1%;
+  list-style-type: none;
+  border: 1px solid #dddddd;
+  padding: 5px;
+}
+#pagination li{
+  display: inline;
+  color: #AAAA39;
+  margin: 0px 7px;
 }

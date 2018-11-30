@@ -65,10 +65,10 @@ getAllOrders = function getAllOrders() {
           index = 0;
       orderList.innerHTML += orderHeader;
       return parcelOrders.map(function (order) {
-        var orderFrom = order.fromlocation.split(',');
-        orderFrom = orderFrom[1] + ', ' + orderFrom[2];
-        var orderTo = order.tolocation.split(',');
-        orderTo = orderTo[1] + ', ' + orderTo[2];
+        var index1 = order.tolocation.indexOf('lat');
+        var orderTo = order.tolocation.substring(0, index1);
+        var index2 = order.fromlocation.indexOf('lat');
+        var orderFrom = order.fromlocation.substring(0, index2);
         if (order.status === 'delivered') {
           delivered += 1;
           if (index === size - 1) {

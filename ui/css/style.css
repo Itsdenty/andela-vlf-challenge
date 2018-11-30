@@ -277,10 +277,11 @@ table {
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 2px;
+    padding: 4px;
 }
 tr {
     cursor: pointer;
+    padding: 4px;
 }
 tr:nth-child(even) {
     background-color: #FFF0AA;
@@ -296,10 +297,13 @@ tr:nth-child(even) {
 /* map style */
 #map {
     height: 50vh;
-    width: 90%;
+    width: 100%;
     padding: 0px;
     float: right;
-   }
+}
+#details {
+margin-top: 10px !important;
+}
 
 /* extra styles */
 #total-deliveries {

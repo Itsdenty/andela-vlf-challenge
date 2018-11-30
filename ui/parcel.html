@@ -23,23 +23,26 @@
                 <!-- Jumbotrone header section -->
         <div id="jumbo2"> <!-- the header image would be attached to this div via css -->
           <div class="row">
-            <div class="col-md-2 card main-margin" id="">
-              <h2>Parcel Orders <span><button class="btn-small btn-primary to-right trigger" id="cr-button" data-modal="create-parcel">create parcel</button></span></h2>
-              <table id="orders">
-              </table>
+            <div class="col-md-2 main-margin" id="">
+              <div class="card">
+                <h2>Parcel Orders <span><button class="btn-small btn-primary to-right trigger" id="cr-button" data-modal="create-parcel">create parcel</button></span></h2>
+                <table id="orders">
+                </table>
+                <ul id="pagination"></ul>
+              </div>
             </div>
-            <div class="col-md-2 main-margin" id="map"></div>
+            <div class="col-md-2 main-margin">
+                <div id="map">
+
+                </div>
+                <br>
+                <div class="card" id="details"><p id="dist">Calculating distance......</p></div>
             </div>
+            <!-- </div>
             <div class="row">
               <div class="col-md-2 main-margin"><p></p></div>
-              <div class="col-md-2 card" id="details"><p id="dist">Calculating distance......</p></div>
-            </div>
+            </div> -->
           </div>
-          <!-- <div class="row">
-              <div class="col-md-3-4">
-                <button class="btn btn-primary text-color to-right" id="check-out">Check us out</button>
-              </div>
-          </div> -->
         </div>
             <!-- The footer container -->
         <div id="footer" class="center-it">

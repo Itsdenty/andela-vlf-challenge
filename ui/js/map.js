@@ -6,8 +6,8 @@ let currentModal = '',
   changeGeocode = '',
   autocomplete2 = {},
   autocomplete3 = {},
+  autocomplete4 = {},
   currentParcel = {},
-  parcelList = [],
   currentIndex = 0,
   selectedId = 0,
   directionsDisplay,
@@ -28,10 +28,10 @@ const errorMessage = document.getElementsByClassName('error'),
   changeDestinationBtn = document.getElementById('submit-change-destination'),
 
   calculateDistance = () => {
-    const index = currentParcel.tolocation.indexOf('lat');
-    const toLocation = currentParcel.tolocation.substring(0, index);
-    const index2 = currentParcel.fromlocation.indexOf('lat');
-    const fromLocation = currentParcel.fromlocation.substring(0, index2);
+    const index = currentParcel.tolocation.indexOf('lat'),
+      toLocation = currentParcel.tolocation.substring(0, index),
+      index2 = currentParcel.fromlocation.indexOf('lat'),
+      fromLocation = currentParcel.fromlocation.substring(0, index2);
     let orderFrom = currentParcel.fromlocation.split(',');
     orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
     let orderTo = currentParcel.tolocation.split(',');
@@ -54,11 +54,11 @@ const errorMessage = document.getElementsByClassName('error'),
                                 <td><b>Order Location</b></td>
                                 <td>${fromLocation}</td>
                                 <td><b>Delivery Location</b></td>
-                                <td>${toLocation}</td>
+                                <td id="destination-id">${toLocation}</td>
                               </tr>
                               <tr>
                               <td><b>Current Location</b></td>
-                              <td>${currentParcel.currentStatus || 'not available'}</td>
+                              <td id="location-id">${currentParcel.currentlocation || 'not available'}</td>
                               <td><b>Delivery Price</b></td>
                               <td>${(parseInt(dist, 10) * 10) + 200} naira</td>
                               </tr>
@@ -88,13 +88,17 @@ const errorMessage = document.getElementsByClassName('error'),
   },
 
   calcRoute = () => {
-    let orderFrom = currentParcel.fromlocation.split(',');
-    orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-    let orderTo = currentParcel.tolocation.split(',');
-    orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+    const index = currentParcel.tolocation.indexOf('lat');
+    const toLocation = currentParcel.tolocation.substring(0, index);
+    const index2 = currentParcel.fromlocation.indexOf('lat');
+    const fromLocation = currentParcel.fromlocation.substring(0, index2);
+    // let orderFrom = currentParcel.fromlocation.split(',');
+    // orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
+    // let orderTo = currentParcel.tolocation.split(',');
+    // orderTo = `${orderTo[1]}, ${orderTo[2]}`;
     const request = {
-      origin: orderFrom,
-      destination: orderTo,
+      origin: fromLocation,
+      destination: toLocation,
       travelMode: google.maps.TravelMode.DRIVING
     };
     directionsService.route(request, (response, status) => {
@@ -167,153 +171,6 @@ const errorMessage = document.getElementsByClassName('error'),
     });
   },
 
-  getUserOrders = () => {
-    const token = `Bearer ${localStorage.getItem('token')}`,
-      user = JSON.parse(localStorage.getItem('user')),
-      userRoute = `${userParcels}${user.id}/parcels`;
-    if (!token) {
-      showToast('toast-red', 'Please login to access this page', 'index.html');
-    }
-    loaderDiv.classList.remove('hidden');
-    fetch(userRoute, {
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: token
-      },
-    })
-      .then(res => res.json())
-      .then((data, res) => {
-        if (data.status === 401) {
-          showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
-        } else if (data.data.length < 1) {
-          showToast('toast-red', 'No Order available at the moment');
-        } else {
-          const parcelOrders = data.data;
-          [currentParcel] = parcelOrders;
-          parcelList = parcelOrders;
-          initialize();
-          calculateDistance();
-          const orderHeader = `
-                                <tr>
-                                  <th>From</th>
-                                  <th>To</th>
-                                  <th>Weight</th>
-                                  <th>Status</th>
-                                  <th>Actions</th>
-                                </tr>`;
-          let orderDetails = '',
-            index = 0;
-          orderList.innerHTML += orderHeader;
-          return parcelOrders.map((order) => {
-            let orderFrom = order.fromlocation.split(',');
-            orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-            let orderTo = order.tolocation.split(',');
-            orderTo = `${orderTo[1]}, ${orderTo[2]}`;
-            if (index === 0) {
-              orderDetails += `
-              <tr class="highlight parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
-                </select></td>
-              </tr>`;
-            } else {
-              orderDetails += `
-              <tr class="parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
-                </select></td>
-              </tr>`;
-            }
-            orderList.innerHTML += orderDetails;
-            orderDetails = '';
-            index += 1;
-            return '';
-          });
-        }
-      });
-  },
-
-  // cancelPArce method for cancelling order
-  cancelParcel = (evt) => {
-    evt.preventDefault();
-    const token = `Bearer ${localStorage.getItem('token')}`,
-      cancelRoute = `${parcelRoute}/${selectedId}/cancel`,
-      headers = new Headers({
-        'content-type': 'application/json',
-        authorization: token
-      }),
-      startLoader = setInterval(loader, 500, 'confirm-cancel-order');
-    fetch(cancelRoute, {
-      method: 'PATCH',
-      headers,
-    })
-      .then(res => res.json())
-      .then((data, res) => {
-        if (data.status === 401) {
-          clearInterval(startLoader);
-          showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
-        } else if (data.status === 500) {
-          clearInterval(startLoader);
-          showToast('toast-red', data.error);
-        } else {
-          clearInterval(startLoader);
-          showToast('toast-green', 'successfully cancelled');
-          confirmParcelBtn.innerText = 'Cancel';
-          dismissModal();
-          currentModal = '';
-        }
-      })
-      .catch(error => showToast('toast-red', error.message));
-  },
-
-  // create account method for signup
-  changeDestination = (evt) => {
-    evt.preventDefault();
-    const token = `Bearer ${localStorage.getItem('token')}`,
-      cancelRoute = `${parcelRoute}/${selectedId}/destination`,
-      destination = `${changeDestinationForm.changeDestination.value}, ${changeGeocode}`,
-      headers = new Headers({
-        'content-type': 'application/json',
-        authorization: token
-      }),
-
-      startLoader = setInterval(loader, 500, 'submit-change-destination');
-    fetch(cancelRoute, {
-      method: 'PATCH',
-      body: JSON.stringify({ toLocation: destination }),
-      headers,
-    })
-      .then(res => res.json())
-      .then((data, res) => {
-        if (data.status === 401) {
-          clearInterval(startLoader);
-          showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
-        } else if (data.status === 500) {
-          clearInterval(startLoader);
-          showToast('toast-red', data.error);
-        } else {
-          clearInterval(startLoader);
-          showToast('toast-green', 'successfully cancelled');
-          confirmParcelBtn.innerText = 'Submit';
-          dismissModal();
-          currentModal = '';
-        }
-      })
-      .catch(error => showToast('toast-red', error.message));
-  },
-
   fillInFromLocation = () => {
     // Get the place details from the autocomplete object.
     const place = autocomplete.getPlace();
@@ -332,6 +189,11 @@ const errorMessage = document.getElementsByClassName('error'),
     changeGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
   },
 
+  fillInCurrentLocation = () => {
+    // Get the place details from the autocomplete object.
+    const place = autocomplete3.getPlace();
+    changeGeocode = `lat:${place.geometry.location.lat()}, long:${place.geometry.location.lng()}`;
+  },
   initAutocomplete = () => {
     // Create the autocomplete object, restricting the search to geographical
     // location types.
@@ -370,5 +232,17 @@ const errorMessage = document.getElementsByClassName('error'),
       // When the user selects an address from the dropdown, populate the address
       // fields in the form.
       autocomplete3.addListener('place_changed', fillInDestination);
+    }
+
+    const currentLocation = document.getElementById('changeLocation');
+    if (currentLocation) {
+      autocomplete4 = new google.maps.places.Autocomplete(
+        /** @type {!HTMLInputElement} */(currentLocation),
+        { types: ['geocode'] }
+      );
+
+      // When the user selects an address from the dropdown, populate the address
+      // fields in the form.
+      autocomplete4.addListener('place_changed', fillInCurrentLocation);
     }
   };

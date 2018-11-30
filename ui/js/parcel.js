@@ -1,7 +1,5 @@
-/* eslint-disable no-undef, no-unused-vars */
-let currentModal = '',
-  currentParcel = {},
-  parcelList = [];
+/* eslint-disable no-undef, no-unused-vars, no-plusplus */
+let currentModal = '';
 
 const errorMessage = document.getElementsByClassName('error'),
   parcelBtn = document.getElementById('submit-parcel'),
@@ -9,7 +7,6 @@ const errorMessage = document.getElementsByClassName('error'),
   changeDestinationForm = document.getElementById('destination-form'),
   parcelRoute = 'https://andela-vlf.herokuapp.com/api/v1/parcels',
   userParcels = 'https://andela-vlf.herokuapp.com/api/v1/users/',
-  orderList = document.getElementById('orders'),
   dismissParcelBtn = document.getElementById('dismiss-cancel-order'),
   confirmParcelBtn = document.getElementById('confirm-cancel-order'),
   changeDestinationBtn = document.getElementById('submit-change-destination'),
@@ -60,6 +57,19 @@ const errorMessage = document.getElementsByClassName('error'),
         showToast('toast-green', data.data.message);
         parcelBtn.innerText = 'Create Parcel';
         dismissModal();
+        const order = parcelDetails,
+          index = parcelList.length - 1;
+        order.id = data.data.id;
+        order.fromlocation = order.fromLocation;
+        order.tolocation = order.toLocation;
+        order.status = 'placed';
+        const index1 = order.tolocation.indexOf('lat'),
+          orderTo = order.tolocation.substring(0, index1),
+          index2 = order.fromlocation.indexOf('lat'),
+          orderFrom = order.fromlocation.substring(0, index2),
+          orderDetails = fillOtherRow(order, index, orderFrom, orderTo);
+        orderList.innerHTML += orderDetails;
+        parcelList.push(orderDetails);
         currentModal = '';
         // window.location.href = '/profile.html';
       })
@@ -87,55 +97,35 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
         } else if (data.data.length < 1) {
           showToast('toast-red', 'No Order available at the moment');
+          loaderDiv.classList.add('hidden');
         } else {
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
-          parcelList = parcelOrders;
+          totalList = parcelOrders;
+
+          // load map ui
           initialize();
           calculateDistance();
-          const orderHeader = `
-                                <tr>
-                                  <th>From</th>
-                                  <th>To</th>
-                                  <th>Weight</th>
-                                  <th>Status</th>
-                                  <th>Actions</th>
-                                </tr>`;
+
+          // load parcel table
+          selectedPage = 1;
+          const orderHeader = fillHeader(),
+            paginate = pagination();
           let orderDetails = '',
             index = 0;
           orderList.innerHTML += orderHeader;
-          return parcelOrders.map((order) => {
-            let orderFrom = order.fromlocation.split(',');
-            orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
-            let orderTo = order.tolocation.split(',');
-            orderTo = `${orderTo[1]}, ${orderTo[2]}`;
+          return parcelList.map((order) => {
+            const index1 = order.tolocation.indexOf('lat'),
+              orderTo = order.tolocation.substring(0, index1),
+              index2 = order.fromlocation.indexOf('lat'),
+              orderFrom = order.fromlocation.substring(0, index2);
+
             if (index === 0) {
-              orderDetails += `
-              <tr class="highlight parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
-                </select></td>
-              </tr>`;
+              orderDetails = fillFirstRow(order, index, orderFrom, orderTo);
             } else {
-              orderDetails += `
-              <tr class="parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="cancel${order.id}">Cancel</option>
-                  <option value="destination${order.id}">Change Destination</option>
-                </select></td>
-              </tr>`;
+              orderDetails = fillOtherRow(order, index, orderFrom, orderTo);
             }
+
             orderList.innerHTML += orderDetails;
             orderDetails = '';
             index += 1;
@@ -172,6 +162,9 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully cancelled');
           confirmParcelBtn.innerText = 'Cancel';
           dismissModal();
+
+          // update status table data
+          document.getElementById(`status${selectedId}`).innerHTML = 'cancelled';
           currentModal = '';
         }
       })
@@ -208,6 +201,12 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully cancelled');
           confirmParcelBtn.innerText = 'Submit';
           dismissModal();
+          let newTo = destination.split(',');
+          newTo = `${newTo[1]}, ${newTo[2]}`;
+
+          // update destination ui info
+          document.getElementById(`destination${selectedId}`).innerHTML = newTo;
+          document.getElementById('destination-id').innerHTML = newTo;
           currentModal = '';
         }
       })
