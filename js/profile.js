@@ -46,59 +46,44 @@ const errorMessage = document.getElementsByClassName('error'),
         } else if (data.data.length < 1) {
           showToast('toast-red', 'No Order available at the moment');
         } else {
-          const parcelOrders = data.data,
-            size = parcelOrders.length,
-            orderHeader = `
-                            <tr>
-                              <th>From</th>
-                              <th>To</th>
-                              <th>Weight</th>
-                              <th>Status</th>
-                            </tr>`;
+          selectedPage = 1;
+          const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
-          parcelList = parcelOrders;
+          totalList = parcelOrders;
+          const orderHeader = fillHeader(),
+            paginate = pagination(),
+            size = parcelList.length;
           let orderDetails = '',
             index = 0;
           orderList.innerHTML += orderHeader;
-          return parcelOrders.map((order) => {
+          parcelList.map((order) => {
             const index1 = order.tolocation.indexOf('lat');
             const orderTo = order.tolocation.substring(0, index1);
             const index2 = order.fromlocation.indexOf('lat');
             const orderFrom = order.fromlocation.substring(0, index2);
-            if (order.status === 'delivered') {
-              delivered += 1;
-              if (index === (size - 1)) {
-                deliveryCount.innerText = `${delivered}`;
-              }
-            }
-            if (order.status === 'transitting') {
-              transitting += 1;
-              if (index === (size - 1)) {
-                transittingCount.innerText = `${transitting}`;
-              }
-            }
+
             if (index === 0) {
-              orderDetails += `
-              <tr class="highlight parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-              </tr>`;
+              orderDetails = fillFirstRow(order, index, orderFrom, orderTo);
             } else {
-              orderDetails += `
-              <tr class="parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.status}</td>
-              </tr>`;
+              orderDetails = fillOtherRow(order, index, orderFrom, orderTo);
             }
+
             orderList.innerHTML += orderDetails;
             orderDetails = '';
             index += 1;
             return '';
           });
+
+          parcelOrders.forEach((order) => {
+            if (order.status === 'delivered') {
+              delivered += 1;
+            }
+            if (order.status === 'transitting') {
+              transitting += 1;
+            }
+          });
+          deliveryCount.innerText = `${delivered}`;
+          transittingCount.innerText = `${transitting}`;
         }
       });
   };
