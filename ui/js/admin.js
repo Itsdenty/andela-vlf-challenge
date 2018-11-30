@@ -28,14 +28,6 @@ const errorMessage = document.getElementsByClassName('error'),
     }
   },
 
-  // updateStatus = (orderId, status) => {
-  //   const classname = document.getElementsByClassName('order-id');
-  //   Array.from(classname).forEach((element) => {
-  //     if (element.value === orderId) {
-  //       document.getElementById(`status${orderId}`).innerHTML = `${status}`;
-  //     }
-  //   });
-  // },
   // retrieve all user orders
   getAllOrders = () => {
     const token = `Bearer ${localStorage.getItem('token')}`;
@@ -59,51 +51,31 @@ const errorMessage = document.getElementsByClassName('error'),
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
           parcelList = parcelOrders;
+
+          // load map ui
           initialize();
           calculateDistance();
-          const orderHeader = `
-                                <tr>
-                                  <th>From</th>
-                                  <th>To</th>
-                                  <th>Weight</th>
-                                  <th>Status</th>
-                                  <th>Actions</th>
-                                </tr>`;
+
+          // populate ui
+          selectedPage = 1;
+          const orderHeader = fillHeader(),
+            paginate = pagination();
           let orderDetails = '',
             index = 0;
           orderList.innerHTML += orderHeader;
           return parcelOrders.map((order) => {
-            const index1 = order.tolocation.indexOf('lat');
-            const orderTo = order.tolocation.substring(0, index1);
-            const index2 = order.fromlocation.indexOf('lat');
-            const orderFrom = order.fromlocation.substring(0, index2);
+            const index1 = order.tolocation.indexOf('lat'),
+              orderTo = order.tolocation.substring(0, index1),
+              index2 = order.fromlocation.indexOf('lat'),
+              orderFrom = order.fromlocation.substring(0, index2);
+
+            // load table rows
             if (index === 0) {
-              orderDetails += `
-              <tr class="highlight parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-status-id="${order.id}" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}" id="status${order.id}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="status${order.id}">Change Status</option>
-                  <option value="location${order.id}">Change Current Location</option>
-                </select></td>
-              </tr>`;
+              orderDetails = fillFirstRow(order, index, orderFrom, orderTo);
             } else {
-              orderDetails += `
-              <tr class="parcel-row" data-index="${index}">
-                <td class="select-parcel" data-index="${index}"> ${orderFrom}</td>
-                <td class="select-parcel" data-index="${index}"> ${orderTo}</td>
-                <td class="select-parcel" data-index="${index}"> ${order.weight} ${order.weightmetric}</td>
-                <td class="select-parcel" data-index="${index}" id="status${order.id}"> ${order.status}</td>
-                <td><select name="orderAction" class="my-actions">
-                  <option value="">Select Action</option>
-                  <option value="status${order.id}">Change Status</option>
-                  <option value="location${order.id}">Change Current Location</option>
-                </select></td>
-              </tr>`;
+              orderDetails = fillOtherRow(order, index, orderFrom, orderTo);
             }
+
             orderList.innerHTML += orderDetails;
             orderDetails = '';
             index += 1;
@@ -112,6 +84,7 @@ const errorMessage = document.getElementsByClassName('error'),
         }
       });
   },
+
   // change parcel order status method
   changeStatus = (evt) => {
     evt.preventDefault();
@@ -142,6 +115,8 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully cancelled');
           changeStatusBtn.innerText = 'Submit';
           dismissModal();
+
+          // update status table data
           document.getElementById(`status${selectedId}`).innerHTML = `${status}`;
           currentModal = '';
         }
@@ -180,6 +155,8 @@ const errorMessage = document.getElementsByClassName('error'),
           showToast('toast-green', 'successfully changed location');
           changeLocationBtn.innerText = 'Submit';
           dismissModal();
+
+          // update location table data
           document.getElementById('location-id').innerHTML = `${currentLocation}`;
           currentModal = '';
         }

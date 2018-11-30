@@ -8,7 +8,6 @@ let currentModal = '',
   autocomplete3 = {},
   autocomplete4 = {},
   currentParcel = {},
-  parcelList = [],
   currentIndex = 0,
   selectedId = 0,
   directionsDisplay,
@@ -29,10 +28,10 @@ const errorMessage = document.getElementsByClassName('error'),
   changeDestinationBtn = document.getElementById('submit-change-destination'),
 
   calculateDistance = () => {
-    const index = currentParcel.tolocation.indexOf('lat');
-    const toLocation = currentParcel.tolocation.substring(0, index);
-    const index2 = currentParcel.fromlocation.indexOf('lat');
-    const fromLocation = currentParcel.fromlocation.substring(0, index2);
+    const index = currentParcel.tolocation.indexOf('lat'),
+      toLocation = currentParcel.tolocation.substring(0, index),
+      index2 = currentParcel.fromlocation.indexOf('lat'),
+      fromLocation = currentParcel.fromlocation.substring(0, index2);
     let orderFrom = currentParcel.fromlocation.split(',');
     orderFrom = `${orderFrom[1]}, ${orderFrom[2]}`;
     let orderTo = currentParcel.tolocation.split(',');

@@ -34,14 +34,6 @@ checkState = function checkState() {
 },
 
 
-// updateStatus = (orderId, status) => {
-//   const classname = document.getElementsByClassName('order-id');
-//   Array.from(classname).forEach((element) => {
-//     if (element.value === orderId) {
-//       document.getElementById(`status${orderId}`).innerHTML = `${status}`;
-//     }
-//   });
-// },
 // retrieve all user orders
 getAllOrders = function getAllOrders() {
   var token = 'Bearer ' + localStorage.getItem('token');
@@ -69,22 +61,31 @@ getAllOrders = function getAllOrders() {
       currentParcel = _parcelOrders[0];
 
       parcelList = parcelOrders;
+
+      // load map ui
       initialize();
       calculateDistance();
-      var orderHeader = '\n                                <tr>\n                                  <th>From</th>\n                                  <th>To</th>\n                                  <th>Weight</th>\n                                  <th>Status</th>\n                                  <th>Actions</th>\n                                </tr>';
+
+      // populate ui
+      selectedPage = 1;
+      var orderHeader = fillHeader(),
+          paginate = pagination();
       var orderDetails = '',
           index = 0;
       orderList.innerHTML += orderHeader;
       return parcelOrders.map(function (order) {
-        var index1 = order.tolocation.indexOf('lat');
-        var orderTo = order.tolocation.substring(0, index1);
-        var index2 = order.fromlocation.indexOf('lat');
-        var orderFrom = order.fromlocation.substring(0, index2);
+        var index1 = order.tolocation.indexOf('lat'),
+            orderTo = order.tolocation.substring(0, index1),
+            index2 = order.fromlocation.indexOf('lat'),
+            orderFrom = order.fromlocation.substring(0, index2);
+
+        // load table rows
         if (index === 0) {
-          orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-status-id="' + order.id + '" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '" id="status' + order.id + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="status' + order.id + '">Change Status</option>\n                  <option value="location' + order.id + '">Change Current Location</option>\n                </select></td>\n              </tr>';
+          orderDetails = fillFirstRow(order, index, orderFrom, orderTo);
         } else {
-          orderDetails += '\n              <tr class="parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '" id="status' + order.id + '"> ' + order.status + '</td>\n                <td><select name="orderAction" class="my-actions">\n                  <option value="">Select Action</option>\n                  <option value="status' + order.id + '">Change Status</option>\n                  <option value="location' + order.id + '">Change Current Location</option>\n                </select></td>\n              </tr>';
+          orderDetails = fillOtherRow(order, index, orderFrom, orderTo);
         }
+
         orderList.innerHTML += orderDetails;
         orderDetails = '';
         index += 1;
@@ -93,6 +94,7 @@ getAllOrders = function getAllOrders() {
     }
   });
 },
+
 
 // change parcel order status method
 changeStatus = function changeStatus(evt) {
@@ -124,6 +126,8 @@ changeStatus = function changeStatus(evt) {
       showToast('toast-green', 'successfully cancelled');
       changeStatusBtn.innerText = 'Submit';
       dismissModal();
+
+      // update status table data
       document.getElementById('status' + selectedId).innerHTML = '' + status;
       currentModal = '';
     }
@@ -163,6 +167,8 @@ changeLocation = function changeLocation(evt) {
       showToast('toast-green', 'successfully changed location');
       changeLocationBtn.innerText = 'Submit';
       dismissModal();
+
+      // update location table data
       document.getElementById('location-id').innerHTML = '' + currentLocation;
       currentModal = '';
     }
