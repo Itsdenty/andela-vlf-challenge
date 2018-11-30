@@ -38,7 +38,6 @@ selectPage = function selectPage(e) {
     selectedPage = page;
     lowerBoundary = selectedPage * 5 - 4;
     upperBoundary = selectedPage * 5;
-    console.log(page, lowerBoundary, upperBoundary);
     parcelList = [];
     // console.log(totalList.indexOf(lowerBoundary - 1), 'test', lowerBoundary, upperBoundary);
     for (var i = lowerBoundary; i <= upperBoundary; i++) {
@@ -76,7 +75,7 @@ selectPage = function selectPage(e) {
 
     currentParcel = _parcelList2[0];
   } else {
-    paginate();
+    pagination();
   }
   initialize();
   calculateDistance();
@@ -124,6 +123,8 @@ pagination = function pagination() {
   var _parcelList4 = _slicedToArray(_parcelList3, 1);
 
   currentParcel = _parcelList4[0];
+
+  console.log(totalList, parcelList, 'list', currentPage, upperBoundary, lowerBoundary);
 },
 
 // algorithm for loader animation

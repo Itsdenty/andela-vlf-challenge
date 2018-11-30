@@ -60,9 +60,8 @@ const errorMessage = document.getElementsByClassName('error'),
       selectedPage = page;
       lowerBoundary = (selectedPage * 5) - 4;
       upperBoundary = selectedPage * 5;
-      console.log(page, lowerBoundary, upperBoundary);
       parcelList = [];
-      // console.log(totalList.indexOf(lowerBoundary - 1), 'test', lowerBoundary, upperBoundary);
+
       for (let i = lowerBoundary; i <= upperBoundary; i++) {
         const parcel = totalList[i - 1];
         if (parcel && parcel.id) {
@@ -94,7 +93,7 @@ const errorMessage = document.getElementsByClassName('error'),
       });
       [currentParcel] = parcelList;
     } else {
-      paginate();
+      pagination();
     }
     initialize();
     calculateDistance();
@@ -138,6 +137,7 @@ const errorMessage = document.getElementsByClassName('error'),
       element.addEventListener('click', selectPage);
     });
     [currentParcel] = parcelList;
+
   },
   // algorithm for loader animation
   loader = (id) => {
