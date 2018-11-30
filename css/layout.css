@@ -2,6 +2,12 @@
 @media only screen 
 and (max-device-width : 767px) {
 /* Styles */
+#map {
+  height: 25vh;
+  width: 100%;
+  padding: 0px;
+  float: right;
+}
 .main-margin {
   padding: 50px;
 }
@@ -34,8 +40,8 @@ and (max-device-width : 767px) {
 and (min-device-width : 768px)  {
 /* Styles */
 .main-margin {
-  margin-left: 30px;
-  margin-top: 2%;
+  margin-left: 20px;
+  margin-top: 1%;
 }
 .modal {
   position: absolute;
@@ -48,7 +54,7 @@ and (min-device-width : 768px)  {
   width: 100%;
 }
 .col-md-2 {
-  width: 45% !important;
+  width: 48% !important;
   float: left !important;
 }
 .col-md-4 {
