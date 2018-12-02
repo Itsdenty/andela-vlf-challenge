@@ -3,7 +3,7 @@
 and (max-device-width : 767px) {
 /* Styles */
 #map {
-  height: 25vh;
+  height: 35vh;
   width: 100%;
   padding: 0px;
   float: right;
