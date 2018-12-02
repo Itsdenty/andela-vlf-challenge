@@ -42,6 +42,7 @@ const errorMessage = document.getElementsByClassName('error'),
       .then((data, res) => {
         loaderDiv.classList.add('hidden');
         if (data.status === 401) {
+          localStorage.setItem('expired', 'true');
           showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
         } else if (data.data.length < 1) {
           showToast('toast-red', 'No Order available at the moment');

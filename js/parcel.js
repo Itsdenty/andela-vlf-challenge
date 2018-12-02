@@ -94,6 +94,7 @@ const errorMessage = document.getElementsByClassName('error'),
       .then(res => res.json())
       .then((data, res) => {
         if (data.status === 401) {
+          localStorage.setItem('expired', 'true');
           showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
         } else if (data.data.length < 1) {
           showToast('toast-red', 'No Order available at the moment');
@@ -152,12 +153,14 @@ const errorMessage = document.getElementsByClassName('error'),
       .then(res => res.json())
       .then((data, res) => {
         if (data.status === 401) {
+          localStorage.setItem('expired', 'true');
           clearInterval(startLoader);
           showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
         } else if (data.status === 500) {
           clearInterval(startLoader);
           showToast('toast-red', data.error);
         } else {
+          logout();
           clearInterval(startLoader);
           showToast('toast-green', 'successfully cancelled');
           confirmParcelBtn.innerText = 'Cancel';
@@ -191,6 +194,7 @@ const errorMessage = document.getElementsByClassName('error'),
       .then(res => res.json())
       .then((data, res) => {
         if (data.status === 401) {
+          localStorage.setItem('expired', 'true');
           clearInterval(startLoader);
           showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
         } else if (data.status === 500) {

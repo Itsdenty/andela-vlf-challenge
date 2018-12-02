@@ -129,8 +129,9 @@ const errorMessage = document.getElementsByClassName('error'),
 
   checkIt = () => {
     const user = JSON.parse(localStorage.getItem('user')),
+      expired = localStorage.getItem('expired'),
       token = `Bearer ${localStorage.getItem('token')}`;
-    if (!token || !user) {
+    if (!token || !user || !expired) {
       navBar.innerHTML = `
                           <li class="to-left"><a>SENDIT</a></li> 
                           <li class="to-right trigger point-it" data-modal="login">Login</li>
