@@ -61,9 +61,9 @@ The endpoints are hosted on heroku [ here ](https://andela-vlf.herokuapp.com/api
 * User can change the destination of parcel delivery
 * Admin can change the status of the parcel
 * Admin can change the current destination of the parcel
-* Admin can check the list and details of all rides
-* User can check the list and details of all rides
-* Ride details include map location pointers and distance and costing
+* Admin can check the list and details of all parcels
+* User can check the list and details of all parcels
+* Parcel details include map location pointers and distance and costing
 
 ## Available APIs
 <table>
