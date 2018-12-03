@@ -28,7 +28,7 @@ const options = {
   swaggerDefinition,
 
   // path to the API docs
-  apis: ['./swagger/*.js']
+  apis: ['./server/swagger/*.js']
 
 };
 
