@@ -12,7 +12,7 @@ import transformer from './utils/transformer';
 
 
 const app = express(),
-  port = process.env.PORT || '3000';
+  port = process.env.PORT || '3100';
 
 // logger
 app.use(morgan('dev'));
@@ -25,7 +25,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.use('/api-docs', express.static(path.join(__dirname, '../public/api-docs')));
+app.use('/api-docs', express.static(path.join(__dirname, '../server/public/api-docs')));
 
 // use the defined routes
 app.use('/', routes);
