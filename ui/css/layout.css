@@ -5,6 +5,12 @@ and (max-device-width : 767px) {
 .main-margin {
   padding: 50px;
 }
+#map {
+  height: 30vh;
+  width: 100%;
+  padding: 0px;
+  float: right;
+}
   .modal {
     position: absolute;
     background-color: white;
@@ -48,7 +54,7 @@ and (min-device-width : 768px)  {
   width: 100%;
 }
 .col-md-2 {
-  width: 45% !important;
+  width: 47% !important;
   float: left !important;
 }
 .col-md-4 {
