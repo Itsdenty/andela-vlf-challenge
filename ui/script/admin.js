@@ -60,7 +60,7 @@ getAllOrders = function getAllOrders() {
 
       currentParcel = _parcelOrders[0];
 
-      parcelList = parcelOrders;
+      totalList = parcelOrders;
 
       // load map ui
       initialize();
@@ -73,7 +73,7 @@ getAllOrders = function getAllOrders() {
       var orderDetails = '',
           index = 0;
       orderList.innerHTML += orderHeader;
-      return parcelOrders.map(function (order) {
+      return parcelList.map(function (order) {
         var index1 = order.tolocation.indexOf('lat'),
             orderTo = order.tolocation.substring(0, index1),
             index2 = order.fromlocation.indexOf('lat'),

@@ -52,45 +52,48 @@ getAllOrders = function getAllOrders() {
     } else if (data.data.length < 1) {
       showToast('toast-red', 'No Order available at the moment');
     } else {
-      var parcelOrders = data.data,
-          size = parcelOrders.length,
-          orderHeader = '\n                            <tr>\n                              <th>From</th>\n                              <th>To</th>\n                              <th>Weight</th>\n                              <th>Status</th>\n                            </tr>';
+      selectedPage = 1;
+      var parcelOrders = data.data;
 
       var _parcelOrders = _slicedToArray(parcelOrders, 1);
 
       currentParcel = _parcelOrders[0];
 
-      parcelList = parcelOrders;
+      totalList = parcelOrders;
+      var orderHeader = fillHeader(),
+          paginate = pagination(),
+          size = parcelList.length;
       var orderDetails = '',
           index = 0;
       orderList.innerHTML += orderHeader;
-      return parcelOrders.map(function (order) {
+      parcelList.map(function (order) {
         var index1 = order.tolocation.indexOf('lat');
         var orderTo = order.tolocation.substring(0, index1);
         var index2 = order.fromlocation.indexOf('lat');
         var orderFrom = order.fromlocation.substring(0, index2);
-        if (order.status === 'delivered') {
-          delivered += 1;
-          if (index === size - 1) {
-            deliveryCount.innerText = '' + delivered;
-          }
-        }
-        if (order.status === 'transitting') {
-          transitting += 1;
-          if (index === size - 1) {
-            transittingCount.innerText = '' + transitting;
-          }
-        }
+
         if (index === 0) {
-          orderDetails += '\n              <tr class="highlight parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n              </tr>';
+          orderDetails = fillFirstRow(order, index, orderFrom, orderTo);
         } else {
-          orderDetails += '\n              <tr class="parcel-row" data-index="' + index + '">\n                <td class="select-parcel" data-index="' + index + '"> ' + orderTo + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + orderFrom + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.weight + ' ' + order.weightmetric + '</td>\n                <td class="select-parcel" data-index="' + index + '"> ' + order.status + '</td>\n              </tr>';
+          orderDetails = fillOtherRow(order, index, orderFrom, orderTo);
         }
+
         orderList.innerHTML += orderDetails;
         orderDetails = '';
         index += 1;
         return '';
       });
+
+      parcelOrders.forEach(function (order) {
+        if (order.status === 'delivered') {
+          delivered += 1;
+        }
+        if (order.status === 'transitting') {
+          transitting += 1;
+        }
+      });
+      deliveryCount.innerText = '' + delivered;
+      transittingCount.innerText = '' + transitting;
     }
   });
 };

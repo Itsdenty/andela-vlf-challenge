@@ -50,7 +50,7 @@ const errorMessage = document.getElementsByClassName('error'),
         } else {
           const parcelOrders = data.data;
           [currentParcel] = parcelOrders;
-          parcelList = parcelOrders;
+          totalList = parcelOrders;
 
           // load map ui
           initialize();
@@ -63,7 +63,7 @@ const errorMessage = document.getElementsByClassName('error'),
           let orderDetails = '',
             index = 0;
           orderList.innerHTML += orderHeader;
-          return parcelOrders.map((order) => {
+          return parcelList.map((order) => {
             const index1 = order.tolocation.indexOf('lat'),
               orderTo = order.tolocation.substring(0, index1),
               index2 = order.fromlocation.indexOf('lat'),
