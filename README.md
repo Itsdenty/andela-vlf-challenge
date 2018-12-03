@@ -5,9 +5,9 @@ Andela VLF Sendit is an app that allows users to send parcels to anywhere in Nig
 [![Build Status](https://travis-ci.org/Itsdenty/andela-vlf-challenge.svg?branch=master)](https://travis-ci.org/Itsdenty/andela-vlf-challenge) [![Coverage Status](https://coveralls.io/repos/github/Itsdenty/andela-vlf-challenge/badge.svg?branch=master)](https://coveralls.io/github/Itsdenty/andela-vlf-challenge?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/48ad51dc49c1a2d3a026/maintainability)](https://codeclimate.com/github/Itsdenty/andela-vlf-challenge/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/48ad51dc49c1a2d3a026/test_coverage)](https://codeclimate.com/github/Itsdenty/andela-vlf-challenge/test_coverage)
 
 
-The App is hosted on heroku [ here ]().
+The App is hosted on github pages [ here ](https://itsdenty.github.io/andela-vlf-challenge/index.html).
 
-The endpoints are hosted on heroku [ here ]().
+The endpoints are hosted on heroku [ here ](https://andela-vlf.herokuapp.com/api-docs/).
 
 ## Made With
   ### UI
@@ -22,6 +22,19 @@ The endpoints are hosted on heroku [ here ]().
     * Heroku for hosting services
     * PostgreSql for the App database
     * Swagger for documentation
+
+## Structure of the backend
+    *The server folder holds the backend code
+    *The config folder holds the postgress connection configuration
+    *The controller file holds the code for handling requests processing it through the     processor queries and returning a transformed result via the transformer file
+    *The database folder holds the database seeder and migration files
+    *The middlewares folder holds the middleware files/functions for input validation,      authentication check and authorization checks
+    *The processor folder holds the files/functions for database queries and return the     result to the controller
+    *The public folder holds the ui for the apidocs
+    *The routes folder holds the files for the routes
+    *The swagger folder holds the files for the swagger documentation
+    *The tests folder holds the files for integrated tests
+    *The utils folder holds helper functions often reused accross the app such as the       response transformer function.
 
   ### Continuous Integration
     * Travis CI & Codeclimate for test automation
@@ -39,13 +52,14 @@ The endpoints are hosted on heroku [ here ]().
 
 ## Features of the template
 * Users can Signup and log in on the app.
-* Drivers can add ride offers..
-* Passengers can view all available ride offers.
-* Passengers can see the details of a ride offer and request to join the ride. E.g What date
-the ride leaves, where it is headed e.t.c
-* Passengers can make a request for an available ride
-* Drivers can view the requests to the ride offer they created.
-* Drivers can either accept or reject a ride request.
+* User Can create order for parcel deliveries.
+* User can cancel parcel delivery Order.
+* User can change the destination of parcel delivery
+* Admin can change the status of the parcel
+* Admin can change the current destination of the parcel
+* Admin can check the list and details of all rides
+* User can check the list and details of all rides
+* Ride details include map location pointers and distance and costing
 
 ## Available APIs
 <table>
@@ -105,6 +119,7 @@ the ride leaves, where it is headed e.t.c
       <td>Change the current location of a parcel</td>
   </tr>
 </table>
+
 
 For more details on how to use this API, check the **Documentation** out [ here ]().
 
