@@ -125,7 +125,7 @@ The endpoints are hosted on heroku [ here ](https://andela-vlf.herokuapp.com/api
 </table>
 
 
-For more details on how to use this API, check the **Documentation** out [ here ]().
+For more details on how to use this API, check the **Documentation** out [ here ](https://andela-vlf.herokuapp.com/api-docs/).
 
 ## License and Copyright
 &copy; Abd-afeez Abd-hamid
