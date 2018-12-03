@@ -26,15 +26,19 @@ The endpoints are hosted on heroku [ here ](https://andela-vlf.herokuapp.com/api
 ## Structure of the backend
     *The server folder holds the backend code
     *The config folder holds the postgress connection configuration
-    *The controller file holds the code for handling requests processing it through the     processor queries and returning a transformed result via the transformer file
+    *The controller file holds the code for handling requests processing it through the 
+    processor queries and returning a transformed result via the transformer file
     *The database folder holds the database seeder and migration files
-    *The middlewares folder holds the middleware files/functions for input validation,      authentication check and authorization checks
-    *The processor folder holds the files/functions for database queries and return the     result to the controller
+    *The middlewares folder holds the middleware files/functions for input validation,
+    authentication check and authorization checks
+    *The processor folder holds the files/functions for database queries and return the
+    result to the controller
     *The public folder holds the ui for the apidocs
     *The routes folder holds the files for the routes
     *The swagger folder holds the files for the swagger documentation
     *The tests folder holds the files for integrated tests
-    *The utils folder holds helper functions often reused accross the app such as the       response transformer function.
+    *The utils folder holds helper functions often reused accross the app such as the
+    response transformer function.
 
   ### Continuous Integration
     * Travis CI & Codeclimate for test automation
